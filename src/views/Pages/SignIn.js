@@ -25,6 +25,8 @@ function SignIn() {
   // Chakra color mode
   const titleColor = useColorModeValue("red.450", "red.500");
   const textColor = useColorModeValue("gray.400", "white");
+  const primaryColor = useColorModeValue("primaryColor.700");
+  const primaryColorHover = useColorModeValue("primaryColorHover.700");
   const history = useHistory();
   const { setUser } = useAuth();
   const { user } = useAuth();
@@ -94,12 +96,14 @@ function SignIn() {
           style={{ userSelect: "none" }}
           w={{ base: "100%", md: "50%", lg: "42%" }}
         >
-          {user && user.token ?
+          {user && user.token ? (
             <div>
               <Heading color={titleColor} fontSize="32px" mt="10px" mb="10px">
                 Welcome Back
-            </Heading>
-              <h3 style={{ textAlign: "center" }}>You are already signed in.</h3>
+              </Heading>
+              <h3 style={{ textAlign: "center" }}>
+                You are already signed in.
+              </h3>
               <Button
                 fontSize="15px"
                 type="submit"
@@ -115,11 +119,12 @@ function SignIn() {
                 _active={{
                   bg: "teal.400",
                 }}
-                onClick={login}>
+                onClick={login}
+              >
                 {`Let's go`}
               </Button>
             </div>
-            :
+          ) : (
             <Flex
               direction="column"
               w="100%"
@@ -128,8 +133,8 @@ function SignIn() {
               mt={{ md: "150px", lg: "80px" }}
             >
               <Heading color={titleColor} fontSize="32px" mt="10px" mb="10px">
-              NLS99 Payments
-            </Heading>
+                NLS99 Payments
+              </Heading>
               <Text
                 mb="36px"
                 ms="4px"
@@ -138,11 +143,11 @@ function SignIn() {
                 fontSize="14px"
               >
                 Enter your email and password to sign in
-            </Text>
+              </Text>
               <FormControl>
                 <FormLabel ms="4px" fontSize="sm" fontWeight="normal">
                   Email
-              </FormLabel>
+                </FormLabel>
                 <Input
                   borderRadius="15px"
                   mb="24px"
@@ -158,7 +163,7 @@ function SignIn() {
                 />
                 <FormLabel ms="4px" fontSize="sm" fontWeight="normal">
                   Password
-              </FormLabel>
+                </FormLabel>
                 <Input
                   borderRadius="15px"
                   mb="36px"
@@ -181,7 +186,7 @@ function SignIn() {
                     fontWeight="normal"
                   >
                     Remember me
-                </FormLabel>
+                  </FormLabel>
                 </FormControl>
                 <h4
                   style={{
@@ -195,16 +200,16 @@ function SignIn() {
                   {error}
                 </h4>
                 <Button
-                  fontSize="10px"
+                  fontSize="18px"
                   type="submit"
-                  bg="teal.300"
+                  bg={primaryColor}
                   w="100%"
                   h="45"
                   mb="20px"
                   color="white"
                   mt="20px"
                   _hover={{
-                    bg: "teal.200",
+                    bg: { primaryColorHover },
                   }}
                   _active={{
                     bg: "teal.400",
@@ -220,11 +225,9 @@ function SignIn() {
                 alignItems="center"
                 maxW="100%"
                 mt="0px"
-              >
-                 
-              </Flex>
+              ></Flex>
             </Flex>
-          }
+          )}
         </Flex>
         <Box
           display={{ base: "none", md: "block" }}
@@ -236,14 +239,14 @@ function SignIn() {
         >
           <Box
             bgImage={signInImage}
-            w="100%"
+            w="80%"
             h="40%"
             bgSize="contain"
             bgRepeat="no-repeat"
             bgPosition="50%"
             position="absolute"
-            top="20%"
-            borderBottomLeftRadius="20px"
+            top="30%"
+            borderBottomLeftRadius="0"
             backgroundColor={"white"}
           ></Box>
         </Box>

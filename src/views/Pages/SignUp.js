@@ -148,7 +148,7 @@ function SignUp() {
             textAlign="center"
             mb="22px"
           >
-            React Laravel Purity
+            React Laravel NLS
           </Text>
           <Text
             fontSize="lg"
@@ -270,7 +270,7 @@ function SignUp() {
             mt="0px"
           >
             <Text color={textColor} fontWeight="medium">
-              Open-source Full-Stack Seed Project 
+              Dashboard for NLS 
             </Text>
           </Flex>
         </Flex>

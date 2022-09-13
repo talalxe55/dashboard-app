@@ -4,6 +4,7 @@ export const linkStyles = {
       // 3. We can add a new visual variant
       decoration: "none",
       baseStyle: {
+        color: "#B6142C",
         _hover: {
           textDecoration: "none",
         },

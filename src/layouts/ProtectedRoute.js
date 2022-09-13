@@ -10,6 +10,7 @@ export const ProtectedRoute = ({ ...rest }) => {
   if (!user || !user.token || user.token === "") {
     return (
       <SweetAlert
+        danger
         title="You must be signed in!"
         onCancel={() => history.push("/auth/signin")}
         onConfirm={() => history.push("/auth/signin")}

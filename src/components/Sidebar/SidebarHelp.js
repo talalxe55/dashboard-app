@@ -31,7 +31,7 @@ export function SidebarHelp(props) {
       <Link
         target="_blank"
         w="100%"
-        href="https://appseed.us/product/laravel-react-purity-dashboard"
+        href="https://nolimitsocial99.com/"
       >
         <Button
           fontSize="10px"
@@ -49,7 +49,7 @@ export function SidebarHelp(props) {
           }}
           color="black"
         >
-          React Chakra Purity
+         Visit NLS
         </Button>
       </Link>
     </Flex>
