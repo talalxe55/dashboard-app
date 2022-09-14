@@ -55,7 +55,7 @@ function Sidebar(props) {
       sidebarActiveShadow = "none";
     }
 
-    return routes.map((prop, key) => {
+    return routes.map((prop, index) => {
       if (prop.redirect) {
         return null;
       }
@@ -65,6 +65,7 @@ function Sidebar(props) {
         return (
           <>
             <Text
+              key={index}
               color={activeColor}
               fontWeight="bold"
               mb={{
@@ -85,46 +86,45 @@ function Sidebar(props) {
           </>
         );
       }
-      return <>
-        {prop.hide ?
-          null
-          :
-          <NavLink to={prop.layout + prop.path}>
-            {activeRoute(prop.layout + prop.path) === "active" ? (
-              <Button
-                boxSize="initial"
-                justifyContent="flex-start"
-                alignItems="center"
-                boxShadow={sidebarActiveShadow}
-                bg={activeBg}
-                transition={variantChange}
-                mb={{
-                  xl: "12px",
-                }}
-                mx={{
-                  xl: "auto",
-                }}
-                ps={{
-                  sm: "10px",
-                  xl: "16px",
-                }}
-                py="12px"
-                borderRadius="15px"
-                _hover="none"
-                w="100%"
-                _active={{
-                  bg: "inherit",
-                  transform: "none",
-                  borderColor: "transparent",
-                }}
-                _focus={{
-                  boxShadow: "0px 7px 11px rgba(0, 0, 0, 0.04)",
-                }}
-              >
-                <Flex>
-                  {typeof prop.icon === "string" ? (
-                    <Icon>{prop.icon}</Icon>
-                  ) : (
+      return (
+        <>
+          {prop.hide ? null : (
+            <NavLink to={prop.layout + prop.path} key={index}>
+              {activeRoute(prop.layout + prop.path) === "active" ? (
+                <Button
+                  boxSize="initial"
+                  justifyContent="flex-start"
+                  alignItems="center"
+                  boxShadow={sidebarActiveShadow}
+                  bg={activeBg}
+                  transition={variantChange}
+                  mb={{
+                    xl: "12px",
+                  }}
+                  mx={{
+                    xl: "auto",
+                  }}
+                  ps={{
+                    sm: "10px",
+                    xl: "16px",
+                  }}
+                  py="12px"
+                  borderRadius="15px"
+                  _hover="none"
+                  w="100%"
+                  _active={{
+                    bg: "inherit",
+                    transform: "none",
+                    borderColor: "transparent",
+                  }}
+                  _focus={{
+                    boxShadow: "0px 7px 11px rgba(0, 0, 0, 0.04)",
+                  }}
+                >
+                  <Flex>
+                    {typeof prop.icon === "string" ? (
+                      <Icon>{prop.icon}</Icon>
+                    ) : (
                       <IconBox
                         bg="teal.300"
                         color="white"
@@ -136,14 +136,14 @@ function Sidebar(props) {
                         {prop.icon}
                       </IconBox>
                     )}
-                  <Text color={activeColor} my="auto" fontSize="sm">
-                    {document.documentElement.dir === "rtl"
-                      ? prop.rtlName
-                      : prop.name}
-                  </Text>
-                </Flex>
-              </Button>
-            ) : (
+                    <Text color={activeColor} my="auto" fontSize="sm">
+                      {document.documentElement.dir === "rtl"
+                        ? prop.rtlName
+                        : prop.name}
+                    </Text>
+                  </Flex>
+                </Button>
+              ) : (
                 <Button
                   boxSize="initial"
                   justifyContent="flex-start"
@@ -176,17 +176,17 @@ function Sidebar(props) {
                     {typeof prop.icon === "string" ? (
                       <Icon>{prop.icon}</Icon>
                     ) : (
-                        <IconBox
-                          bg={inactiveBg}
-                          color="teal.300"
-                          h="30px"
-                          w="30px"
-                          me="12px"
-                          transition={variantChange}
-                        >
-                          {prop.icon}
-                        </IconBox>
-                      )}
+                      <IconBox
+                        bg={inactiveBg}
+                        color="teal.300"
+                        h="30px"
+                        w="30px"
+                        me="12px"
+                        transition={variantChange}
+                      >
+                        {prop.icon}
+                      </IconBox>
+                    )}
                     <Text color={inactiveColor} my="auto" fontSize="sm">
                       {document.documentElement.dir === "rtl"
                         ? prop.rtlName
@@ -195,9 +195,10 @@ function Sidebar(props) {
                   </Flex>
                 </Button>
               )}
-          </NavLink>
-        }
-      </>
+            </NavLink>
+          )}
+        </>
+      );
     });
   };
   const { logoText, routes, sidebarVariant } = props;
@@ -287,7 +288,7 @@ export function SidebarResponsive(props) {
     const activeColor = useColorModeValue("gray.700", "white");
     const inactiveColor = useColorModeValue("gray.400", "gray.400");
 
-    return routes.map((prop, key) => {
+    return routes.map((prop, index) => {
       if (prop.redirect) {
         return null;
       }
@@ -297,6 +298,7 @@ export function SidebarResponsive(props) {
         return (
           <>
             <Text
+              key={index}
               color={activeColor}
               fontWeight="bold"
               mb={{
@@ -318,7 +320,7 @@ export function SidebarResponsive(props) {
         );
       }
       return (
-        <NavLink to={prop.layout + prop.path }>
+        <NavLink to={prop.layout + prop.path}>
           {activeRoute(prop.layout + prop.path) === "active" ? (
             <Button
               boxSize="initial"
@@ -352,16 +354,16 @@ export function SidebarResponsive(props) {
                 {typeof prop.icon === "string" ? (
                   <Icon>{prop.icon}</Icon>
                 ) : (
-                    <IconBox
-                      bg="teal.300"
-                      color="white"
-                      h="30px"
-                      w="30px"
-                      me="12px"
-                    >
-                      {prop.icon}
-                    </IconBox>
-                  )}
+                  <IconBox
+                    bg="teal.300"
+                    color="white"
+                    h="30px"
+                    w="30px"
+                    me="12px"
+                  >
+                    {prop.icon}
+                  </IconBox>
+                )}
                 <Text color={activeColor} my="auto" fontSize="sm">
                   {document.documentElement.dir === "rtl"
                     ? prop.rtlName
@@ -370,56 +372,56 @@ export function SidebarResponsive(props) {
               </Flex>
             </Button>
           ) : (
-              <Button
-                boxSize="initial"
-                justifyContent="flex-start"
-                alignItems="center"
-                bg="transparent"
-                mb={{
-                  xl: "12px",
-                }}
-                mx={{
-                  xl: "auto",
-                }}
-                py="12px"
-                ps={{
-                  sm: "10px",
-                  xl: "16px",
-                }}
-                borderRadius="15px"
-                _hover="none"
-                w="100%"
-                _active={{
-                  bg: "inherit",
-                  transform: "none",
-                  borderColor: "transparent",
-                }}
-                _focus={{
-                  boxShadow: "none",
-                }}
-              >
-                <Flex>
-                  {typeof prop.icon === "string" ? (
-                    <Icon>{prop.icon}</Icon>
-                  ) : (
-                      <IconBox
-                        bg={inactiveBg}
-                        color="teal.300"
-                        h="30px"
-                        w="30px"
-                        me="12px"
-                      >
-                        {prop.icon}
-                      </IconBox>
-                    )}
-                  <Text color={inactiveColor} my="auto" fontSize="sm">
-                    {document.documentElement.dir === "rtl"
-                      ? prop.rtlName
-                      : prop.name}
-                  </Text>
-                </Flex>
-              </Button>
-            )}
+            <Button
+              boxSize="initial"
+              justifyContent="flex-start"
+              alignItems="center"
+              bg="transparent"
+              mb={{
+                xl: "12px",
+              }}
+              mx={{
+                xl: "auto",
+              }}
+              py="12px"
+              ps={{
+                sm: "10px",
+                xl: "16px",
+              }}
+              borderRadius="15px"
+              _hover="none"
+              w="100%"
+              _active={{
+                bg: "inherit",
+                transform: "none",
+                borderColor: "transparent",
+              }}
+              _focus={{
+                boxShadow: "none",
+              }}
+            >
+              <Flex>
+                {typeof prop.icon === "string" ? (
+                  <Icon>{prop.icon}</Icon>
+                ) : (
+                  <IconBox
+                    bg={inactiveBg}
+                    color="teal.300"
+                    h="30px"
+                    w="30px"
+                    me="12px"
+                  >
+                    {prop.icon}
+                  </IconBox>
+                )}
+                <Text color={inactiveColor} my="auto" fontSize="sm">
+                  {document.documentElement.dir === "rtl"
+                    ? prop.rtlName
+                    : prop.name}
+                </Text>
+              </Flex>
+            </Button>
+          )}
         </NavLink>
       );
     });

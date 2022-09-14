@@ -25,7 +25,7 @@ import {
 } from "@chakra-ui/react";
 // assets
 import peopleImage from "assets/img/people-image.png";
-import logoChakra from "assets/svg/logo-white.svg";
+import logoNLS from "assets/img/logos/nls-logo-w.png";
 // Custom components
 import Card from "components/Card/Card.js";
 import CardBody from "components/Card/CardBody.js";
@@ -289,9 +289,9 @@ export default function Dashboard() {
                 minHeight={{ sm: "250px" }}
               >
                 <Image
-                  src={logoChakra}
-                  alt="chakra image"
-                  minWidth={{ md: "300px", lg: "auto" }}
+                  src={logoNLS}
+                  alt="NLS Logo"
+                  width={{ md: "230px", lg: "230px" }}
                 />
               </Flex>
             </Flex>
