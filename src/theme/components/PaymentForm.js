@@ -17,7 +17,6 @@ import {
   Stack,
   Text,
   Tooltip,
-  Box,
   Editable,
   EditableInput,
   EditablePreview,
@@ -29,6 +28,7 @@ import {
   RadioGroup,
   Radio,
   Spacer,
+  Box,
 } from "@chakra-ui/react";
 import {
   TriangleDownIcon,
@@ -48,6 +48,7 @@ import SelectD from "react-select";
 import IconBox from "components/Icons/IconBox";
 import Currency from "../../api/CountriesCurrency";
 import { MastercardIcon, VisaIcon } from "components/Icons/Icons";
+import { CreditCard } from "./CreditCard";
 
 const PaymentForm = (props) => {
   const options = [
@@ -171,7 +172,7 @@ const PaymentForm = (props) => {
               <Radio value="master" defaultChecked="true">
                 Manually enter card information
               </Radio>
-              <Flex
+              {/* <Flex
                 p="1rem"
                 bg="transparent"
                 borderRadius="15px"
@@ -198,8 +199,11 @@ const PaymentForm = (props) => {
                 >
                   <Icon as={FaPencilAlt} />
                 </Button>
-              </Flex>
+              </Flex> */}
             </FormControl>
+            <Box>
+              <CreditCard />
+            </Box>
           </ModalBody>
           <ModalFooter>
             <Button colorScheme="blue" mr={3}>
