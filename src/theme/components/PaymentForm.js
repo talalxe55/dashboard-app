@@ -29,6 +29,7 @@ import {
   Radio,
   Spacer,
   Box,
+  Checkbox,
 } from "@chakra-ui/react";
 import {
   TriangleDownIcon,
@@ -47,8 +48,10 @@ import {
 import SelectD from "react-select";
 import IconBox from "components/Icons/IconBox";
 import Currency from "../../api/CountriesCurrency";
+import Countries from "../../api/Countries";
 import { MastercardIcon, VisaIcon } from "components/Icons/Icons";
 import { CreditCard } from "./CreditCard";
+import { useEffect } from "react";
 
 const PaymentForm = (props) => {
   const options = [
@@ -123,7 +126,7 @@ const PaymentForm = (props) => {
                 </Flex>
               </Box>
             </FormControl>
-            <Box mt={4}>
+            <FormControl mt={4}>
               <Flex>
                 <FormLabel>Customer </FormLabel>
                 <Text color="gray">(Optional)</Text>
@@ -134,9 +137,9 @@ const PaymentForm = (props) => {
                 options={options}
                 placeholder="Find Customer"
               />
-            </Box>
+            </FormControl>
 
-            <Box mt={4}>
+            <FormControl mt={4}>
               <Flex alignItems={"center"}>
                 <FormLabel m={0} pe={4}>
                   Description
@@ -150,8 +153,8 @@ const PaymentForm = (props) => {
                 </Tooltip>
               </Flex>
               <Input placeholder="Products or services associated with payment" />
-            </Box>
-            <Box mt={4}>
+            </FormControl>
+            <FormControl mt={4}>
               <Flex alignItems={"center"}>
                 <FormLabel m={0} pe={4}>
                   Statement descriptor
@@ -165,15 +168,14 @@ const PaymentForm = (props) => {
                 </Tooltip>
               </Flex>
               <CustomControlsExample />
-            </Box>
-            <Box>
-              <FormControl mt={4}>
-                <Heading fontSize="xl">Payment method</Heading>
-                <Divider my={4} />
-                <Radio value="master" defaultChecked="true">
-                  Manually enter card information
-                </Radio>
-                {/* <Flex
+            </FormControl>
+            <FormControl mt={4}>
+              <Heading fontSize="xl">Payment method</Heading>
+              <Divider my={4} />
+              <Radio value="master" defaultChecked="true">
+                Manually enter card information
+              </Radio>
+              {/* <Flex
                   p="1rem"
                   bg="transparent"
                   borderRadius="15px"
@@ -201,11 +203,12 @@ const PaymentForm = (props) => {
                     <Icon as={FaPencilAlt} />
                   </Button>
                 </Flex> */}
-              </FormControl>
-            </Box>
-            <Box>
+            </FormControl>
+
+            <FormControl>
               <CreditCard />
-            </Box>
+            </FormControl>
+            <AddBillingAdd />
           </ModalBody>
           <ModalFooter>
             <Button colorScheme="blue" mr={3}>
@@ -260,3 +263,68 @@ const CustomControlsExample = () => {
 };
 
 export default PaymentForm;
+
+const AddBillingAdd = () => {
+  const [ischecked, setChecked] = useState(false);
+  const [countries, setCountries] = useState([]);
+  const handleChange = () => {
+    setChecked(!ischecked);
+  };
+
+  const getCountriesList = async () => {
+    let url = "https://countriesnow.space/api/v0.1/countries/population/cities";
+    let res = await fetch(url, {
+      Method: "GET",
+      headers: {
+        Authorization:
+          "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7InVzZXJfZW1haWwiOiJqb3NodWFoZWFkb2ZkbUBnbWFpbC5jb20iLCJhcGlfdG9rZW4iOiJEVE5PMGZYWllGOWh4a1FENmI2VXNDUHVVOEd4YnBGTFVTWmdYWUtTdVlsYTc5aWpaa2xxbkZ0VVdwOW1yaWVaSEtJIn0sImV4cCI6MTY2MzMzODg3Nn0.tiD-p1QgI_aXF0V4m4hwmCiI1ROyvbar5Jf02HTsDbQ",
+        Accept: "application/json",
+      },
+    });
+    // console.log(res);
+    let data = await res.json();
+    console.log(data.data[0].country);
+  };
+
+  useEffect(() => {
+    getCountriesList();
+  }, []);
+  return (
+    <>
+      <FormControl mt={3}>
+        <Stack mb={3}>
+          <Checkbox checked={ischecked} onChange={handleChange}>
+            Add billing address
+          </Checkbox>
+          <Text mb={0} fontSize="small" color="gray.300">
+            Card billing details may help improve authorisation rates.
+          </Text>
+        </Stack>
+        {ischecked || (
+          <Stack my={4}>
+            <Input placeholder="Cardholder Name" autoComplete="off" />
+
+            <Select id="" icon={<TriangleDownIcon />}>
+              <option value defaultValue disabled color="gray">
+                Select Country
+              </option>
+              {Countries.map((val, index) => {
+                return (
+                  <option value={val.name} key={index}>
+                    {val.name}
+                  </option>
+                );
+              })}
+            </Select>
+          </Stack>
+        )}
+        <Stack direction={"column"}>
+          <Input placeholder="Address Line 1" autoComplete="off" />
+          <Input placeholder="Address Line 2" autoComplete="off" />
+          <Input placeholder="City" autoComplete="off" />
+          <Input placeholder="State" autoComplete="off" />
+        </Stack>
+      </FormControl>
+    </>
+  );
+};
