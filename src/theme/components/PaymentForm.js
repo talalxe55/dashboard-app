@@ -28,7 +28,6 @@ import {
   Radio,
   Box,
   Checkbox,
-  Form,
 } from "@chakra-ui/react";
 import {
   TriangleDownIcon,
@@ -42,6 +41,14 @@ import Currency from "../../api/CountriesCurrency";
 import { CreditCard } from "./CreditCard";
 
 const PaymentForm = (props) => {
+  const [vals, setVals] = useState({
+    amt: 0,
+    customers: "",
+    currency: "USD",
+    desc: "",
+    descriptor: "FOXTAIL-TURF-OK",
+  });
+
   const options = [
     { value: "Josh 1", label: "Josh 1" },
     { value: "Josh 2", label: "Josh 2" },
@@ -51,6 +58,27 @@ const PaymentForm = (props) => {
   const [currency, setCurrency] = useState("USD$");
   const initialRef = React.useRef(null);
   const finalRef = React.useRef(null);
+
+  const handleAmount = (e) => {
+    if (e.target.value <= 1) {
+      e.target.value === "";
+    }
+  };
+
+  const handleValues = (e) => {
+    const { name, value } = e.target;
+    setVals((preval) => {
+      return {
+        ...preval,
+        [name]: value,
+      };
+    });
+  };
+
+  const getAllValues = (e) => {
+    console.log(e);
+    console.table(vals);
+  };
   return (
     <>
       <Button
@@ -75,130 +103,122 @@ const PaymentForm = (props) => {
           <ModalHeader>Create Payment</ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6} overflowY={{ sm: "auto" }}>
-            <FormControl isRequired>
-              <Box>
-                <FormLabel>Amount</FormLabel>
-                <Text mb={"-31px"} mt={4} ms={2} fontSize="small" color="gray">
-                  {currency}
-                </Text>
-                <Flex gap={3}>
-                  <Input
-                    ref={initialRef}
-                    type="number"
-                    name="amt"
-                    placeholder=""
-                    autoComplete="off"
-                    ps={12}
-                  />
-                  <Stack width={300}>
-                    <Select
-                      id="currencysym"
-                      icon={<TriangleDownIcon />}
-                      onChange={() =>
-                        setCurrency(
-                          document.getElementById("currencysym").value === "USD"
-                            ? "USD$"
-                            : document.getElementById("currencysym").value
-                        )
-                      }
-                    >
-                      {Currency.map((val, index) => {
-                        return (
-                          <option value={val.abbreviation} key={index}>
-                            {val.abbreviation + " - " + val.currency}
-                          </option>
-                        );
-                      })}
-                    </Select>
-                  </Stack>
-                </Flex>
-              </Box>
-            </FormControl>
-            <FormControl mt={4}>
-              <Flex>
-                <FormLabel>Customer </FormLabel>
-                <Text color="gray">(Optional)</Text>
-              </Flex>
-              <SelectD
-                className="select_drop"
-                options={options}
-                placeholder="Find Customer"
-              />
-            </FormControl>
-
-            <FormControl mt={4}>
-              <Flex alignItems={"center"}>
-                <FormLabel m={0} pe={4}>
-                  Description
-                </FormLabel>
-                <Tooltip
-                  hasArrow
-                  label="Some card issuers include this on the customer's statement."
-                  color="white"
-                >
-                  <InfoIcon />
-                </Tooltip>
-              </Flex>
-              <Input placeholder="Products or services associated with payment" />
-            </FormControl>
-            <FormControl mt={4}>
-              <Flex alignItems={"center"}>
-                <FormLabel m={0} pe={4}>
-                  Statement descriptor
-                </FormLabel>
-                <Tooltip
-                  hasArrow
-                  label="This is the business name your customers will see on their card statements and other transactions."
-                  color="white"
-                >
-                  <InfoIcon />
-                </Tooltip>
-              </Flex>
-              <CustomControlsExample />
-            </FormControl>
-            <FormControl mt={4}>
-              <Heading fontSize="xl">Payment method</Heading>
-              <Divider my={4} />
-              <Radio value="master" defaultChecked="true">
-                Manually enter card information
-              </Radio>
-              {/* <Flex
-                  p="1rem"
-                  bg="transparent"
-                  borderRadius="15px"
-                  width="100%"
-                  border="1px solid"
-                  borderColor={"gray.400"}
-                  align="center"
-                  mb={{ sm: "24px", md: "0px" }}
-                  me={{ sm: "0px", md: "24px" }}
-                >
-                  <IconBox me="10px" w="25px" h="22px">
-                    <MastercardIcon w="100%" h="100%" />
-                  </IconBox>
-                  <Text color="gray.400" fontSize="md" fontWeight="semibold">
-                    7812 2139 0823 XXXX
-                  </Text>
-                  <Spacer />
-                  <Button
-                    p="0px"
-                    bg="transparent"
-                    w="16px"
-                    h="16px"
-                    variant="no-hover"
+            <form>
+              <FormControl isRequired>
+                <Box>
+                  <FormLabel>Amount</FormLabel>
+                  <Text
+                    mb={"-31px"}
+                    mt={4}
+                    ms={2}
+                    fontSize="small"
+                    color="gray"
                   >
-                    <Icon as={FaPencilAlt} />
-                  </Button>
-                </Flex> */}
-            </FormControl>
-
-            <FormControl>
-              <CreditCard />
-            </FormControl>
-            <BillingAdd />
+                    {currency}
+                  </Text>
+                  <Flex gap={3}>
+                    <Input
+                      ref={initialRef}
+                      type="number"
+                      name="amt"
+                      placeholder=""
+                      autoComplete="off"
+                      ps={12}
+                      minLength={1}
+                      onChange={(handleAmount, handleValues)}
+                      value={vals.amt}
+                    />
+                    <Stack width={300}>
+                      <Select
+                        id="currencysym"
+                        icon={<TriangleDownIcon />}
+                        name="currency"
+                        onChange={
+                          (() =>
+                            setCurrency(
+                              document.getElementById("currencysym").value ===
+                                "USD"
+                                ? "USD$"
+                                : document.getElementById("currencysym").value
+                            ),
+                          handleValues)
+                        }
+                      >
+                        {Currency.map((val, index) => {
+                          return (
+                            <option value={val.abbreviation} key={index}>
+                              {val.abbreviation + " - " + val.currency}
+                            </option>
+                          );
+                        })}
+                      </Select>
+                    </Stack>
+                  </Flex>
+                </Box>
+              </FormControl>
+              <FormControl mt={4}>
+                <Flex>
+                  <FormLabel>Customer </FormLabel>
+                  <Text color="gray">(Optional)</Text>
+                </Flex>
+                <SelectD
+                  className="select_drop"
+                  options={options}
+                  placeholder="Find Customer"
+                  name="customers"
+                  onChange={(e) => {
+                    console.log(e.value);
+                  }}
+                  value={vals.customer}
+                />
+              </FormControl>
+              <FormControl mt={4}>
+                <Flex alignItems={"center"}>
+                  <FormLabel m={0} pe={4}>
+                    Description
+                  </FormLabel>
+                  <Tooltip
+                    hasArrow
+                    label="Some card issuers include this on the customer's statement."
+                    color="white"
+                  >
+                    <InfoIcon />
+                  </Tooltip>
+                </Flex>
+                <Input
+                  placeholder="Products or services associated with payment"
+                  name="desc"
+                  onChange={handleValues}
+                />
+              </FormControl>
+              <FormControl mt={4}>
+                <Flex alignItems={"center"}>
+                  <FormLabel m={0} pe={4}>
+                    Statement descriptor
+                  </FormLabel>
+                  <Tooltip
+                    hasArrow
+                    label="This is the business name your customers will see on their card statements and other transactions."
+                    color="white"
+                  >
+                    <InfoIcon />
+                  </Tooltip>
+                </Flex>
+                <Descriptor />
+              </FormControl>
+              <FormControl mt={4}>
+                <Heading fontSize="xl">Payment method</Heading>
+                <Divider my={4} />
+                <Radio value="master" defaultChecked="true">
+                  Manually enter card information
+                </Radio>
+                <CreditCard cardnumber="" fullname="" valid="" CVC="" />
+              </FormControl>
+              <BillingAdd />
+            </form>
           </ModalBody>
           <ModalFooter>
-            <Button colorScheme="blue" mr={3}>
+            <Button colorScheme="blue" mr={3} onClick={getAllValues}>
               Submit Payment
             </Button>
             <Button onClick={onClose}>Cancel</Button>
@@ -209,8 +229,7 @@ const PaymentForm = (props) => {
   );
 };
 
-const CustomControlsExample = () => {
-  /* Here's a custom control */
+const Descriptor = (props) => {
   function EditableControls() {
     const {
       isEditing,
@@ -243,13 +262,15 @@ const CustomControlsExample = () => {
     >
       <EditablePreview />
       {/* Here is the custom input */}
-      <Input as={EditableInput} />
+      <Input
+        as={EditableInput}
+        name="descriptor"
+        onChange={(props.handleValues, (e) => console.log(e.target.value))}
+      />
       <EditableControls />
     </Editable>
   );
 };
-
-export default PaymentForm;
 
 const BillingAdd = () => {
   const [ischecked, setChecked] = useState(false);
@@ -385,3 +406,5 @@ const BillingAdd = () => {
     </>
   );
 };
+
+export default PaymentForm;

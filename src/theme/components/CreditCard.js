@@ -1,9 +1,9 @@
-import React, { useState, detailef, useCallback } from "react";
+import React, { useState } from "react";
 import ReactCreditCards from "react-credit-cards";
 import "react-credit-cards/es/styles-compiled.css";
 import { FormControl, Flex, Input, Box, Stack } from "@chakra-ui/react";
 
-export const CreditCard = () => {
+export const CreditCard = (props) => {
   const [focus, setFocus] = useState("");
   const [detail, setDetail] = useState({
     cvc: "",
@@ -20,7 +20,7 @@ export const CreditCard = () => {
         [name]: value,
       };
     });
-    console.log(e.target.value);
+    // console.log(e.target.value);
   };
   const handleInputFocus = (e) => {
     setFocus({ focus: e.target.name });
@@ -46,7 +46,7 @@ export const CreditCard = () => {
             pattern="[\d| ]{16,22}"
             maxLength={16}
             required
-            value={detail.number}
+            value={detail.number + props.cardnumber}
             onChange={handleInputs}
             onFocus={handleInputFocus}
           />
@@ -56,7 +56,7 @@ export const CreditCard = () => {
             placeholder="Name"
             maxLength={25}
             required
-            value={detail.name}
+            value={detail.name + props.fullname}
             onChange={handleInputs}
             onFocus={handleInputFocus}
           />
@@ -70,7 +70,7 @@ export const CreditCard = () => {
             maxLength={4}
             minLength={4}
             required
-            value={detail.expiry}
+            value={detail.expiry + props.valid}
             onChange={handleInputs}
             onFocus={handleInputFocus}
           />
@@ -81,7 +81,7 @@ export const CreditCard = () => {
             pattern="\d{3,4}"
             maxLength={3}
             required
-            value={detail.cvc}
+            value={detail.cvc + props.CVC}
             onChange={handleInputs}
             onFocus={handleInputFocus}
           />
