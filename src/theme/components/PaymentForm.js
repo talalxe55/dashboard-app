@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Button,
   Modal,
@@ -25,11 +25,10 @@ import {
   ButtonGroup,
   Heading,
   Divider,
-  RadioGroup,
   Radio,
-  Spacer,
   Box,
   Checkbox,
+  Form,
 } from "@chakra-ui/react";
 import {
   TriangleDownIcon,
@@ -37,27 +36,16 @@ import {
   EditIcon,
   CheckIcon,
   CloseIcon,
-  Icon,
 } from "@chakra-ui/icons";
-import {
-  FaPaypal,
-  FaPencilAlt,
-  FaRegCalendarAlt,
-  FaWallet,
-} from "react-icons/fa";
 import SelectD from "react-select";
-import IconBox from "components/Icons/IconBox";
 import Currency from "../../api/CountriesCurrency";
-import Countries from "../../api/Countries";
-import { MastercardIcon, VisaIcon } from "components/Icons/Icons";
 import { CreditCard } from "./CreditCard";
-import { useEffect } from "react";
 
 const PaymentForm = (props) => {
   const options = [
-    { value: "chocolate", label: "Chocolate" },
-    { value: "strawberry", label: "Strawberry" },
-    { value: "vanilla", label: "Vanilla" },
+    { value: "Josh 1", label: "Josh 1" },
+    { value: "Josh 2", label: "Josh 2" },
+    { value: "Josh 3", label: "Josh 3" },
   ];
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [currency, setCurrency] = useState("USD$");
@@ -133,7 +121,6 @@ const PaymentForm = (props) => {
               </Flex>
               <SelectD
                 className="select_drop"
-                color="red"
                 options={options}
                 placeholder="Find Customer"
               />
@@ -208,7 +195,7 @@ const PaymentForm = (props) => {
             <FormControl>
               <CreditCard />
             </FormControl>
-            <AddBillingAdd />
+            <BillingAdd />
           </ModalBody>
           <ModalFooter>
             <Button colorScheme="blue" mr={3}>
@@ -264,30 +251,85 @@ const CustomControlsExample = () => {
 
 export default PaymentForm;
 
-const AddBillingAdd = () => {
+const BillingAdd = () => {
   const [ischecked, setChecked] = useState(false);
   const [countries, setCountries] = useState([]);
+  const [cstates, setcStates] = useState([]);
+  const [iniState, setIniStates] = useState("Afghanistan");
+
   const handleChange = () => {
     setChecked(!ischecked);
   };
 
-  const getCountriesList = async () => {
-    let url = "https://countriesnow.space/api/v0.1/countries/population/cities";
+  const getCountriesAccessToken = async () => {
+    let url = "https://www.universal-tutorial.com/api/getaccesstoken";
     let res = await fetch(url, {
-      Method: "GET",
+      method: "GET",
       headers: {
-        Authorization:
-          "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7InVzZXJfZW1haWwiOiJqb3NodWFoZWFkb2ZkbUBnbWFpbC5jb20iLCJhcGlfdG9rZW4iOiJEVE5PMGZYWllGOWh4a1FENmI2VXNDUHVVOEd4YnBGTFVTWmdYWUtTdVlsYTc5aWpaa2xxbkZ0VVdwOW1yaWVaSEtJIn0sImV4cCI6MTY2MzMzODg3Nn0.tiD-p1QgI_aXF0V4m4hwmCiI1ROyvbar5Jf02HTsDbQ",
         Accept: "application/json",
+        "api-token":
+          "DTNO0fXZYF9hxkQD6b6UsCPuU8GxbpFLUSZgXYKSuYla79ijZklqnFtUWp9mrieZHKI",
+        "user-email": "joshuaheadofdm@gmail.com",
       },
     });
-    // console.log(res);
     let data = await res.json();
-    console.log(data.data[0].country);
+    // console.log(data.auth_token);
+    let authToken = data.auth_token;
+    localStorage.setItem("countryapi", authToken);
+  };
+
+  let countriesToken = localStorage.getItem("countryapi");
+  const getCountriesList = async () => {
+    try {
+      let url = "https://www.universal-tutorial.com/api/countries/";
+      let res = await fetch(url, {
+        Method: "GET",
+        headers: {
+          Authorization: "Bearer " + countriesToken,
+          Accept: "application/json",
+        },
+      });
+      // console.log(res);
+      let data = await res.json();
+      // console.log(data);
+      if (res.status !== 200) {
+        console.warn("Generate a new token!");
+      } else {
+        console.log("Universal Countries: Token Generated!");
+        // console.log(data[0].country_name);
+        setCountries(data);
+      }
+    } catch (error) {
+      console.log("hmmm new err ehh! " + error);
+    }
+  };
+  const getStatesList = async () => {
+    try {
+      let url = `https://www.universal-tutorial.com/api/states/${iniState}`;
+      let res = await fetch(url, {
+        Method: "GET",
+        headers: {
+          Authorization: "Bearer " + countriesToken,
+          Accept: "application/json",
+        },
+      });
+      // console.log(res);
+      let data = await res.json();
+      // console.log(data);
+      setcStates(data);
+    } catch (error) {
+      console.log("hmmm new err states ehh! " + error);
+    }
+  };
+  const handleStates = () => {
+    setIniStates(document.getElementById("countrieslist").value);
+    getStatesList();
   };
 
   useEffect(() => {
+    getCountriesAccessToken();
     getCountriesList();
+    // getStatesList();
   }, []);
   return (
     <>
@@ -300,30 +342,45 @@ const AddBillingAdd = () => {
             Card billing details may help improve authorisation rates.
           </Text>
         </Stack>
-        {ischecked || (
-          <Stack my={4}>
-            <Input placeholder="Cardholder Name" autoComplete="off" />
-
-            <Select id="" icon={<TriangleDownIcon />}>
-              <option value defaultValue disabled color="gray">
-                Select Country
-              </option>
-              {Countries.map((val, index) => {
-                return (
-                  <option value={val.name} key={index}>
-                    {val.name}
-                  </option>
-                );
-              })}
-            </Select>
-          </Stack>
+        {ischecked && (
+          <>
+            <Stack my={4}>
+              <Select
+                id="countrieslist"
+                icon={<TriangleDownIcon />}
+                onChange={handleStates}
+              >
+                <option value defaultValue disabled color="gray" selected>
+                  Select Country
+                </option>
+                {countries.map((val, index) => {
+                  return (
+                    <option value={val.country_name} key={index}>
+                      {val.country_name}
+                    </option>
+                  );
+                })}
+              </Select>
+            </Stack>
+            <Stack direction={"column"}>
+              <Input placeholder="Address Line 1" autoComplete="off" />
+              <Input placeholder="Address Line 2" autoComplete="off" />
+              <Select icon={<TriangleDownIcon />}>
+                <option value defaultValue disabled color="gray" selected>
+                  Select State
+                </option>
+                {cstates.map((val, index) => {
+                  return (
+                    <option value={val.state_name} key={index}>
+                      {val.state_name}
+                    </option>
+                  );
+                })}
+              </Select>
+              <Input placeholder="City" autoComplete="off" />
+            </Stack>
+          </>
         )}
-        <Stack direction={"column"}>
-          <Input placeholder="Address Line 1" autoComplete="off" />
-          <Input placeholder="Address Line 2" autoComplete="off" />
-          <Input placeholder="City" autoComplete="off" />
-          <Input placeholder="State" autoComplete="off" />
-        </Stack>
       </FormControl>
     </>
   );

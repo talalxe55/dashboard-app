@@ -4,3 +4,9 @@
   box-sizing: border-box;
   -webkit-box-sizing: border-box;
 }
+body.chakra-ui-dark {
+  .select_drop * {
+    background-color: var(--chakra-colors-gray-700);
+    color: #fff;
+  }
+}

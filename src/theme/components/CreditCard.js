@@ -24,7 +24,7 @@ export const CreditCard = () => {
   };
   const handleInputFocus = (e) => {
     setFocus({ focus: e.target.name });
-    console.log(e.target.name);
+    // console.log(e.target.name);
   };
   return (
     <Box>
