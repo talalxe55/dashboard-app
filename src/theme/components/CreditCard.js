@@ -21,6 +21,7 @@ export const CreditCard = (props) => {
       };
     });
     // console.log(e.target.value);
+    props.onSubmit(detail);
   };
   const handleInputFocus = (e) => {
     setFocus({ focus: e.target.name });
@@ -41,12 +42,12 @@ export const CreditCard = (props) => {
         <Flex gap={3}>
           <Input
             type="tel"
-            name="number"
+            name={"number"}
             placeholder="Card Number"
             pattern="[\d| ]{16,22}"
             maxLength={16}
             required
-            value={detail.number + props.cardnumber}
+            value={detail.number}
             onChange={handleInputs}
             onFocus={handleInputFocus}
           />
@@ -56,7 +57,7 @@ export const CreditCard = (props) => {
             placeholder="Name"
             maxLength={25}
             required
-            value={detail.name + props.fullname}
+            value={detail.name}
             onChange={handleInputs}
             onFocus={handleInputFocus}
           />
@@ -70,7 +71,7 @@ export const CreditCard = (props) => {
             maxLength={4}
             minLength={4}
             required
-            value={detail.expiry + props.valid}
+            value={detail.expiry}
             onChange={handleInputs}
             onFocus={handleInputFocus}
           />
@@ -81,7 +82,7 @@ export const CreditCard = (props) => {
             pattern="\d{3,4}"
             maxLength={3}
             required
-            value={detail.cvc + props.CVC}
+            value={detail.cvc}
             onChange={handleInputs}
             onFocus={handleInputFocus}
           />

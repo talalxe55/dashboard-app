@@ -47,6 +47,7 @@ const PaymentForm = (props) => {
     currency: "USD",
     desc: "",
     descriptor: "FOXTAIL-TURF-OK",
+    cardnumber: "",
   });
 
   const options = [
@@ -77,7 +78,11 @@ const PaymentForm = (props) => {
 
   const getAllValues = (e) => {
     console.log(e);
-    console.table(vals);
+    console.log(vals);
+  };
+
+  const getCreditData = (data) => {
+    console.log("Data comming from CreditCard", data);
   };
   return (
     <>
@@ -212,7 +217,7 @@ const PaymentForm = (props) => {
                 <Radio value="master" defaultChecked="true">
                   Manually enter card information
                 </Radio>
-                <CreditCard cardnumber="" fullname="" valid="" CVC="" />
+                <CreditCard onSubmit={getCreditData} />
               </FormControl>
               <BillingAdd />
             </form>
@@ -350,7 +355,6 @@ const BillingAdd = () => {
   useEffect(() => {
     getCountriesAccessToken();
     getCountriesList();
-    // getStatesList();
   }, []);
   return (
     <>
@@ -371,7 +375,7 @@ const BillingAdd = () => {
                 icon={<TriangleDownIcon />}
                 onChange={handleStates}
               >
-                <option value defaultValue disabled color="gray" selected>
+                <option value defaultValue disabled color="gray">
                   Select Country
                 </option>
                 {countries.map((val, index) => {
@@ -387,7 +391,7 @@ const BillingAdd = () => {
               <Input placeholder="Address Line 1" autoComplete="off" />
               <Input placeholder="Address Line 2" autoComplete="off" />
               <Select icon={<TriangleDownIcon />}>
-                <option value defaultValue disabled color="gray" selected>
+                <option value defaultValue disabled color="gray">
                   Select State
                 </option>
                 {cstates.map((val, index) => {
