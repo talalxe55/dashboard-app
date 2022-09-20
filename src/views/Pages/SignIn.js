@@ -72,10 +72,11 @@ function SignIn() {
 
   const setProfile = async (response) => {
     let user = { ...response.data.user };
-    user.token = response.data.token;
+    user.token = response.data.user.token;
     user = JSON.stringify(user);
     setUser(user);
     localStorage.setItem("user", user);
+    // console.log(user);
     return history.push("/dashboard");
   };
 
