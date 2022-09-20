@@ -65,7 +65,7 @@ function Sidebar(props) {
         return (
           <>
             <Text
-              key={index}
+              key={index + "f"}
               color={activeColor}
               fontWeight="bold"
               mb={{

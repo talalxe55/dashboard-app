@@ -82,7 +82,8 @@ const PaymentForm = (props) => {
   };
 
   const getCreditData = (data) => {
-    console.log("Data comming from CreditCard", data);
+    // console.log("Data comming from CreditCard", data);
+    setVals({ ...vals, data });
   };
   return (
     <>
@@ -172,9 +173,9 @@ const PaymentForm = (props) => {
                   placeholder="Find Customer"
                   name="customers"
                   onChange={(e) => {
-                    console.log(e.value);
+                    setVals({ ...vals, customer: e });
                   }}
-                  value={vals.customer}
+                  // value={vals.customer}
                 />
               </FormControl>
               <FormControl mt={4}>
@@ -217,7 +218,7 @@ const PaymentForm = (props) => {
                 <Radio value="master" defaultChecked="true">
                   Manually enter card information
                 </Radio>
-                <CreditCard onSubmit={getCreditData} />
+                <CreditCard getCreditData={getCreditData} />
               </FormControl>
               <BillingAdd />
             </form>
@@ -349,6 +350,7 @@ const BillingAdd = () => {
   };
   const handleStates = () => {
     setIniStates(document.getElementById("countrieslist").value);
+    // console.log("v", v);
     getStatesList();
   };
 
@@ -375,7 +377,7 @@ const BillingAdd = () => {
                 icon={<TriangleDownIcon />}
                 onChange={handleStates}
               >
-                <option value defaultValue disabled color="gray">
+                <option value="" defaultValue disabled color="gray">
                   Select Country
                 </option>
                 {countries.map((val, index) => {
@@ -402,7 +404,7 @@ const BillingAdd = () => {
                   );
                 })}
               </Select>
-              <Input placeholder="City" autoComplete="off" />
+              <Input placeholder="City" autoComplete="off"/>
             </Stack>
           </>
         )}

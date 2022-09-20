@@ -26,7 +26,7 @@ function Tables() {
       <Card overflowX={{ sm: "scroll", xl: "hidden" }}>
         <CardHeader p="6px 0px 22px 0px">
           <Text fontSize="xl" color={textColor} fontWeight="bold">
-            Authors Table
+            Customers
           </Text>
         </CardHeader>
         <CardBody>
@@ -34,11 +34,11 @@ function Tables() {
             <Thead>
               <Tr my=".8rem" pl="0px" color="gray.400">
                 <Th pl="0px" color="gray.400">
-                  Author
+                  Customer Names
                 </Th>
-                <Th color="gray.400">Function</Th>
+                <Th color="gray.400">Roles</Th>
                 <Th color="gray.400">Status</Th>
-                <Th color="gray.400">Employed</Th>
+                <Th color="gray.400">Created</Th>
                 <Th></Th>
               </Tr>
             </Thead>
@@ -47,7 +47,7 @@ function Tables() {
                 return (
                   <TablesTableRow
                     name={row.name}
-                    logo={row.logo}
+                    // logo={row.logo}
                     email={row.email}
                     subdomain={row.subdomain}
                     domain={row.domain}
@@ -60,7 +60,7 @@ function Tables() {
           </Table>
         </CardBody>
       </Card>
-      <Card
+      {/* <Card
         my="22px"
         overflowX={{ sm: "scroll", xl: "hidden" }}
       >
@@ -99,7 +99,7 @@ function Tables() {
             </Tbody>
           </Table>
         </CardBody>
-      </Card>
+      </Card> */}
     </Flex>
   );
 }

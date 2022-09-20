@@ -28,8 +28,8 @@ var dashRoutes = [
     layout: "/admin",
   },
   {
-    path: "/clients",
-    name: "Clients",
+    path: "/customers",
+    name: "Customers",
     rtlName: "لوحة القيادة",
     icon: <StatsIcon color="inherit" />,
     component: Tables,
@@ -43,14 +43,14 @@ var dashRoutes = [
     component: Billing,
     layout: "/admin",
   },
-  {
-    path: "/rtl-support-page",
-    name: "RTL",
-    rtlName: "آرتيإل",
-    icon: <SupportIcon color="inherit" />,
-    component: RTLPage,
-    layout: "/rtl",
-  },
+  // {
+  //   path: "/rtl-support-page",
+  //   name: "RTL",
+  //   rtlName: "آرتيإل",
+  //   icon: <SupportIcon color="inherit" />,
+  //   component: RTLPage,
+  //   layout: "/rtl",
+  // },
   {
     name: "ACCOUNT PAGES",
     category: "account",

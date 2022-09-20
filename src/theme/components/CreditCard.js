@@ -21,7 +21,7 @@ export const CreditCard = (props) => {
       };
     });
     // console.log(e.target.value);
-    props.onSubmit(detail);
+    props.getCreditData(detail);
   };
   const handleInputFocus = (e) => {
     setFocus({ focus: e.target.name });
