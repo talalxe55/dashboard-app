@@ -39,7 +39,11 @@ import {
 import SelectD from "react-select";
 import Currency from "../../api/CountriesCurrency";
 import { CreditCard } from "./CreditCard";
-
+import {
+  getCustomersList,
+  getAllPayments,
+  getAllRefunds,
+} from "api/ApiListing";
 const PaymentForm = (props) => {
   const [vals, setVals] = useState({
     amt: 0,
@@ -49,6 +53,12 @@ const PaymentForm = (props) => {
     descriptor: "FOXTAIL-TURF-OK",
     cardnumber: "",
   });
+
+  useEffect(() => {
+    // getCustomersList();
+    // getAllPayments();
+    getAllRefunds();
+  }, []);
 
   const options = [
     { value: "Josh 1", label: "Josh 1" },
@@ -404,7 +414,7 @@ const BillingAdd = () => {
                   );
                 })}
               </Select>
-              <Input placeholder="City" autoComplete="off"/>
+              <Input placeholder="City" autoComplete="off" />
             </Stack>
           </>
         )}
