@@ -149,7 +149,12 @@ function Tables() {
           </>
         ) : (
           <Box>
-            <Flex h="50vh" justifyContent="center" alignItems="center" direction={"column"}>
+            <Flex
+              h="50vh"
+              justifyContent="center"
+              alignItems="center"
+              direction={"column"}
+            >
               <Heading>Listing Customers...</Heading>
               <Image src={LoadingGif} w={100} />
             </Flex>
@@ -214,6 +219,7 @@ function Tables() {
 export default Tables;
 
 const FilterCustomers = () => {
+  const [customerType, setCustomerType] = useState("NLS");
   return (
     <>
       <Flex className="filter_customers">
@@ -315,6 +321,44 @@ const FilterCustomers = () => {
                 mt={3}
               >
                 Apply
+              </Button>
+            </Box>
+          </MenuList>
+        </Menu>
+        <Menu>
+          <MenuButton
+            as={Button}
+            leftIcon={<AddIcon />}
+            border="1px"
+            borderStyle={"dashed"}
+            borderColor={"gray.400"}
+            color={"gray.500"}
+            bg={"none"}
+            fontSize={15}
+          >
+            {"Customer Type"} | {customerType}
+          </MenuButton>
+          <MenuList>
+            <Box p={3}>
+              <Button
+                w={"100%"}
+                bg="teal.300"
+                color="white"
+                _hover={{ color: "black", bg: "gray.300" }}
+                onClick={() => setCustomerType("NLS")}
+                mt={3}
+              >
+                NLS
+              </Button>
+              <Button
+                w={"100%"}
+                bg="teal.300"
+                color="white"
+                _hover={{ color: "black", bg: "gray.300" }}
+                onClick={() => setCustomerType("SpiritMagnet")}
+                mt={3}
+              >
+                SpiritMagnet
               </Button>
             </Box>
           </MenuList>
