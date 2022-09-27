@@ -7,6 +7,7 @@ import Profile from "views/Dashboard/Profile.js";
 import SignIn from "views/Pages/SignIn.js";
 import SignUp from "views/Pages/SignUp.js";
 import SignOut from "views/Pages/SignOut.js";
+import SingleCustomer from "views/Pages/SingleCustomer";
 
 import {
   HomeIcon,
@@ -41,6 +42,11 @@ var dashRoutes = [
     rtlName: "لوحة القيادة",
     icon: <CreditIcon color="inherit" />,
     component: Billing,
+    layout: "/admin",
+  },
+  {
+    path: "/listing",
+    component: SingleCustomer,
     layout: "/admin",
   },
   // {

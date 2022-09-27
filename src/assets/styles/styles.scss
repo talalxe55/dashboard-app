@@ -28,3 +28,18 @@ body.chakra-ui-dark {
     margin-right: 10px;
   }
 }
+
+.single_customer_sidepanel {
+  .cus_details {
+    margin-top: 10px;
+    > h2 {
+      font-size: 14px;
+      color: var(--chakra-colors-gray-400);
+      font-weight: 500;
+    }
+  }
+  .detail_panel {
+    padding: 15px;
+    font-size: 12px;
+  }
+}
