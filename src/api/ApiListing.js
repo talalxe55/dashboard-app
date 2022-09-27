@@ -1,8 +1,9 @@
 import { API_SERVER, TOKEN_TYPE, TOKEN, ACCEPT_TYPE } from "config/constant";
 import axios from "axios";
 
-const getCustomersList = async (props) => {
+const getCustomersList = async () => {
   try {
+    setLoading(true);
     const res = await axios.get(`${API_SERVER}customers`, {
       headers: {
         Authorization: `${TOKEN_TYPE} ${TOKEN}`,
@@ -10,9 +11,10 @@ const getCustomersList = async (props) => {
         "Content-Type": `${ACCEPT_TYPE}`,
       },
     });
+    setLoading(false);
     let data = res.data.data.data;
-    console.log(res.status);
     // console.log(data);
+    setCustomers(data);
   } catch (err) {
     if (err.response.status === 404) {
       console.log("Resource could not be found!");

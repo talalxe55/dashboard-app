@@ -30,7 +30,6 @@ import CardBody from "components/Card/CardBody.js";
 import TablesProjectRow from "components/Tables/TablesProjectRow";
 import TablesTableRow from "components/Tables/TablesTableRow";
 import { tablesProjectData, tablesTableData } from "variables/general";
-// import { getCustomersList } from "../../api/ApiListing";
 import { API_SERVER, TOKEN_TYPE, TOKEN, ACCEPT_TYPE } from "config/constant";
 import axios from "axios";
 import LoadingGif from "assets/svg/loading-infinite.svg";
@@ -40,7 +39,7 @@ function Tables() {
   const [isloading, setLoading] = useState(false);
   const textColor = useColorModeValue("gray.700", "white");
 
-  const getCustomersList = async (props) => {
+  const getCustomersList = async () => {
     try {
       setLoading(true);
       const res = await axios.get(`${API_SERVER}customers`, {
@@ -52,7 +51,7 @@ function Tables() {
       });
       setLoading(false);
       let data = res.data.data.data;
-      console.log(data);
+      // console.log(data);
       setCustomers(data);
     } catch (err) {
       if (err.response.status === 404) {
@@ -65,6 +64,7 @@ function Tables() {
     }
   };
 
+  // Converting date
   const datadate = (created) => {
     let epochDate = created;
     var formatedDateTime = new Date(epochDate * 1000);
@@ -75,14 +75,18 @@ function Tables() {
   useEffect(() => {
     getCustomersList();
   }, []);
-  // if (isloading)
-  //   return (
-  //     <Box>
-  //       <Flex h="100vh" justifyContent="center" alignItems="center">
-  //         <Heading>Loading...</Heading>
-  //       </Flex>
-  //     </Box>
-  //   );
+  // const customerListing = customers.filter(
+  //   (customer) => customer.email === "dev@appstru.com"
+  // );
+  const customerListing = customers.filter((customer) =>
+    //   customer.email
+    //     ? customer.email === ""
+    //     : customer.email
+    {
+      // return customer.email === "josh@nolimitsocial99.com";
+      return customer.email === "josh@nolimitsocial99.com";
+    }
+  );
   return (
     <Flex direction="column" pt={{ base: "120px", md: "75px" }}>
       <Card overflowX={{ sm: "scroll", xl: "hidden" }}>
@@ -116,6 +120,7 @@ function Tables() {
                 </Thead>
                 <Tbody className="customer_body" textTransform={"capitalize"}>
                   {customers.map((val, index) => {
+                    console.log(val);
                     return (
                       <TablesTableRow
                         key={index}
@@ -218,8 +223,9 @@ function Tables() {
 
 export default Tables;
 
-const FilterCustomers = () => {
+const FilterCustomers = (props) => {
   const [customerType, setCustomerType] = useState("NLS");
+  const [filterEmail, setFilterEmail] = useState("");
   return (
     <>
       <Flex className="filter_customers">
@@ -243,13 +249,19 @@ const FilterCustomers = () => {
                 <Text fontSize={14} w={"50%"}>
                   is equal to
                 </Text>
-                <Input placeholder="Enter customer email" />
+                <Input
+                  placeholder="Enter customer email"
+                  value={filterEmail}
+                  onChange={(e) => setFilterEmail(e.target.value)}
+                  id="filterEmail"
+                />
               </Flex>
               <Button
                 w={"100%"}
                 bg="teal.300"
                 color="white"
                 _hover={{ color: "black", bg: "gray.300" }}
+                onClick={(e) => setFilterEmail(e.target.value)}
               >
                 Apply
               </Button>
@@ -336,7 +348,10 @@ const FilterCustomers = () => {
             bg={"none"}
             fontSize={15}
           >
-            {"Customer Type"} | {customerType}
+            {"Customer Type"} |{" "}
+            <span style={{ color: "var(--chakra-colors-primaryColor-700)" }}>
+              {customerType}
+            </span>
           </MenuButton>
           <MenuList>
             <Box p={3}>
