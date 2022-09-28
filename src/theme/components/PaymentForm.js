@@ -36,7 +36,7 @@ import {
   CheckIcon,
   CloseIcon,
 } from "@chakra-ui/icons";
-import SelectD from "react-select";
+import ReactSelect from "react-select";
 import Currency from "../../api/CountriesCurrency";
 import { CreditCard } from "./CreditCard";
 import {
@@ -177,7 +177,7 @@ const PaymentForm = (props) => {
                   <FormLabel>Customer </FormLabel>
                   <Text color="gray">(Optional)</Text>
                 </Flex>
-                <SelectD
+                <ReactSelect
                   className="select_drop"
                   options={options}
                   placeholder="Find Customer"

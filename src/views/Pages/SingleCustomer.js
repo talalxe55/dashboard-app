@@ -36,7 +36,20 @@ import {
   TableContainer,
   Checkbox,
   Badge,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  FormControl,
+  FormLabel,
+  Textarea,
 } from "@chakra-ui/react";
+
+import ReactSelect from "react-select";
+import { useState } from "react";
 
 const SingleCustomer = () => {
   return (
@@ -141,9 +154,7 @@ const SingleCustomer = () => {
           <Box mb={10}>
             <Flex justify={"space-between"} alignItems="center" my={3}>
               <Heading fontSize={18}>Payments</Heading>
-              <Button bg={"none"} color="teal.300">
-                Create
-              </Button>
+              <CreateANewPaymentModal />
             </Flex>
             <TableContainer>
               <Table variant="striped">
@@ -231,6 +242,12 @@ const SingleCustomer = () => {
             </Heading>
             <PaymentMethods />
           </Box>
+          <Box mb={10}>
+            <InvoiceCreditBalance />
+          </Box>
+          <Box mb={10}>
+            <Invoices />
+          </Box>
         </Box>
       </Flex>
     </>
@@ -282,9 +299,6 @@ const PaymentMethods = () => {
           <AccordionPanel pb={4}>
             <TableContainer>
               <Table variant="simple">
-                <TableCaption>
-                  Imperial to metric conversion factors
-                </TableCaption>
                 <Tbody>
                   <Tr>
                     <Th>Name</Th>
@@ -316,9 +330,11 @@ const PaymentMethods = () => {
                   </Tr>
                   <Tr>
                     <Th>Billing address</Th>
-                    <Td>US address 1</Td>
-                    <Td>US address 2</Td>
-                    <Td>Test, AL, 123457, US</Td>
+                    <Td>
+                      <Text>US address 1</Text>
+                      <Text>US address 2</Text>
+                      <Text>Test, AL, 123457, US</Text>
+                    </Td>
                   </Tr>
                   <Tr>
                     <Th>Phone</Th>
@@ -338,6 +354,150 @@ const PaymentMethods = () => {
           </AccordionPanel>
         </AccordionItem>
       </Accordion>
+    </>
+  );
+};
+
+const InvoiceCreditBalance = () => {
+  return (
+    <>
+      <Box>
+        <Flex justify={"space-between"} alignItems="center">
+          <Heading fontSize={18} mb={3}>
+            Invoice credit balance
+          </Heading>
+          <Button bg={"none"}>Adjust balance</Button>
+        </Flex>
+        <Divider />
+        <Heading fontSize={25} fontWeight={100}>
+          US$0.00&nbsp;
+          <span style={{ fontSize: 16, fontWeight: 300 }}>USD</span>
+        </Heading>
+      </Box>
+    </>
+  );
+};
+
+const Invoices = () => {
+  return (
+    <>
+      <Box>
+        <Flex justify={"space-between"} alignItems="center">
+          <Heading fontSize={18} mb={3}>
+            Invoice credit balance
+          </Heading>
+          <Button bg={"none"} p={0}>
+            Create
+          </Button>
+        </Flex>
+        <Divider />
+        <Table>
+          <Thead>
+            <Tr>
+              <Th>AMOUNT</Th>
+              <Th>INVOICE NUMBER</Th>
+              <Th>DUE</Th>
+              <Th>CREATED</Th>
+            </Tr>
+          </Thead>
+          <Tbody>
+            <Tr>
+              <Td>US$0.00</Td>
+              <Td>
+                <Badge>Draft</Badge> DA5AD08F-DRAFT
+              </Td>
+              <Td>27 Oct</Td>
+              <Td>27 Sept, 21:09</Td>
+            </Tr>
+          </Tbody>
+        </Table>
+      </Box>
+    </>
+  );
+};
+
+const CreateANewPaymentModal = () => {
+  const [selectCountry, setSelectedCountries] = useState("");
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const options = [
+    { value: "USD 1", label: "USD 1" },
+    { value: "USD 2", label: "USD 2" },
+    { value: "USD 3", label: "USD 3" },
+  ];
+
+  return (
+    <>
+      <Button onClick={onOpen}>Create</Button>
+
+      <Modal
+        onClose={onClose}
+        isOpen={isOpen}
+        isCentered
+      >
+        <ModalOverlay />
+        <form>
+          <ModalContent className="create_payment_modal">
+            <ModalHeader>Create a new payment</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody>
+              <FormControl>
+                <Flex>
+                  <FormLabel>Currency</FormLabel>
+                  <ReactSelect
+                    className="select_drop"
+                    options={options}
+                    placeholder="Find Customer"
+                    name="customers"
+                    value={options.filter((obj) => obj.value === selectCountry)}
+                    onChange={(e) => {
+                      setSelectedCountries(e.value);
+                    }}
+                  />
+                </Flex>
+              </FormControl>
+              <FormControl>
+                <Flex>
+                  <FormLabel>Amount</FormLabel>
+                  <Box>
+                    <Text mb={"-30px"} ms={1}>
+                      USD
+                    </Text>
+                    <Input placeholder="" value={0.0} ps={10} />
+                  </Box>
+                </Flex>
+              </FormControl>
+              <FormControl>
+                <Flex>
+                  <FormLabel>Payment method</FormLabel>
+                  <Select>
+                    <option value="card 1">card 1</option>
+                    <option value="card 2">card 2</option>
+                    <option value="card 3">card 3</option>
+                  </Select>
+                </Flex>
+              </FormControl>
+              <FormControl>
+                <Flex>
+                  <FormLabel>Statement desc</FormLabel>
+                  <Input value="FOXTAIL-TURF" />
+                </Flex>
+              </FormControl>
+              <FormControl>
+                <Flex>
+                  <FormLabel>Description</FormLabel>
+                  <Textarea placeholder="Products or services associated with payment" />
+                </Flex>
+              </FormControl>
+            </ModalBody>
+            <ModalFooter>
+              <Button bg={"teal.300"} color="white" _hover={"none"} mr={3}>
+                Create Payment
+              </Button>
+              <Button onClick={onClose}>Close</Button>
+            </ModalFooter>
+          </ModalContent>
+        </form>
+      </Modal>
     </>
   );
 };

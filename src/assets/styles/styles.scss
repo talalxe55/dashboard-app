@@ -43,3 +43,12 @@ body.chakra-ui-dark {
     font-size: 12px;
   }
 }
+
+.create_payment_modal {
+  div[role="group"] {
+    margin-bottom: 10px;
+    * {
+      font-size: 14px;
+    }
+  }
+}
