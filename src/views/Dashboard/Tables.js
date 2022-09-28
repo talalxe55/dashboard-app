@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-// Chakra imports
 import {
   Flex,
   Table,
@@ -12,10 +11,7 @@ import {
   Menu,
   MenuButton,
   MenuList,
-  MenuItem,
-  Divider,
   Button,
-  Stack,
   Box,
   Input,
   Heading,
@@ -29,7 +25,6 @@ import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
 import TablesProjectRow from "components/Tables/TablesProjectRow";
 import TablesTableRow from "components/Tables/TablesTableRow";
-import { tablesProjectData, tablesTableData } from "variables/general";
 import { API_SERVER, TOKEN_TYPE, TOKEN, ACCEPT_TYPE } from "config/constant";
 import axios from "axios";
 import LoadingGif from "assets/svg/loading-infinite.svg";
@@ -37,6 +32,7 @@ import LoadingGif from "assets/svg/loading-infinite.svg";
 function Tables() {
   const [customers, setCustomers] = useState([]);
   const [isloading, setLoading] = useState(false);
+  const [emailFilter, setEmailFilter] = useState("");
   const textColor = useColorModeValue("gray.700", "white");
 
   const getCustomersList = async () => {
@@ -75,18 +71,21 @@ function Tables() {
   useEffect(() => {
     getCustomersList();
   }, []);
-  // const customerListing = customers.filter(
-  //   (customer) => customer.email === "dev@appstru.com"
-  // );
+
+  // Filtering Email
   const customerListing = customers.filter((customer) =>
-    //   customer.email
-    //     ? customer.email === ""
-    //     : customer.email
     {
-      // return customer.email === "josh@nolimitsocial99.com";
-      return customer.email === "josh@nolimitsocial99.com";
+      if (emailFilter == "") {
+        return customer;
+      } else if (emailFilter != "") {
+        return customer.email == emailFilter ? customer : false;
+      }
     }
   );
+  const emailTextHandler = (email) => {
+    console.log(email);
+    setEmailFilter(email);
+  };
   return (
     <Flex direction="column" pt={{ base: "120px", md: "75px" }}>
       <Card overflowX={{ sm: "scroll", xl: "hidden" }}>
@@ -101,7 +100,7 @@ function Tables() {
           </Text>
         </CardHeader>
         <Box>
-          <FilterCustomers />
+          <FilterCustomers emailTextHandler={emailTextHandler} />
         </Box>
         {!isloading ? (
           <>
@@ -119,8 +118,7 @@ function Tables() {
                   </Tr>
                 </Thead>
                 <Tbody className="customer_body" textTransform={"capitalize"}>
-                  {customers.map((val, index) => {
-                    console.log(val);
+                  {customerListing.map((val, index) => {
                     return (
                       <TablesTableRow
                         key={index}
@@ -226,6 +224,11 @@ export default Tables;
 const FilterCustomers = (props) => {
   const [customerType, setCustomerType] = useState("NLS");
   const [filterEmail, setFilterEmail] = useState("");
+
+  const emailHandler = (email) => {
+    setFilterEmail(email);
+    props.emailTextHandler(email);
+  };
   return (
     <>
       <Flex className="filter_customers">
@@ -261,7 +264,7 @@ const FilterCustomers = (props) => {
                 bg="teal.300"
                 color="white"
                 _hover={{ color: "black", bg: "gray.300" }}
-                onClick={(e) => setFilterEmail(e.target.value)}
+                onClick={() => emailHandler(filterEmail)}
               >
                 Apply
               </Button>

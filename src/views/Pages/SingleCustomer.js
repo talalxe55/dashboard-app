@@ -285,65 +285,52 @@ const PaymentMethods = () => {
                 <TableCaption>
                   Imperial to metric conversion factors
                 </TableCaption>
-                <Thead>
+                <Tbody>
                   <Tr>
                     <Th>Name</Th>
+                    <Td>Josh</Td>
                   </Tr>
                   <Tr>
                     <Th>Number</Th>
+                    <Td>Josh</Td>
                   </Tr>
                   <Tr>
                     <Th>Fingerprint</Th>
+                    <Td>Josh</Td>
                   </Tr>
                   <Tr>
                     <Th>Expires</Th>
+                    <Td>Josh</Td>
                   </Tr>
                   <Tr>
                     <Th>Type</Th>
+                    <Td>Josh</Td>
                   </Tr>
                   <Tr>
                     <Th>Issuer</Th>
+                    <Td>CIAGROUP</Td>
                   </Tr>
                   <Tr>
                     <Th>ID</Th>
+                    <Td>card_1LmgKbKXau3ZSAk3BBNjrc4U</Td>
                   </Tr>
                   <Tr>
                     <Th>Billing address</Th>
+                    <Td>US address 1</Td>
+                    <Td>US address 2</Td>
+                    <Td>Test, AL, 123457, US</Td>
                   </Tr>
                   <Tr>
                     <Th>Phone</Th>
+                    <Td>No phone provided</Td>
                   </Tr>
                   <Tr>
                     <Th>Email</Th>
+                    <Td>No email provided</Td>
                   </Tr>
                   <Tr>
                     <Th>Origin</Th>
-                  </Tr>
-                  <Tr>
-                    <Th>CVC check</Th>
-                  </Tr>
-                  <Tr>
-                    <Th>Street check</Th>
-                  </Tr>
-                  <Tr>
-                    <Th>Zip check</Th>
-                  </Tr>
-                </Thead>
-                <Tbody>
-                  <Tr>
-                    <Td>Josh</Td>
-                  </Tr>
-                  <Tr>
-                    <Td>Josh</Td>
-                  </Tr>
-                  <Tr>
-                    <Td>Josh</Td>
-                  </Tr>
-                  <Tr>
-                    <Td>Josh</Td>
-                  </Tr>
-                  <Tr>
-                    <Td>Josh</Td>
+                    <Td>United States</Td>
                   </Tr>
                 </Tbody>
               </Table>
