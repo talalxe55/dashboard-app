@@ -5,7 +5,7 @@ import Footer from "components/Footer/Footer.js";
 // Layout components
 import AdminNavbar from "components/Navbars/AdminNavbar.js";
 import Sidebar from "components/Sidebar/Sidebar.js";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Redirect, Route, Switch } from "react-router-dom";
 import routes from "routes.js";
 // Custom Chakra theme
@@ -16,6 +16,16 @@ import MainPanel from "../components/Layout/MainPanel";
 import PanelContainer from "../components/Layout/PanelContainer";
 import PanelContent from "../components/Layout/PanelContent";
 export default function Dashboard(props) {
+  useEffect(() => {
+    // select the iframe element
+    var iframe = document.querySelector("body > iframe");
+    if (!!iframe) {
+      // delete the iframe element
+      iframe.parentNode.removeChild(iframe);
+      // log success
+      console.log("iframe removed");
+    }
+  }, []);
   const { ...rest } = props;
   // states and functions
   const [sidebarVariant, setSidebarVariant] = useState("transparent");

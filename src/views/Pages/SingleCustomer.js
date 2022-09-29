@@ -48,10 +48,13 @@ import {
   Textarea,
 } from "@chakra-ui/react";
 
+import { ChevronDownIcon } from "@chakra-ui/icons";
+
 import ReactSelect from "react-select";
 import { useState } from "react";
 
 const SingleCustomer = () => {
+
   return (
     <>
       <Flex
@@ -148,7 +151,20 @@ const SingleCustomer = () => {
         <Box w={{ md: "75%", sm: "100%" }}>
           <Flex justify="space-between">
             <Heading fontSize={25}>Overview</Heading>
-            <Button>Action</Button>
+            <Menu>
+              <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
+                Actions
+              </MenuButton>
+              <MenuList className="action_menu">
+                <Heading>Payments</Heading>
+                <MenuItem>Create Payment</MenuItem>
+                <MenuItem>Create Invoice</MenuItem>
+                <MenuItem>Create Subscription</MenuItem>
+                <Heading>Account</Heading>
+                <MenuItem>Edit Information</MenuItem>
+                <MenuItem>Delete</MenuItem>
+              </MenuList>
+            </Menu>
           </Flex>
 
           <Box mb={10}>
@@ -161,7 +177,7 @@ const SingleCustomer = () => {
                 <Thead>
                   <Tr>
                     <Th w={0}>
-                      <Checkbox value="false" />
+                      <Checkbox checked={false}/>
                     </Th>
                     <Th>Amount</Th>
                     <Th>Description</Th>
@@ -174,18 +190,21 @@ const SingleCustomer = () => {
                     status="success"
                     desc="AppsTru - Order 4039"
                     date="23 Sept, 18:30"
+                    checkStatus={false}
                   />
                   <PaymentsList
                     amount="test 3"
                     status="success"
                     desc="AppsTru - Order 4039"
                     date="23 Sept, 18:30"
+                    checkStatus={false}
                   />
                   <PaymentsList
                     amount="test 2"
-                    status="failed"
+                    status="draft"
                     desc="AppsTru - Order 4039"
                     date="23 Sept, 18:30"
+                    checkStatus={false}
                   />
                 </Tbody>
               </Table>
@@ -257,19 +276,27 @@ const SingleCustomer = () => {
 export default SingleCustomer;
 
 const PaymentsList = (props) => {
-  const { amount, status, desc, date } = props;
+  const { amount, status, desc, date, checkStatus } = props;
   return (
     <>
       <Tr>
         <Td w={0}>
-          <Checkbox value="false" />
+          <Checkbox value={checkStatus} />
         </Td>
         <Td>
           <Flex justify={"space-between"}>
             <span>{amount}</span>
             <Badge
+              w={70}
+              textAlign="center"
               variant="solid"
-              colorScheme={status === "success" ? "green" : "red"}
+              colorScheme={
+                status === "success"
+                  ? "green"
+                  : "red" && status === "draft"
+                  ? "gray"
+                  : "red"
+              }
             >
               {status}
             </Badge>
@@ -429,11 +456,7 @@ const CreateANewPaymentModal = () => {
     <>
       <Button onClick={onOpen}>Create</Button>
 
-      <Modal
-        onClose={onClose}
-        isOpen={isOpen}
-        isCentered
-      >
+      <Modal onClose={onClose} isOpen={isOpen} isCentered>
         <ModalOverlay />
         <form>
           <ModalContent className="create_payment_modal">
