@@ -3,7 +3,6 @@ import axios from "axios";
 
 const getCustomersList = async () => {
   try {
-    setLoading(true);
     const res = await axios.get(`${API_SERVER}customers`, {
       headers: {
         Authorization: `${TOKEN_TYPE} ${TOKEN}`,
@@ -11,7 +10,6 @@ const getCustomersList = async () => {
         "Content-Type": `${ACCEPT_TYPE}`,
       },
     });
-    setLoading(false);
     let data = res.data.data.data;
     // console.log(data);
     setCustomers(data);
@@ -36,7 +34,7 @@ const getCustomerID = async () => {
       },
     });
     // let data = await res.json();
-    console.log(res.data.data.data);
+    console.log(res.data.data);
     console.log(res.status);
   } catch (error) {
     console.log(error);

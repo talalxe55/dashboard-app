@@ -49,12 +49,9 @@ import {
 } from "@chakra-ui/react";
 
 import { ChevronDownIcon } from "@chakra-ui/icons";
-
-import ReactSelect from "react-select";
-import { useState } from "react";
-
+import PaymentCreateModal from "theme/components/PaymentCreateModal";
+import AddCard from "theme/components/AddCard";
 const SingleCustomer = () => {
-
   return (
     <>
       <Flex
@@ -157,7 +154,9 @@ const SingleCustomer = () => {
               </MenuButton>
               <MenuList className="action_menu">
                 <Heading>Payments</Heading>
-                <MenuItem>Create Payment</MenuItem>
+                <MenuItem onClick={() => console.log("Click")}>
+                  Create Payment
+                </MenuItem>
                 <MenuItem>Create Invoice</MenuItem>
                 <MenuItem>Create Subscription</MenuItem>
                 <Heading>Account</Heading>
@@ -170,14 +169,14 @@ const SingleCustomer = () => {
           <Box mb={10}>
             <Flex justify={"space-between"} alignItems="center" my={3}>
               <Heading fontSize={18}>Payments</Heading>
-              <CreateANewPaymentModal />
+              <PaymentCreateModal />
             </Flex>
             <TableContainer>
               <Table variant="striped">
                 <Thead>
                   <Tr>
                     <Th w={0}>
-                      <Checkbox checked={false}/>
+                      <Checkbox checked={false} />
                     </Th>
                     <Th>Amount</Th>
                     <Th>Description</Th>
@@ -256,9 +255,12 @@ const SingleCustomer = () => {
             </TableContainer>
           </Box>
           <Box mb={10}>
-            <Heading fontSize={18} mb={3}>
-              Payment methods
-            </Heading>
+            <Flex justify={"space-between"} alignItems="center" my={3}>
+              <Heading fontSize={18} mb={3}>
+                Payment methods
+              </Heading>
+              <AddCard />
+            </Flex>
             <PaymentMethods />
           </Box>
           <Box mb={10}>
@@ -439,88 +441,6 @@ const Invoices = () => {
           </Tbody>
         </Table>
       </Box>
-    </>
-  );
-};
-
-const CreateANewPaymentModal = () => {
-  const [selectCountry, setSelectedCountries] = useState("");
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const options = [
-    { value: "USD 1", label: "USD 1" },
-    { value: "USD 2", label: "USD 2" },
-    { value: "USD 3", label: "USD 3" },
-  ];
-
-  return (
-    <>
-      <Button onClick={onOpen}>Create</Button>
-
-      <Modal onClose={onClose} isOpen={isOpen} isCentered>
-        <ModalOverlay />
-        <form>
-          <ModalContent className="create_payment_modal">
-            <ModalHeader>Create a new payment</ModalHeader>
-            <ModalCloseButton />
-            <ModalBody>
-              <FormControl>
-                <Flex>
-                  <FormLabel>Currency</FormLabel>
-                  <ReactSelect
-                    className="select_drop"
-                    options={options}
-                    placeholder="Find Customer"
-                    name="customers"
-                    value={options.filter((obj) => obj.value === selectCountry)}
-                    onChange={(e) => {
-                      setSelectedCountries(e.value);
-                    }}
-                  />
-                </Flex>
-              </FormControl>
-              <FormControl>
-                <Flex>
-                  <FormLabel>Amount</FormLabel>
-                  <Box>
-                    <Text mb={"-30px"} ms={1}>
-                      USD
-                    </Text>
-                    <Input placeholder="" value={0.0} ps={10} />
-                  </Box>
-                </Flex>
-              </FormControl>
-              <FormControl>
-                <Flex>
-                  <FormLabel>Payment method</FormLabel>
-                  <Select>
-                    <option value="card 1">card 1</option>
-                    <option value="card 2">card 2</option>
-                    <option value="card 3">card 3</option>
-                  </Select>
-                </Flex>
-              </FormControl>
-              <FormControl>
-                <Flex>
-                  <FormLabel>Statement desc</FormLabel>
-                  <Input value="FOXTAIL-TURF" />
-                </Flex>
-              </FormControl>
-              <FormControl>
-                <Flex>
-                  <FormLabel>Description</FormLabel>
-                  <Textarea placeholder="Products or services associated with payment" />
-                </Flex>
-              </FormControl>
-            </ModalBody>
-            <ModalFooter>
-              <Button bg={"teal.300"} color="white" _hover={"none"} mr={3}>
-                Create Payment
-              </Button>
-              <Button onClick={onClose}>Close</Button>
-            </ModalFooter>
-          </ModalContent>
-        </form>
-      </Modal>
     </>
   );
 };

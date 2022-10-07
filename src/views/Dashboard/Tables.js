@@ -18,7 +18,7 @@ import {
   Select,
   Image,
 } from "@chakra-ui/react";
-import { AddIcon } from "@chakra-ui/icons";
+import { AddIcon, CloseIcon } from "@chakra-ui/icons";
 // Custom components
 import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
@@ -73,15 +73,13 @@ function Tables() {
   }, []);
 
   // Filtering Email
-  const customerListing = customers.filter((customer) =>
-    {
-      if (emailFilter == "") {
-        return customer;
-      } else if (emailFilter != "") {
-        return customer.email == emailFilter ? customer : false;
-      }
+  const customerListing = customers.filter((customer) => {
+    if (emailFilter == "") {
+      return customer;
+    } else if (emailFilter != "") {
+      return customer.email == emailFilter ? customer : false;
     }
-  );
+  });
   const emailTextHandler = (email) => {
     console.log(email);
     setEmailFilter(email);
@@ -243,11 +241,21 @@ const FilterCustomers = (props) => {
             bg={"none"}
             fontSize={15}
           >
-            Email
+            {filterEmail ? "Email | " + filterEmail : "Email"}
           </MenuButton>
           <MenuList>
             <Box p={3}>
-              <Text fontWeight={"bold"}>Filter By Email</Text>
+              <Flex justifyContent="space-between" alignItems="center">
+                <Text fontWeight={"bold"}>Filter By Email</Text>
+                <Button
+                  p={0}
+                  fontSize={15}
+                  borderRadius={50}
+                  onClick={() => emailHandler("")}
+                >
+                  <CloseIcon />
+                </Button>
+              </Flex>
               <Flex justifyContent="center" alignItems="center" my={3}>
                 <Text fontSize={14} w={"50%"}>
                   is equal to

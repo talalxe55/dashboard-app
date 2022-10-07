@@ -45,7 +45,8 @@ var dashRoutes = [
     layout: "/admin",
   },
   {
-    path: "/listing",
+    path: "/:id",
+    name: "Listing",
     component: SingleCustomer,
     layout: "/admin",
   },
