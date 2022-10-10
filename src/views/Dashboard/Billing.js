@@ -36,8 +36,11 @@ import {
   newestTransactions,
   olderTransactions,
 } from "variables/general";
+import { useParams } from "react-router-dom";
 
 function Billing() {
+  let { id } = useParams();
+  console.log(id);
   // Chakra color mode
   const iconTeal = useColorModeValue("teal.300", "teal.300");
   const textColor = useColorModeValue("gray.700", "white");

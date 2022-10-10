@@ -9,11 +9,13 @@ function SignOut() {
   let { user } = useAuth();
 
   const handleLogout = async () => {
-    await AuthApi.Logout(user);
-    await setUser(null);
+    console.log("test");
+    // await AuthApi.Logout(user);
+    // await setUser(null);
     localStorage.removeItem("user");
     alert("User removed");
-    return history.push("/auth/signin");
+    history.push("/auth/signin");
+    window.location.reload(false);
   };
 
   useEffect(() => {

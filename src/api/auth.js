@@ -10,7 +10,7 @@ class AuthApi {
   };
 
   static Logout = (data) => {
-    return axios.post(`${base}/logout`, data);
+    return axios.get(`${base}/logout`, data);
   };
 }
 

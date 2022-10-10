@@ -77,7 +77,8 @@ function SignIn() {
     setUser(user);
     localStorage.setItem("user", user);
     // console.log(user);
-    return history.push("/dashboard");
+    history.push("/dashboard");
+    window.location.reload(false);
   };
 
   return (

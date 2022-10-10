@@ -9,9 +9,10 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 import React from "react";
+import { NavLink } from "react-router-dom";
 
 function TablesTableRow(props) {
-  const { logo, name, email, desc, domain, status, date } = props;
+  const { logo, name, email, desc, domain, status, date, viewprofile } = props;
   const textColor = useColorModeValue("gray.700", "white");
   const bgStatus = useColorModeValue("gray.400", "#1a202c");
   const colorStatus = useColorModeValue("white", "gray.400");
@@ -70,16 +71,18 @@ function TablesTableRow(props) {
         </Text>
       </Td>
       <Td>
-        <Button p="0px" bg="transparent" variant="no-hover">
-          <Text
-            fontSize="md"
-            color="gray.400"
-            fontWeight="bold"
-            cursor="pointer"
-          >
-            Edit
-          </Text>
-        </Button>
+        <NavLink to={"billing/"+viewprofile}>
+          <Button p="0px" bg="transparent" variant="no-hover">
+            <Text
+              fontSize="md"
+              color="gray.400"
+              fontWeight="bold"
+              cursor="pointer"
+            >
+              View Profile
+            </Text>
+          </Button>
+        </NavLink>
       </Td>
     </Tr>
   );

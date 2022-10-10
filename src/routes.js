@@ -37,7 +37,7 @@ var dashRoutes = [
     layout: "/admin",
   },
   {
-    path: "/billing",
+    path: "/billing/:id",
     name: "Billing",
     rtlName: "لوحة القيادة",
     icon: <CreditIcon color="inherit" />,
@@ -45,7 +45,7 @@ var dashRoutes = [
     layout: "/admin",
   },
   {
-    path: "/:id",
+    path: "/listing/:id",
     name: "Listing",
     component: SingleCustomer,
     layout: "/admin",

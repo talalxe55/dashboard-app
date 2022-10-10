@@ -28,6 +28,7 @@ import TablesTableRow from "components/Tables/TablesTableRow";
 import { API_SERVER, TOKEN_TYPE, TOKEN, ACCEPT_TYPE } from "config/constant";
 import axios from "axios";
 import LoadingGif from "assets/svg/loading-infinite.svg";
+import { NavLink } from "react-router-dom";
 
 function Tables() {
   const [customers, setCustomers] = useState([]);
@@ -47,7 +48,7 @@ function Tables() {
       });
       setLoading(false);
       let data = res.data.data.data;
-      // console.log(data);
+      console.log(data);
       setCustomers(data);
     } catch (err) {
       if (err.response.status === 404) {
@@ -128,6 +129,7 @@ function Tables() {
                           val.invoice_settings.default_payment_method || "VISA"
                         }
                         date={datadate(val.created)}
+                        viewprofile={val.id}
                       />
                     );
                   })}
