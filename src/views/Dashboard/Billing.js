@@ -54,16 +54,15 @@ function Billing() {
     "gray.800"
   );
   const [singleCustomer, setSingleCustomer] = useState();
-
+  // const [singleCustomerSource, setSingleCustomerSource] = useState();
 
   let custData = getCustomerID(id);
   useEffect(() => {
     custData.then((value) => {
       // console.log(value.data.data);
       setSingleCustomer(value.data.data);
-      // setSingleCustomerSource(value.data.data)
-      console.log(singleCustomer.sources.data[0].card);
-    }, []);
+      console.log(value.data.data.sources.data[0].card);
+    });
 
     // console.log(getCustomerID(id));
     // setSingleCustomer(getCustomerID(id));
@@ -121,8 +120,9 @@ function Billing() {
                   <Flex direction="column">
                     <Box>
                       <Text fontSize="xl" letterSpacing="2px" fontWeight="bold">
-                      {/* XXXX XXXX XXXX */}
-                         {singleCustomer ? `XXXX XXXX XXXX ${singleCustomer.sources.data[0].card.last4}` : "XXXX XXXX XXXX XXXX"}
+                        {singleCustomer
+                          ? `XXXX XXXX XXXX ${singleCustomer.sources.data[0].card.last4}`
+                          : "XXXX XXXX XXXX XXXX"}
                       </Text>
                     </Box>
                     <Flex mt="14px">
@@ -137,14 +137,17 @@ function Billing() {
                       <Flex direction="column" me="34px">
                         <Text fontSize="xs">VALID THRU</Text>
                         <Text fontSize="xs" fontWeight="bold">
-                          {singleCustomer ? `${singleCustomer.sources.data[0].card.exp_month}/${singleCustomer.sources.data[0].card.exp_year}` : "00/00"}
+                          {singleCustomer
+                            ? `${singleCustomer.sources.data[0].card.exp_month}/${singleCustomer.sources.data[0].card.exp_year}`
+                            : "00/00"}
                         </Text>
                       </Flex>
                       <Flex direction="column">
                         <Text fontSize="xs">CVV</Text>
                         <Text fontSize="xs" fontWeight="bold">
-                        
-                        {singleCustomer ? singleCustomer.sources.data[0].card.cvc_check : "Unverified"}
+                          {singleCustomer
+                            ? singleCustomer.sources.data[0].card.cvc_check
+                            : "Unverified"}
                         </Text>
                       </Flex>
                     </Flex>
@@ -259,10 +262,17 @@ function Billing() {
                   me={{ sm: "0px", md: "24px" }}
                 >
                   <IconBox me="10px" w="25px" h="22px">
-                    <MastercardIcon w="100%" h="100%" />
+                    {singleCustomer ? (
+                      (singleCustomer.sources.data[0].card.brand === "Visa",
+                      (<VisaIcon w="100%" h="100%" />))
+                    ) : (
+                      <MastercardIcon w="100%" h="100%" />
+                    )}
                   </IconBox>
                   <Text color="gray.400" fontSize="md" fontWeight="semibold">
-                    7812 2139 0823 XXXX
+                    {singleCustomer
+                      ? `XXXX XXXX XXXX ${singleCustomer.sources.data[0].card.last4}`
+                      : "XXXX XXXX XXXX XXXX"}
                   </Text>
                   <Spacer />
                   <Button
@@ -271,9 +281,7 @@ function Billing() {
                     w="16px"
                     h="16px"
                     variant="no-hover"
-                  >
-                    <Icon as={FaPencilAlt} />
-                  </Button>
+                  ></Button>
                 </Flex>
               </Flex>
             </CardBody>
