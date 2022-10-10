@@ -37,10 +37,14 @@ import {
   olderTransactions,
 } from "variables/general";
 import { useParams } from "react-router-dom";
+import { useEffect } from "react";
+import { getCustomerID } from "api/ApiListing";
+import { useState } from "react";
 
 function Billing() {
   let { id } = useParams();
-  console.log(id);
+  // console.log(id);
+
   // Chakra color mode
   const iconTeal = useColorModeValue("teal.300", "teal.300");
   const textColor = useColorModeValue("gray.700", "white");
@@ -49,6 +53,21 @@ function Billing() {
     "linear-gradient(81.62deg, #313860 2.25%, #151928 79.87%)",
     "gray.800"
   );
+  const [singleCustomer, setSingleCustomer] = useState();
+
+
+  let custData = getCustomerID(id);
+  useEffect(() => {
+    custData.then((value) => {
+      // console.log(value.data.data);
+      setSingleCustomer(value.data.data);
+      // setSingleCustomerSource(value.data.data)
+      console.log(singleCustomer.sources.data[0].card);
+    }, []);
+
+    // console.log(getCustomerID(id));
+    // setSingleCustomer(getCustomerID(id));
+  }, []);
 
   return (
     <Flex direction="column" pt={{ base: "120px", md: "75px" }}>
@@ -81,9 +100,16 @@ function Billing() {
                   w="100%"
                 >
                   <Flex justify="space-between" align="center">
-                    <Text fontSize="md" fontWeight="bold">
-                      NLS UI
+                    <Text
+                      fontSize="md"
+                      fontWeight="bold"
+                      textTransform="capitalize"
+                    >
+                      {singleCustomer ? singleCustomer.name : "Customer Name"}
                     </Text>
+                    {/* <Text fontSize="md" fontWeight="bold">
+                      {"Name"}
+                    </Text> */}
                     <Icon
                       as={RiMastercardFill}
                       w="48px"
@@ -95,20 +121,30 @@ function Billing() {
                   <Flex direction="column">
                     <Box>
                       <Text fontSize="xl" letterSpacing="2px" fontWeight="bold">
-                        7812 2139 0823 XXXX
+                      {/* XXXX XXXX XXXX */}
+                         {singleCustomer ? `XXXX XXXX XXXX ${singleCustomer.sources.data[0].card.last4}` : "XXXX XXXX XXXX XXXX"}
                       </Text>
                     </Box>
                     <Flex mt="14px">
                       <Flex direction="column" me="34px">
+                        <Text fontSize="xs">BRAND</Text>
+                        <Text fontSize="xs" fontWeight="bold">
+                          {singleCustomer
+                            ? singleCustomer.sources.data[0].card.brand
+                            : "VISA Card"}
+                        </Text>
+                      </Flex>
+                      <Flex direction="column" me="34px">
                         <Text fontSize="xs">VALID THRU</Text>
                         <Text fontSize="xs" fontWeight="bold">
-                          05/24
+                          {singleCustomer ? `${singleCustomer.sources.data[0].card.exp_month}/${singleCustomer.sources.data[0].card.exp_year}` : "00/00"}
                         </Text>
                       </Flex>
                       <Flex direction="column">
                         <Text fontSize="xs">CVV</Text>
                         <Text fontSize="xs" fontWeight="bold">
-                          09X
+                        
+                        {singleCustomer ? singleCustomer.sources.data[0].card.cvc_check : "Unverified"}
                         </Text>
                       </Flex>
                     </Flex>
@@ -200,14 +236,6 @@ function Billing() {
                 <Text fontSize="lg" color={textColor} fontWeight="bold">
                   Payment Method
                 </Text>
-                {/* <Button
-                  bg={bgButton}
-                  color="white"
-                  fontSize="xs"
-                  variant="no-hover"
-                >
-                 
-                </Button> */}
                 <PaymentForm bg={bgButton} />
               </Flex>
             </CardHeader>
@@ -232,32 +260,6 @@ function Billing() {
                 >
                   <IconBox me="10px" w="25px" h="22px">
                     <MastercardIcon w="100%" h="100%" />
-                  </IconBox>
-                  <Text color="gray.400" fontSize="md" fontWeight="semibold">
-                    7812 2139 0823 XXXX
-                  </Text>
-                  <Spacer />
-                  <Button
-                    p="0px"
-                    bg="transparent"
-                    w="16px"
-                    h="16px"
-                    variant="no-hover"
-                  >
-                    <Icon as={FaPencilAlt} />
-                  </Button>
-                </Flex>
-                <Flex
-                  p="16px"
-                  bg="transparent"
-                  borderRadius="15px"
-                  width="100%"
-                  border="1px solid"
-                  borderColor={borderColor}
-                  align="center"
-                >
-                  <IconBox me="10px" w="25px" h="25px">
-                    <VisaIcon w="100%" h="100%" />
                   </IconBox>
                   <Text color="gray.400" fontSize="md" fontWeight="semibold">
                     7812 2139 0823 XXXX
