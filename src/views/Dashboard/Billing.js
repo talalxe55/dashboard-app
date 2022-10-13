@@ -1,3 +1,6 @@
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 // Chakra imports
 import {
   Box,
@@ -8,6 +11,7 @@ import {
   Spacer,
   Text,
   useColorModeValue,
+  Heading,
 } from "@chakra-ui/react";
 // Assets
 import BackgroundCard1 from "assets/img/BackgroundCard1.png";
@@ -16,19 +20,13 @@ import Card from "components/Card/Card.js";
 import CardBody from "components/Card/CardBody.js";
 import CardHeader from "components/Card/CardHeader.js";
 import IconBox from "components/Icons/IconBox";
-import { MastercardIcon, VisaIcon } from "components/Icons/Icons";
 import BillingRow from "components/Tables/BillingRow";
 import InvoicesRow from "components/Tables/InvoicesRow";
 import TransactionRow from "components/Tables/TransactionRow";
 import { Separator } from "components/Separator/Separator";
 import PaymentForm from "theme/components/PaymentForm";
 import React from "react";
-import {
-  FaPaypal,
-  FaPencilAlt,
-  FaRegCalendarAlt,
-  FaWallet,
-} from "react-icons/fa";
+import { FaUserCircle, FaRegCalendarAlt, FaWallet } from "react-icons/fa";
 import { RiMastercardFill } from "react-icons/ri";
 import {
   billingData,
@@ -36,11 +34,50 @@ import {
   newestTransactions,
   olderTransactions,
 } from "variables/general";
-import { useParams } from "react-router-dom";
+import axios from "axios";
+import { API_SERVER, TOKEN_TYPE, TOKEN, ACCEPT_TYPE } from "config/constant";
 
 function Billing() {
   let { id } = useParams();
-  console.log(id);
+  var array = [];
+  const [singleCustomer, setSingleCustomer] = useState();
+  const [singleCustomerSources, setSingleCustomerSources] = useState();
+  const [loading, setLoading] = useState(false);
+  const getCustomerID = async () => {
+    setLoading(false);
+    try {
+      const res = await axios.get(`${API_SERVER}customers/${id}`, {
+        headers: {
+          Authorization: `${TOKEN_TYPE} ${TOKEN}`,
+          Accept: `${ACCEPT_TYPE}`,
+          "Content-Type": `${ACCEPT_TYPE}`,
+        },
+      });
+
+      let data = await res.data.data;
+
+      console.log(data.sources.data.length);
+      array.push(data);
+      //return data;
+      setSingleCustomer(data);
+      setSingleCustomerSources(data.sources);
+      setLoading(false);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    // custData.then((value) => {
+    //   // console.log(value.data.data);
+    //   setSingleCustomer(value.data.data);
+    //   // console.log(singleCustomer);
+    // });
+    // console.log(getCustomerID(id));
+    // setSingleCustomer(getCustomerID(id));
+    getCustomerID();
+  }, []);
+
   // Chakra color mode
   const iconTeal = useColorModeValue("teal.300", "teal.300");
   const textColor = useColorModeValue("gray.700", "white");
@@ -49,6 +86,78 @@ function Billing() {
     "linear-gradient(81.62deg, #313860 2.25%, #151928 79.87%)",
     "gray.800"
   );
+
+  // const [singleCustomerSource, setSingleCustomerSource] = useState();
+  // let custData = getCustomerID(id);
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  const CardDetails = () => {
+    if (singleCustomerSources !== undefined) {
+      return (
+        <Text fontSize="xl" letterSpacing="2px" fontWeight="bold">
+          XXXX XXXX XXXX {singleCustomerSources.data[0].card.last4}
+        </Text>
+      );
+      console.log(singleCustomerSources);
+      if (singleCustomerSources.total_count > 0) {
+        if (singleCustomerSources.data.length > 0) {
+          if (singleCustomerSources.data[0].card) {
+            if (singleCustomerSources.data[0].card.last4.length > 0) {
+              return (
+                <Text fontSize="xl" letterSpacing="2px" fontWeight="bold">
+                  XXXX XXXX XXXX {singleCustomerSources.data[0].card.last4}
+                </Text>
+              );
+            }
+          } else {
+            return (
+              <Text fontSize="xl" letterSpacing="2px" fontWeight="bold">
+                XXXX XXXX XXXX XXXX
+              </Text>
+            );
+          }
+        }
+      } else {
+        return (
+          <Text fontSize="xl" letterSpacing="2px" fontWeight="bold">
+            XXXX XXXX XXXX XXXX
+          </Text>
+        );
+      }
+    } else {
+      return (
+        <Text fontSize="xl" letterSpacing="2px" fontWeight="bold">
+          XXXX XXXX XXXX XXXX
+        </Text>
+      );
+    }
+
+    // array[0] = singleCustomer;
+
+    // array.forEach((item, index) => {
+    //   console.log(item.name);
+    // });
+    // if (
+    //   singleCustomer !== undefined &&
+    //   singleCustomer["data"]["sources"]["data"] !== undefined &&
+    //   singleCustomer["data"]["sources"]["data"] !== null &&
+    //   singleCustomer["data"]["sources"]["total_count"] > 0
+    // ) {
+    //   return (
+    //     <Text fontSize="xl" letterSpacing="2px" fontWeight="bold">
+    //       {singleCustomer.data.sources.data.card.last4}
+    //     </Text>
+    //   );
+    // } else {
+    //   return (
+    //     <Text fontSize="xl" letterSpacing="2px" fontWeight="bold">
+    //       XXXX XXXX XXXX XXXX
+    //     </Text>
+    //   );
+    // }
+  };
 
   return (
     <Flex direction="column" pt={{ base: "120px", md: "75px" }}>
@@ -81,9 +190,16 @@ function Billing() {
                   w="100%"
                 >
                   <Flex justify="space-between" align="center">
-                    <Text fontSize="md" fontWeight="bold">
-                      NLS UI
+                    <Text
+                      fontSize="md"
+                      fontWeight="bold"
+                      textTransform="capitalize"
+                    >
+                      {singleCustomer ? singleCustomer.name : "Customer Name"}
                     </Text>
+                    {/* <Text fontSize="md" fontWeight="bold">
+                    {"Name"}
+                  </Text> */}
                     <Icon
                       as={RiMastercardFill}
                       w="48px"
@@ -94,21 +210,34 @@ function Billing() {
                   <Spacer />
                   <Flex direction="column">
                     <Box>
+                      {" "}
                       <Text fontSize="xl" letterSpacing="2px" fontWeight="bold">
-                        7812 2139 0823 XXXX
+                        <CardDetails />
                       </Text>
                     </Box>
                     <Flex mt="14px">
                       <Flex direction="column" me="34px">
+                        <Text fontSize="xs">BRAND</Text>
+                        <Text fontSize="xs" fontWeight="bold">
+                          {/* {singleCustomer
+                          ? singleCustomer.sources.data[0].card.brand
+                          : "VISA Card"} */}
+                        </Text>
+                      </Flex>
+                      <Flex direction="column" me="34px">
                         <Text fontSize="xs">VALID THRU</Text>
                         <Text fontSize="xs" fontWeight="bold">
-                          05/24
+                          {/* {singleCustomer
+                          ? `${singleCustomer.sources.data[0].card.exp_month}/${singleCustomer.sources.data[0].card.exp_year}`
+                          : "00/00"} */}
                         </Text>
                       </Flex>
                       <Flex direction="column">
                         <Text fontSize="xs">CVV</Text>
                         <Text fontSize="xs" fontWeight="bold">
-                          09X
+                          {/* {singleCustomer
+                          ? singleCustomer.sources.data[0].card.cvc_check
+                          : "Unverified"} */}
                         </Text>
                       </Flex>
                     </Flex>
@@ -131,7 +260,7 @@ function Billing() {
                     w="100%"
                   >
                     <Text fontSize="md" color={textColor} fontWeight="bold">
-                      Salary
+                      Balance
                     </Text>
                     <Text
                       mb="24px"
@@ -139,12 +268,12 @@ function Billing() {
                       color="gray.400"
                       fontWeight="semibold"
                     >
-                      Belong Interactive
+                      Current Balance
                     </Text>
                     <Separator />
                   </Flex>
                   <Text fontSize="lg" color={textColor} fontWeight="bold">
-                    +$2000
+                    {singleCustomer ? `$${singleCustomer.balance}/-` : "0.00"}
                   </Text>
                 </Flex>
               </CardBody>
@@ -159,7 +288,12 @@ function Billing() {
                   py="14px"
                 >
                   <IconBox as="box" h={"60px"} w={"60px"} bg={iconTeal}>
-                    <Icon h={"24px"} w={"24px"} color="white" as={FaPaypal} />
+                    <Icon
+                      h={"24px"}
+                      w={"24px"}
+                      color="white"
+                      as={FaUserCircle}
+                    />
                   </IconBox>
                   <Flex
                     direction="column"
@@ -170,20 +304,28 @@ function Billing() {
                     w="100%"
                   >
                     <Text fontSize="md" color={textColor} fontWeight="bold">
-                      Paypal
+                      Meta
                     </Text>
                     <Text
                       mb="24px"
                       fontSize="xs"
                       color="gray.400"
                       fontWeight="semibold"
+                      textTransform="capitalize"
                     >
-                      Freelance Payment
+                      Type:{" "}
+                      {singleCustomer ? singleCustomer.object : "Customer"}
                     </Text>
                     <Separator />
                   </Flex>
-                  <Text fontSize="lg" color={textColor} fontWeight="bold">
-                    $455.00
+
+                  <Text
+                    fontSize="sm"
+                    color={textColor}
+                    fontWeight="bold"
+                    wordBreak="break-all"
+                  >
+                    {singleCustomer ? singleCustomer.email : "Email"}
                   </Text>
                 </Flex>
               </CardBody>
@@ -200,14 +342,6 @@ function Billing() {
                 <Text fontSize="lg" color={textColor} fontWeight="bold">
                   Payment Method
                 </Text>
-                {/* <Button
-                  bg={bgButton}
-                  color="white"
-                  fontSize="xs"
-                  variant="no-hover"
-                >
-                 
-                </Button> */}
                 <PaymentForm bg={bgButton} />
               </Flex>
             </CardHeader>
@@ -231,10 +365,17 @@ function Billing() {
                   me={{ sm: "0px", md: "24px" }}
                 >
                   <IconBox me="10px" w="25px" h="22px">
+                    {/* {singleCustomer ? (
+                    (singleCustomer.sources.data[0].card.brand === "Visa",
+                    (<VisaIcon w="100%" h="100%" />))
+                  ) : (
                     <MastercardIcon w="100%" h="100%" />
+                  )} */}
                   </IconBox>
                   <Text color="gray.400" fontSize="md" fontWeight="semibold">
-                    7812 2139 0823 XXXX
+                    {/* {singleCustomer
+                    ? `XXXX XXXX XXXX ${singleCustomer.sources.data[0].card.last4}`
+                    : "XXXX XXXX XXXX XXXX"} */}
                   </Text>
                   <Spacer />
                   <Button
@@ -243,35 +384,7 @@ function Billing() {
                     w="16px"
                     h="16px"
                     variant="no-hover"
-                  >
-                    <Icon as={FaPencilAlt} />
-                  </Button>
-                </Flex>
-                <Flex
-                  p="16px"
-                  bg="transparent"
-                  borderRadius="15px"
-                  width="100%"
-                  border="1px solid"
-                  borderColor={borderColor}
-                  align="center"
-                >
-                  <IconBox me="10px" w="25px" h="25px">
-                    <VisaIcon w="100%" h="100%" />
-                  </IconBox>
-                  <Text color="gray.400" fontSize="md" fontWeight="semibold">
-                    7812 2139 0823 XXXX
-                  </Text>
-                  <Spacer />
-                  <Button
-                    p="0px"
-                    bg="transparent"
-                    w="16px"
-                    h="16px"
-                    variant="no-hover"
-                  >
-                    <Icon as={FaPencilAlt} />
-                  </Button>
+                  ></Button>
                 </Flex>
               </Flex>
             </CardBody>
@@ -322,11 +435,30 @@ function Billing() {
           <Flex direction="column">
             <CardHeader py="12px">
               <Text color={textColor} fontSize="lg" fontWeight="bold">
-                Billing Information
+                Billing Sources
               </Text>
             </CardHeader>
             <CardBody>
               <Flex direction="column" w="100%">
+                {singleCustomer
+                  ? singleCustomer.sources.data.map((item, index) => {
+                      return (
+                        <>
+                          <Flex p={7} bg="whiteAlpha.500" borderRadius={10}>
+                            <SkeletonTheme
+                              baseColor="#202020"
+                              highlightColor="#444"
+                            >
+                              <Heading as="h6" fontSize={18} color="gray.500">
+                                {item.owner.name}
+                              </Heading>
+                              <Skeleton />
+                            </SkeletonTheme>
+                          </Flex>
+                        </>
+                      );
+                    })
+                  : null}
                 {billingData.map((row, index) => {
                   return (
                     <BillingRow

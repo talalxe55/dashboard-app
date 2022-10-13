@@ -44,12 +44,15 @@ var dashRoutes = [
     icon: <CreditIcon color="inherit" />,
     component: Billing,
     layout: "/admin",
+    hide: true,
   },
   {
     path: "/listing/:id",
     name: "Listing",
     component: SingleCustomer,
+    icon: <CreditIcon color="inherit" />,
     layout: "/admin",
+    hide: true,
   },
 
   {

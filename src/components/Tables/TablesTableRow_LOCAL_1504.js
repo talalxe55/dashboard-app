@@ -12,21 +12,7 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 
 function TablesTableRow(props) {
-<<<<<<< HEAD
   const { logo, name, email, desc, domain, status, date, viewprofile, cusid } = props;
-=======
-  const {
-    logo,
-    name,
-    email,
-    desc,
-    domain,
-    status,
-    date,
-    viewprofile,
-    cusid,
-  } = props;
->>>>>>> 21626b94dd9b9a99d2986ec1335f7fe754c95769
   const textColor = useColorModeValue("gray.700", "white");
   const bgStatus = useColorModeValue("gray.400", "#1a202c");
   const colorStatus = useColorModeValue("white", "gray.400");
@@ -85,7 +71,7 @@ function TablesTableRow(props) {
         </Text>
       </Td>
       <Td>
-        <NavLink to={"billing/" + viewprofile}>
+        <NavLink to={"billing/"+viewprofile}>
           <Button p="0px" bg="transparent" variant="no-hover">
             <Text
               fontSize="md"

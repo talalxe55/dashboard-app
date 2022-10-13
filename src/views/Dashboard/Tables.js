@@ -35,14 +35,25 @@ function Tables() {
   const [customers, setCustomers] = useState([]);
   const [isloading, setLoading] = useState(false);
   const [emailFilter, setEmailFilter] = useState("");
+  const [custLimit, setCustLimit] = useState(10);
   const textColor = useColorModeValue("gray.700", "white");
 
   const getCustomersList = async () => {
+    // options.forEach((item,index) => {
+    //   var a = Object.keys([options[index]]);
+    //   var b = item;
+    //   var c = a+'='+b
+
+    // })
     try {
       setLoading(true);
+<<<<<<< HEAD
 
       
       const res = await axios.get(`${API_SERVER}customers`, {
+=======
+      const res = await axios.get(`${API_SERVER}customers?limit=${100}`, {
+>>>>>>> 21626b94dd9b9a99d2986ec1335f7fe754c95769
         headers: {
           Authorization: `${TOKEN_TYPE} ${TOKEN}`,
           Accept: `${ACCEPT_TYPE}`,
@@ -64,6 +75,7 @@ function Tables() {
     }
   };
 
+<<<<<<< HEAD
   // function getMoreCustomers(){
   //   var table= document.querySelector('.customer-listing');
   //   var lastRow = table.rows[ table.rows.length - 1 ];
@@ -75,6 +87,21 @@ function Tables() {
   //   })
   //   //console.log(moreCustomers);
   // }
+=======
+  const getMoreCustomers = () => {
+    var table = document.querySelector(".customer-listing");
+    var lastRow = table.rows[table.rows.length - 1];
+    let options = [];
+    options["starting_after"] = lastRow.getAttribute("customer-data");
+    // var moreCustomers = getCustomersList();
+    // moreCustomers.then((item) => {
+    //   console.log(item);
+    // });
+    console.log(lastRow.getAttribute("customer-data"));
+    setCustLimit(custLimit + 10);
+    getCustomersList();
+  };
+>>>>>>> 21626b94dd9b9a99d2986ec1335f7fe754c95769
 
   // Converting date
   const datadate = (created) => {
@@ -119,7 +146,15 @@ function Tables() {
         {!isloading ? (
           <>
             <CardBody>
+<<<<<<< HEAD
               <Table variant="simple" color={textColor} class="customer-listing">
+=======
+              <Table
+                variant="simple"
+                color={textColor}
+                class={"customer-listing"}
+              >
+>>>>>>> 21626b94dd9b9a99d2986ec1335f7fe754c95769
                 <Thead>
                   <Tr my=".8rem" pl="0px" color="gray.400">
                     <Th pl="0px" color="gray.400">
@@ -147,6 +182,7 @@ function Tables() {
                         }
                         date={datadate(val.created)}
                         viewprofile={val.id}
+                        cusid={val.id}
                       />
                     );
                   })}
@@ -181,13 +217,14 @@ function Tables() {
           </Box>
         )}
         <Button
-          onClick={null}
+          onClick={getMoreCustomers}
           bg="teal.300"
           w={200}
           color="white"
           m={"20px auto"}
           _hover={{ bg: "#000" }}
           p="25px 0"
+          value={custLimit}
         >
           Load More
         </Button>
