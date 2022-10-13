@@ -8,6 +8,7 @@ import SignIn from "views/Pages/SignIn.js";
 import SignUp from "views/Pages/SignUp.js";
 import SignOut from "views/Pages/SignOut.js";
 import SingleCustomer from "views/Pages/SingleCustomer";
+import Payments from "views/Dashboard/Payments.js";
 
 import {
   HomeIcon,
@@ -50,6 +51,16 @@ var dashRoutes = [
     component: SingleCustomer,
     layout: "/admin",
   },
+
+  {
+    path: "/payments/",
+    name: "Payments",
+    icon: <CreditIcon color="inherit" />,
+    component: Payments,
+    layout: "/admin",
+  },
+
+  
   // {
   //   path: "/rtl-support-page",
   //   name: "RTL",

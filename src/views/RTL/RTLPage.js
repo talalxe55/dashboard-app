@@ -591,7 +591,7 @@ export default function Dashboard() {
               </Flex>
             </Flex>
           </CardHeader>
-          <Table variant="simple" color={textColor}>
+          <Table variant="simple" color={textColor} key="rtl-table">
             <Thead>
               <Tr my=".8rem" ps="0px">
                 <Th ps="0px" color="gray.400">
@@ -602,15 +602,16 @@ export default function Dashboard() {
                 <Th color="gray.400">انتهاء</Th>
               </Tr>
             </Thead>
-            <Tbody>
-              {rtlDashboardTableData.map((row) => {
+            <Tbody key="rtl-table-body">
+              {rtlDashboardTableData.map((row,index) => {
                 return (
-                  <DashboardTableRow
+                  <DashboardTableRow key={index}
                     name={row.name}
                     logo={row.logo}
                     members={row.members}
                     budget={row.budget}
                     progression={row.progression}
+                    id={row.name.replace(/\s+/g, '-').toLowerCase()}
                   />
                 );
               })}
@@ -640,7 +641,7 @@ export default function Dashboard() {
             <Flex direction="column">
               {rtlTimelineData.map((row, index, arr) => {
                 return (
-                  <TimelineRow
+                  <TimelineRow key={index}
                     logo={row.logo}
                     title={row.title}
                     date={row.date}

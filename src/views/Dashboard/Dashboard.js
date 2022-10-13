@@ -103,7 +103,7 @@ export default function Dashboard() {
                   </StatHelpText>
                 </Flex>
               </Stat>
-              <IconBox as="box" h={"45px"} w={"45px"} bg={iconTeal}>
+              <IconBox h={"45px"} w={"45px"} bg={iconTeal}>
                 <WalletIcon h={"24px"} w={"24px"} color={iconBoxInside} />
               </IconBox>
             </Flex>
@@ -138,7 +138,7 @@ export default function Dashboard() {
                   </StatHelpText>
                 </Flex>
               </Stat>
-              <IconBox as="box" h={"45px"} w={"45px"} bg={iconTeal}>
+              <IconBox h={"45px"} w={"45px"} bg={iconTeal}>
                 <GlobeIcon h={"24px"} w={"24px"} color={iconBoxInside} />
               </IconBox>
             </Flex>
@@ -174,7 +174,7 @@ export default function Dashboard() {
                 </Flex>
               </Stat>
               <Spacer />
-              <IconBox as="box" h={"45px"} w={"45px"} bg={iconTeal}>
+              <IconBox h={"45px"} w={"45px"} bg={iconTeal}>
                 <DocumentIcon h={"24px"} w={"24px"} color={iconBoxInside} />
               </IconBox>
             </Flex>
@@ -209,7 +209,7 @@ export default function Dashboard() {
                   </StatHelpText>
                 </Flex>
               </Stat>
-              <IconBox as="box" h={"45px"} w={"45px"} bg={iconTeal}>
+              <IconBox h={"45px"} w={"45px"} bg={iconTeal}>
                 <CartIcon h={"24px"} w={"24px"} color={iconBoxInside} />
               </IconBox>
             </Flex>
@@ -398,7 +398,7 @@ export default function Dashboard() {
                 <Flex direction="column">
                   <Flex alignItems="center">
                     <IconBox
-                      as="box"
+                      
                       h={"30px"}
                       w={"30px"}
                       bg={iconTeal}
@@ -429,7 +429,7 @@ export default function Dashboard() {
                 <Flex direction="column">
                   <Flex alignItems="center">
                     <IconBox
-                      as="box"
+                      
                       h={"30px"}
                       w={"30px"}
                       bg={iconTeal}
@@ -460,7 +460,7 @@ export default function Dashboard() {
                 <Flex direction="column">
                   <Flex alignItems="center">
                     <IconBox
-                      as="box"
+                      
                       h={"30px"}
                       w={"30px"}
                       bg={iconTeal}
@@ -491,7 +491,7 @@ export default function Dashboard() {
                 <Flex direction="column">
                   <Flex alignItems="center">
                     <IconBox
-                      as="box"
+                      
                       h={"30px"}
                       w={"30px"}
                       bg={iconTeal}
@@ -575,7 +575,7 @@ export default function Dashboard() {
               </Flex>
             </Flex>
           </CardHeader>
-          <Table variant="simple" color={textColor}>
+          <Table variant="simple" color={textColor} key="projects1">
             <Thead>
               <Tr my=".8rem" ps="0px">
                 <Th ps="0px" color="gray.400">
@@ -586,17 +586,19 @@ export default function Dashboard() {
                 <Th color="gray.400">Completion</Th>
               </Tr>
             </Thead>
-            <Tbody>
-              {dashboardTableData.map((row) => {
-                return (
-                  <DashboardTableRow
-                    name={row.name}
-                    logo={row.logo}
-                    members={row.members}
-                    budget={row.budget}
-                    progression={row.progression}
-                  />
-                );
+            <Tbody key="projects-body">
+              {dashboardTableData.map((row,index) => {
+                // return (
+                //   <DashboardTableRow key={index}
+                //     name={row.name}
+                //     logo={row.logo}
+                //     members={row.members}
+                //     budget={row.budget}
+                //     progression={row.progression}
+                //     id={row.name.replace(/\s+/g, '-').toLowerCase()+index}
+                //     index= {index}
+                //   />
+                // );
               })}
             </Tbody>
           </Table>
@@ -623,14 +625,16 @@ export default function Dashboard() {
           <CardBody ps="20px" pe="0px" mb="31px" position="relative">
             <Flex direction="column">
               {timelineData.map((row, index, arr) => {
+                
                 return (
-                  <TimelineRow
+                  <TimelineRow key={index}
                     logo={row.logo}
                     title={row.title}
                     date={row.date}
                     color={row.color}
                     index={index}
                     arrLength={arr.length}
+                    id={row.title.replace(/\s+/g, '-').toLowerCase()+index}
                   />
                 );
               })}

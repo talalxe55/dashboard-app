@@ -30,6 +30,7 @@ import axios from "axios";
 import LoadingGif from "assets/svg/loading-infinite.svg";
 import { NavLink } from "react-router-dom";
 
+
 function Tables() {
   const [customers, setCustomers] = useState([]);
   const [isloading, setLoading] = useState(false);
@@ -39,6 +40,8 @@ function Tables() {
   const getCustomersList = async () => {
     try {
       setLoading(true);
+
+      
       const res = await axios.get(`${API_SERVER}customers`, {
         headers: {
           Authorization: `${TOKEN_TYPE} ${TOKEN}`,
@@ -61,6 +64,18 @@ function Tables() {
     }
   };
 
+  // function getMoreCustomers(){
+  //   var table= document.querySelector('.customer-listing');
+  //   var lastRow = table.rows[ table.rows.length - 1 ];
+  //   let options = [];
+  //   //options['starting_after']=lastRow.getAttribute('customer-data')
+  //   var moreCustomers = getCustomersList()
+  //   moreCustomers.then((item) => {
+  //     console.log(item);
+  //   })
+  //   //console.log(moreCustomers);
+  // }
+
   // Converting date
   const datadate = (created) => {
     let epochDate = created;
@@ -70,7 +85,7 @@ function Tables() {
   };
 
   useEffect(() => {
-    getCustomersList();
+    getCustomersList(null);
   }, []);
 
   // Filtering Email
@@ -104,7 +119,7 @@ function Tables() {
         {!isloading ? (
           <>
             <CardBody>
-              <Table variant="simple" color={textColor}>
+              <Table variant="simple" color={textColor} class="customer-listing">
                 <Thead>
                   <Tr my=".8rem" pl="0px" color="gray.400">
                     <Th pl="0px" color="gray.400">
@@ -118,8 +133,10 @@ function Tables() {
                 </Thead>
                 <Tbody className="customer_body" textTransform={"capitalize"}>
                   {customerListing.map((val, index) => {
+                    
                     return (
                       <TablesTableRow
+                        cusid= {val.id}
                         key={index}
                         name={val.name}
                         email={val.email}

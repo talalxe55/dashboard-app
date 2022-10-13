@@ -1,6 +1,7 @@
 {
   "name": "purity-dashboard-react",
   "private": true,
+  "version": "1.0",
   "proxy": "http://192.168.7.51:8001/",
   "dependencies": {
     "@chakra-ui/icons": "^1.1.7",
@@ -59,7 +60,11 @@
     "gulp": "4.0.2",
     "gulp-append-prepend": "1.0.9",
     "node-sass": "^7.0.3",
-    "prettier": "2.2.1"
+    "prettier": "2.2.1",
+    "react-error-overlay": "6.0.9"
+  },
+  "resolutions": {
+    "react-error-overlay": "6.0.9"
   },
   "browserslist": {
     "production": [
@@ -67,6 +72,10 @@
       "not dead",
       "not op_mini all"
     ],
-    "development": []
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }

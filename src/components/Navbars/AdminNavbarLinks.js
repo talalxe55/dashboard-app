@@ -97,6 +97,7 @@ export default function HeaderLinks(props) {
         logoText={props.logoText}
         secondary={props.secondary}
         routes={routes}
+        key={props.key}
         // logo={logo}
         {...rest}
       />
@@ -155,4 +156,5 @@ HeaderLinks.propTypes = {
   fixed: PropTypes.bool,
   secondary: PropTypes.bool,
   onOpen: PropTypes.func,
+  key: PropTypes.string
 };

@@ -26,6 +26,7 @@ export default function AuthNavbar(props) {
     setOpen(!open);
   };
   const { logo, logoText, secondary, ...rest } = props;
+  console.log(props);
   // verifies if routeName is the one active (in browser input)
   const activeRoute = (routeName) => {
     return window.location.href.indexOf(routeName) > -1 ? true : false;
@@ -92,7 +93,7 @@ export default function AuthNavbar(props) {
           ms="0px"
           me="0px"
           px="0px"
-          me={{ sm: "2px", md: "16px" }}
+          mz={{ sm: "2px", md: "16px" }}
           color={navbarIcon}
           variant="transparent-with-icon"
           leftIcon={
@@ -144,7 +145,9 @@ export default function AuthNavbar(props) {
           ms={{ base: "auto", lg: "0px" }}
           display={{ base: "flex", lg: "none" }}
         >
+          
           <SidebarResponsive
+            
             logoText={props.logoText}
             secondary={props.secondary}
             routes={routes}

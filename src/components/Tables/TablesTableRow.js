@@ -12,13 +12,13 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 
 function TablesTableRow(props) {
-  const { logo, name, email, desc, domain, status, date, viewprofile } = props;
+  const { logo, name, email, desc, domain, status, date, viewprofile, cusid } = props;
   const textColor = useColorModeValue("gray.700", "white");
   const bgStatus = useColorModeValue("gray.400", "#1a202c");
   const colorStatus = useColorModeValue("white", "gray.400");
 
   return (
-    <Tr>
+    <Tr customer-data={cusid}>
       <Td minWidth={{ sm: "250px" }} pl="0px">
         <Flex align="center" py=".8rem" minWidth="100%" flexWrap="nowrap">
           <Avatar src={logo} w="50px" borderRadius="12px" me="18px" />
