@@ -47,13 +47,7 @@ function Tables() {
     // })
     try {
       setLoading(true);
-<<<<<<< HEAD
-
-      
-      const res = await axios.get(`${API_SERVER}customers`, {
-=======
       const res = await axios.get(`${API_SERVER}customers?limit=${100}`, {
->>>>>>> 21626b94dd9b9a99d2986ec1335f7fe754c95769
         headers: {
           Authorization: `${TOKEN_TYPE} ${TOKEN}`,
           Accept: `${ACCEPT_TYPE}`,
@@ -75,19 +69,6 @@ function Tables() {
     }
   };
 
-<<<<<<< HEAD
-  // function getMoreCustomers(){
-  //   var table= document.querySelector('.customer-listing');
-  //   var lastRow = table.rows[ table.rows.length - 1 ];
-  //   let options = [];
-  //   //options['starting_after']=lastRow.getAttribute('customer-data')
-  //   var moreCustomers = getCustomersList()
-  //   moreCustomers.then((item) => {
-  //     console.log(item);
-  //   })
-  //   //console.log(moreCustomers);
-  // }
-=======
   const getMoreCustomers = () => {
     var table = document.querySelector(".customer-listing");
     var lastRow = table.rows[table.rows.length - 1];
@@ -101,7 +82,6 @@ function Tables() {
     setCustLimit(custLimit + 10);
     getCustomersList();
   };
->>>>>>> 21626b94dd9b9a99d2986ec1335f7fe754c95769
 
   // Converting date
   const datadate = (created) => {
@@ -146,15 +126,11 @@ function Tables() {
         {!isloading ? (
           <>
             <CardBody>
-<<<<<<< HEAD
-              <Table variant="simple" color={textColor} class="customer-listing">
-=======
               <Table
                 variant="simple"
                 color={textColor}
                 class={"customer-listing"}
               >
->>>>>>> 21626b94dd9b9a99d2986ec1335f7fe754c95769
                 <Thead>
                   <Tr my=".8rem" pl="0px" color="gray.400">
                     <Th pl="0px" color="gray.400">
@@ -182,7 +158,6 @@ function Tables() {
                         }
                         date={datadate(val.created)}
                         viewprofile={val.id}
-                        cusid={val.id}
                       />
                     );
                   })}

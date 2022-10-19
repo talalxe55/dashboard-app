@@ -19,7 +19,7 @@ ReactDOM.render(
         <Route path={`/auth`} component={AuthLayout} />
         <ProtectedRoute path={`/admin`} component={AdminLayout} />
         <ProtectedRoute path={`/rtl`} component={RTLLayout} />
-        <Redirect from={`/`} to="/admin/test" />
+        <Redirect from={`/`} to="/admin/" />
       </Switch>
     </HashRouter>
   </AuthProvider>,

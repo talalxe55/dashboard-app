@@ -9,7 +9,9 @@ import {
     useColorModeValue,
   } from "@chakra-ui/react";
   import React from "react";
-  import { NavLink } from "react-router-dom";
+  import { NavLink, Route, Link } from "react-router-dom";
+  import Payment from '../../views/Dashboard/SinglePayment';
+
   
   function TablesTableRow(props) {
     const { amount, status, desc, customer, date, viewprofile, cusid } = props;
@@ -89,7 +91,8 @@ import {
           </Text>
         </Td>
         <Td>
-          <NavLink to={"billing/"+viewprofile}>
+            {/* <a href={"/#/admin/detail/"+viewprofile}>View Profile</a> */}
+          <NavLink  to={"/admin/detail/"+viewprofile}>
             <Button p="0px" bg="transparent" variant="no-hover">
               <Text
                 fontSize="md"
@@ -101,6 +104,8 @@ import {
               </Text>
             </Button>
           </NavLink>
+          {/* <Link to={"/payment/"+viewprofile}>View Profile</Link> */}
+ 
         </Td>
       </Tr>
     );

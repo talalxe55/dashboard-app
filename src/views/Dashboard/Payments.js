@@ -29,13 +29,15 @@ import TablesTableRow from "components/Tables/PaymentsTable.js";
 import { API_SERVER, TOKEN_TYPE, TOKEN, ACCEPT_TYPE } from "config/constant";
 import axios from "axios";
 import LoadingGif from "assets/svg/loading-infinite.svg";
-import { NavLink } from "react-router-dom";
+import { NavLink, useHistory } from "react-router-dom";
 import { AiFillDingtalkSquare } from "react-icons/ai";
 import { SiJquery } from "react-icons/si";
 
 
 function Tables() {
   const [customers, setCustomers] = useState([]);
+  const [oldCustomers, setoldCustomers] = useState([]);
+  const [oldload, setoldload] = useState(false);
   const [isloading, setLoading] = useState(false);
   const [isMore, setisMore] = useState(false);
   const [emailFilter, setEmailFilter] = useState("");
@@ -49,6 +51,21 @@ function Tables() {
   const [filterCustomersdata, setfilterCustomersdata] = useState(false);
   const [filterApplied, setfilterApplied] = useState(false);
   const [filterPage, setfilterPage] = useState();
+  const [isfilterApplied, setisfilterApplied] = useState(false);
+  const [filterData, setfilterData] = useState({'email': null,
+  amount:{
+    value: null,
+    operator:null,
+  },
+  date:{
+    value: null,
+    operator:null,
+  },
+  metadata: null,
+  status: null
+
+});
+  const history = useHistory();
   let filterCustomersdataRef = false;
   
 
@@ -58,15 +75,29 @@ function Tables() {
   };
 
   function getFilterData(){
-    let options = [];
-    if(document.querySelector('input[name=payment-date]')!==null && document.querySelector('select[name=payment-date-operator]')!==undefined && document.querySelector('select[name=payment-date-operator]')!=='Please select an option'){
+    // let options = {'email': null,
+    // amount:{
+    //   value: null,
+    //   operator:null,
+    // },
+    // date:{
+    //   value: null,
+    //   operator:null,
+    // },
+    // metadata: {
+    //     site_url: null,
+    //     customer_email: null
+    // },
+    // status: null};
+    let options=[]
+    if(document.querySelector('input[name=payment-date]').value!==null && document.querySelector('input[name=payment-date]').value!=='' && document.querySelector('select[name=payment-date-operator]').value!==undefined && document.querySelector('select[name=payment-date-operator]').value!=='default'){
             //jQuery('')
         options['date'] = {'value': document.querySelector('input[name=payment-date]').value,
                             'operator': document.querySelector('select[name=payment-date-operator]').value};
         
         
     }
-    if(document.querySelector('input[name=payment-amount]')!==null && document.querySelector('select[name=payment-amount-operator]')!==undefined){
+    if(document.querySelector('input[name=payment-amount]').value!==null && document.querySelector('input[name=payment-amount]').value!=='' && document.querySelector('select[name=payment-amount-operator]').value!==undefined && document.querySelector('select[name=payment-amount-operator]').value!=='default'){
         
         options['amount'] = {'value': document.querySelector('input[name=payment-amount]').value,
                             'operator': document.querySelector('select[name=payment-amount-operator]').value};
@@ -86,14 +117,20 @@ function Tables() {
         
     // }
     
-    if(document.querySelector('select[name=payment-metadata]').value === 'NLS'){
-            options['metadata'] = {'site_url': "https://nolimitsocial99.com"}    
+    if(document.querySelector('select[name=payment-metadata]').value === 'NLS' && document.querySelector('select[name=payment-metadata]').value !== 'default'){
+            //options['metadata']['site_url'] = "https://nolimitsocial99.com"   
+            options['metadata'] = { ...options['metadata'] , 'site_url': "https://nolimitsocial99.com"} 
     }
 
     if(document.querySelector('input[name=payment-metadata-email]').value !==null && document.querySelector('input[name=payment-metadata-email]').value !==''){
-        options['metadata'] = {'customer_email': document.querySelector('input[name=payment-metadata-email]').value}    
-}
+        options['metadata']['customer_email'] = document.querySelector('input[name=payment-metadata-email]').value  
+    }
+    if(document.querySelector('select[name=payment-status]').value !==null && document.querySelector('select[name=payment-status]').value !=='' && document.querySelector('select[name=payment-status]').value!=='default'){
+        options['status'] = document.querySelector('select[name=payment-status]').value    
+    }
     
+
+
     if(!options){
         
         return null;
@@ -119,19 +156,31 @@ function Tables() {
     }
   }
 
+
   //Date Filter Function
   function searchPaymentsbyfilter(){
 
     filterCustomersdataRef = false;
     let options = [];
     options = getFilterData();
+    console.log(options.length);
     console.log(options);
+    if(Object.keys(options).length == 0){
+        setfilterApplied(false)
+        setisMore(oldload)
+        setCustomers(oldCustomers);
+        return;
+    }
     var moreCustomers = filterCustomers(options);
   
     
   }
 
-  
+
+  function setStatus(){
+    var a = document.querySelector('select[name=payment-status]').selectedIndex;
+    setfilterStatus(document.querySelector('select[name=payment-status]').options[a].text);
+  }
   const filterCustomers = async (options) => {
     try {
     let data = {};
@@ -152,14 +201,14 @@ function Tables() {
                 !params?params="?page="+options.page:params+="&page="+options.page
             }
             
-            if(options.date!==null && options.date!==undefined && options.date.value!==''){
+            if(options.date!==null && options.date!==undefined && options.date.value!==null){
                 // const bodyFormData = new FormData();
                 // bodyFormData.append(filterDate.value, item);
                 //data= {'created': {'value': filterDate.value, 'operator': filterDate.operator} };
                 data['created'] = {'value' : options.date.value, 'operator': options.date.operator};
               }
             
-            if(options.amount.value!=='' && options.amount!==null && options.amount!==undefined){
+            if(options.amount.value!==null && options.amount!==null && options.amount!==undefined){
                 data['amount'] = {'value' : options.amount.value, 'operator': options.amount.operator}
               }
 
@@ -167,11 +216,15 @@ function Tables() {
                 data['status'] = options.status;
             }
 
-            if(options.metadata!==null && options.metadata!==undefined){
-                data['metadata'] = options.metadata;
+            if(options.metadata.site_url!==null && options.metadata!==undefined){
+                data['metadata'] = {...data['metadata'], 'site_url': options.metadata.site_url};
+            }
+            if(options.metadata.customer_email!==null && options.metadata!==undefined){
+                data['metadata'] = {...data['metadata'], 'customer_email': options.metadata.customer_email};
             }
             console.log(data);
         }
+
 
       const res = await axios.post(`${API_SERVER}payments/search`+params, JSON.stringify(data), {
         headers: {
@@ -206,13 +259,16 @@ function Tables() {
       
     } catch (err) {
         console.log(err);
-    //   if (err.response.status === 404) {
-    //     console.log("Resource could not be found!");
-    //   } else if (err.response.status === 401) {
-    //     console.log("Unauthorized!");
-    //   } else {
-    //     console.log(err.message);
-    //   }
+      if (err.response.status === 404) {
+        alert('The requested resource was not found');
+        console.log("Resource could not be found!");
+      } else if (err.response.status === 401) {
+        alert('Your session has expired!');
+        history.push('auth/signin');
+        console.log("Unauthorized!");
+      } else {
+        console.log(err.message);
+      }
     }
   };
 
@@ -253,32 +309,64 @@ function Tables() {
       let data = res.data.data.data;
       if(!customers){
         setCustomers(data);
+        setoldCustomers(data);
       }
       else{
         setCustomers((customers) => ([...customers, ...data]));
+        setoldCustomers((customers) => ([...customers, ...data]));
       }
       
       
     setisMore(res.data.data.has_more)
+    setoldload(res.data.data.has_more)
       
       
       
-    } catch (err) {
+    }  catch (err) {
         console.log(err);
-    //   if (err.response.status === 404) {
-    //     console.log("Resource could not be found!");
-    //   } else if (err.response.status === 401) {
-    //     console.log("Unauthorized!");
-    //   } else {
-    //     console.log(err.message);
-    //   }
+      if (err.response.status === 404) {
+        alert('The requested resource was not found');
+        console.log("Resource could not be found!");
+      } else if (err.response.status === 401) {
+        alert('Your session has expired!');
+        localStorage.removeItem('user');
+       history.push('auth/signin');
+       window.location.reload(false);
+        console.log("Unauthorized!");
+      } else {
+        console.log(err.message);
+      }
     }
   };
 
 
 
 
-  function toTitleCase(str) {
+  function toStatus(val) {
+    var str = "";
+   
+    if(val.status==="succeeded"){
+        
+        if(val.charges.data!==null){
+            var data = val.charges.data[val.charges.data.length-1];
+            if(data.refunded==true && data.refunds.data.length > 0){
+                str = "refunded";
+
+            }
+            else{
+                str=val.status;
+            }
+        }
+        else{
+            str=val.status;
+        }
+    }
+    else
+    {
+        str=val.status;
+    }
+
+    
     const arr = str.split('_');
   
     const result = [];
@@ -312,6 +400,15 @@ function Tables() {
   getCustomersList(null);
 
   }, []);
+
+
+  useEffect(() => {
+    //filterCustomers(null);
+    // console.log(filterData);
+    // console.log(isfilterApplied)
+    // console.log(filterEmail)
+  
+    }, [isfilterApplied,filterData,filterEmail]);
 
   // Filtering Email
   const customerListing = customers.filter((customer) => {
@@ -362,7 +459,7 @@ function Tables() {
                   p={0}
                   fontSize={15}
                   borderRadius={50}
-                  onClick={() => emailHandler("")}
+                  onClick={() => { emailHandler(""); filterData.email=null; setfilterData({...filterData}); document.querySelector('input[name=payment-metadata-email]').value=""; searchPaymentsbyfilter();}}
                 >
                   <CloseIcon />
                 </Button>
@@ -385,7 +482,7 @@ function Tables() {
                 color="white"
                 _hover={{ color: "black", bg: "gray.300" }}
                 // onClick={() => emailHandler(filterEmail)}
-                onClick={() => { emailHandler(filterEmail); searchPaymentsbyfilter();}}
+                onClick={() =>{emailHandler(filterEmail); searchPaymentsbyfilter();}}
               >
                 Apply
               </Button>
@@ -419,12 +516,13 @@ function Tables() {
                 >
                   <CloseIcon />
                 </Button>
-              <Select my={3} name="payment-amount-operator">
+              <Select my={3} name="payment-amount-operator" onChange={(e) => {filterData.amount.operator=e.target.value; setfilterData({...filterData});}}>
+              <option defaultValue disabled value="default">Please select an option</option>
               <option value="=">is equal to</option>
                 <option value=">">is greater than</option>
                 <option value="<">is less than</option>
               </Select>
-              <Input type="number" name="payment-amount" />
+              <Input type="number" name="payment-amount" onChange={(e) => {filterData.amount.value=e.target.value; setfilterData({...filterData});}} />
               <Button
                 w={"100%"}
                 onClick={() => { setfilterAmount(' '+document.querySelector('select[name=payment-amount-operator]').value+' $'+document.querySelector('input[name=payment-amount]').value); searchPaymentsbyfilter();}}
@@ -465,7 +563,7 @@ function Tables() {
                   <CloseIcon />
                 </Button>
               <Select my={3} name="payment-date-operator">
-              <option defaultValue disabled>Please select an option</option>
+              <option defaultValue disabled value="default">Please select an option</option>
                 <option value="=">is equal to</option>
                 <option value=">">is after</option>
                 <option value="<">is before</option>
@@ -507,12 +605,12 @@ function Tables() {
                   p={0}
                   fontSize={15}
                   borderRadius={50}
-                  onClick={() => { setCustomerType(''); searchPaymentsbyfilter();}}
+                  onClick={() => { setCustomerType(''); document.querySelector('select[name="payment-metadata"]').selectedIndex=0; searchPaymentsbyfilter();}}
                 >
                   <CloseIcon />
                 </Button>
             <Select my={3} name="payment-metadata">
-              <option defaultValue disabled>Please select an option</option>
+              <option defaultValue value="default">Please select an option</option>
                 <option value="NLS">NLS</option>  
               </Select>
                 <Button
@@ -539,6 +637,67 @@ function Tables() {
             </Box>
           </MenuList>
         </Menu>
+
+        <Menu>
+          <MenuButton
+            as={Button}
+            leftIcon={<AddIcon />}
+            border="1px"
+            borderStyle={"dashed"}
+            borderColor={"gray.400"}
+            color={"gray.500"}
+            bg={"none"}
+            fontSize={15}
+          >
+            {"Status"} |{" "}
+            <span style={{ color: "var(--chakra-colors-primaryColor-700)" }}>
+              {filterStatus}
+            </span>
+          </MenuButton>
+          <MenuList>
+            <Box p={3}>
+            <Button
+                  p={0}
+                  fontSize={15}
+                  borderRadius={50}
+                  onClick={() => { setfilterStatus(''); document.querySelector('select[name="payment-status"]').selectedIndex=0; searchPaymentsbyfilter();}}
+                >
+                  <CloseIcon />
+                </Button>
+            <Select my={3} name="payment-status">
+              <option defaultValue value="default">Please select an option</option>
+                <option value="succeeded">Succeeded</option>
+                <option value="refunded">Refunded</option> 
+                <option value="requires_confirmation">Incomplete</option> 
+                <option value="canceled">Canceled</option>
+                <option value="requires_payment_method">Requires Payment Method</option> 
+                <option value="processing">Processing</option>
+              </Select>
+                <Button
+                w={"100%"}
+                bg="teal.300"
+                color="white"
+                _hover={{ color: "black", bg: "gray.300" }}
+                // onClick={() => setCustomerType("NLS")}
+                onClick={() => { setStatus(); searchPaymentsbyfilter();}}
+                mt={3}
+              >
+                Apply
+              </Button> 
+              {/* <Button
+                w={"100%"}
+                bg="teal.300"
+                color="white"
+                _hover={{ color: "black", bg: "gray.300" }}
+                onClick={() => setCustomerType("SpiritMagnet")}
+                mt={3}
+              >
+                SpiritMagnet
+              </Button>  */}
+            </Box>
+          </MenuList>
+        </Menu>
+        
       </Flex>
 
         </Box>
@@ -568,7 +727,7 @@ function Tables() {
                         cusid= {val.id}
                         amount= {dataamount(val.amount)}
                         key={index}
-                        status={toTitleCase(val.status)}
+                        status={toStatus(val)}
                         // email={val.email}
                         desc={val.description}
                         customer={val.metadata.customer_email?val.metadata.customer_email:val.receipt_email}

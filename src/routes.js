@@ -9,6 +9,7 @@ import SignUp from "views/Pages/SignUp.js";
 import SignOut from "views/Pages/SignOut.js";
 import SingleCustomer from "views/Pages/SingleCustomer";
 import Payments from "views/Dashboard/Payments.js";
+import Detail from "views/Dashboard/SinglePayment.js";
 
 import {
   HomeIcon,
@@ -18,6 +19,8 @@ import {
   DocumentIcon,
   RocketIcon,
   SupportIcon,
+  VisaIcon,
+  WalletIcon
 } from "components/Icons/Icons";
 
 var dashRoutes = [
@@ -58,12 +61,20 @@ var dashRoutes = [
   {
     path: "/payments/",
     name: "Payments",
-    icon: <CreditIcon color="inherit" />,
+    icon: <WalletIcon color="inherit" />,
     component: Payments,
     layout: "/admin",
   },
 
-  
+  {
+    path: "/detail/:id",
+    // exact: true,
+    name: "Payment",
+    icon: <CreditIcon color="inherit" />,
+    component: Detail,
+    layout: "/admin",
+    hide: true,
+  },
   // {
   //   path: "/rtl-support-page",
   //   name: "RTL",
