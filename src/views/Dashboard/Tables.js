@@ -17,6 +17,10 @@ import {
   Heading,
   Select,
   Image,
+  Alert,
+  AlertIcon,
+  AlertTitle,
+  AlertDescription,
 } from "@chakra-ui/react";
 import { AddIcon, CloseIcon } from "@chakra-ui/icons";
 // Custom components
@@ -28,26 +32,19 @@ import TablesTableRow from "components/Tables/TablesTableRow";
 import { API_SERVER, TOKEN_TYPE, TOKEN, ACCEPT_TYPE } from "config/constant";
 import axios from "axios";
 import LoadingGif from "assets/svg/loading-infinite.svg";
-import { NavLink } from "react-router-dom";
-
+import { useHistory } from "react-router-dom";
 
 function Tables() {
+  const history = useHistory();
   const [customers, setCustomers] = useState([]);
   const [isloading, setLoading] = useState(false);
   const [emailFilter, setEmailFilter] = useState("");
   const [custLimit, setCustLimit] = useState(10);
   const textColor = useColorModeValue("gray.700", "white");
-
   const getCustomersList = async () => {
-    // options.forEach((item,index) => {
-    //   var a = Object.keys([options[index]]);
-    //   var b = item;
-    //   var c = a+'='+b
-
-    // })
     try {
       setLoading(true);
-      const res = await axios.get(`${API_SERVER}customers?limit=${100}`, {
+      const res = await axios.get(`${API_SERVER}customers?limit=${custLimit}`, {
         headers: {
           Authorization: `${TOKEN_TYPE} ${TOKEN}`,
           Accept: `${ACCEPT_TYPE}`,
@@ -62,7 +59,20 @@ function Tables() {
       if (err.response.status === 404) {
         console.log("Resource could not be found!");
       } else if (err.response.status === 401) {
-        console.log("Unauthorized!");
+        // alert("Your session has expired!");
+        return (
+          <>
+            <Alert status="error">
+              <AlertIcon />
+              <AlertTitle>Your browser is outdated!</AlertTitle>
+              <AlertDescription>
+                Your Chakra experience may be degraded.
+              </AlertDescription>
+            </Alert>
+          </>
+        );
+        // localStorage.removeItem("user");
+        // history.push("auth/signin");
       } else {
         console.log(err.message);
       }
@@ -79,7 +89,7 @@ function Tables() {
     //   console.log(item);
     // });
     console.log(lastRow.getAttribute("customer-data"));
-    setCustLimit(custLimit + 10);
+
     getCustomersList();
   };
 
@@ -93,7 +103,14 @@ function Tables() {
 
   useEffect(() => {
     getCustomersList(null);
+    // console.log(customers.length);
   }, []);
+
+  useEffect(() => {
+    if (custLimit > 10) {
+      getMoreCustomers();
+    }
+  }, [custLimit]);
 
   // Filtering Email
   const customerListing = customers.filter((customer) => {
@@ -144,10 +161,9 @@ function Tables() {
                 </Thead>
                 <Tbody className="customer_body" textTransform={"capitalize"}>
                   {customerListing.map((val, index) => {
-                    
                     return (
                       <TablesTableRow
-                        cusid= {val.id}
+                        cusid={val.id}
                         key={index}
                         name={val.name}
                         email={val.email}
@@ -192,7 +208,7 @@ function Tables() {
           </Box>
         )}
         <Button
-          onClick={getMoreCustomers}
+          onClick={() => setCustLimit(custLimit + 10)}
           bg="teal.300"
           w={200}
           color="white"
