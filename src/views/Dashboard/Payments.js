@@ -89,7 +89,8 @@ function Tables() {
     //     customer_email: null
     // },
     // status: null};
-    let options=[]
+
+    let options = {};
     if(document.querySelector('input[name=payment-date]').value!==null && document.querySelector('input[name=payment-date]').value!=='' && document.querySelector('select[name=payment-date-operator]').value!==undefined && document.querySelector('select[name=payment-date-operator]').value!=='default'){
             //jQuery('')
         options['date'] = {'value': document.querySelector('input[name=payment-date]').value,
@@ -123,7 +124,8 @@ function Tables() {
     }
 
     if(document.querySelector('input[name=payment-metadata-email]').value !==null && document.querySelector('input[name=payment-metadata-email]').value !==''){
-        options['metadata']['customer_email'] = document.querySelector('input[name=payment-metadata-email]').value  
+        //options['metadata']['customer_email'] = document.querySelector('input[name=payment-metadata-email]').value
+        options['metadata'] = { ...options['metadata'] , 'customer_email': document.querySelector('input[name=payment-metadata-email]').value}
     }
     if(document.querySelector('select[name=payment-status]').value !==null && document.querySelector('select[name=payment-status]').value !=='' && document.querySelector('select[name=payment-status]').value!=='default'){
         options['status'] = document.querySelector('select[name=payment-status]').value    
@@ -141,11 +143,12 @@ function Tables() {
     let options = [];
     if(filterApplied){
         options = getFilterData();
+        
         if(isMore){
             options['page'] = filterPage;
         }
         console.log(filterCustomersdataRef);
-        var moreCustomers = filterCustomers(options);
+        var moreCustomers = filterCustomers(options,isMore?filterPage:null);
     }
     else{
         var table= document.querySelector('.customer-listing');
@@ -163,17 +166,19 @@ function Tables() {
     filterCustomersdataRef = false;
     let options = [];
     options = getFilterData();
-    console.log(options.length);
-    console.log(options);
+
     if(Object.keys(options).length == 0){
         setfilterApplied(false)
         setisMore(oldload)
         setCustomers(oldCustomers);
-        return;
+        var moreCustomers = getCustomersList(null);
+        
     }
-    var moreCustomers = filterCustomers(options);
-  
-    
+    else{
+
+        var moreCustomers = filterCustomers(options);
+    }
+ 
   }
 
 
@@ -181,7 +186,7 @@ function Tables() {
     var a = document.querySelector('select[name=payment-status]').selectedIndex;
     setfilterStatus(document.querySelector('select[name=payment-status]').options[a].text);
   }
-  const filterCustomers = async (options) => {
+  const filterCustomers = async (options,limit,page) => {
     try {
     let data = {};
     setLoading(true);
@@ -191,39 +196,40 @@ function Tables() {
       //   })
       // }
         var params="";
-       
-        if(options!==null && options !==undefined){
-            if(options.limit!==undefined){
-                !params?params="?limit="+options.limit:params+="&limit="+options.limit
-            }
-
-            if(options.page!==undefined){
-                !params?params="?page="+options.page:params+="&page="+options.page
-            }
-            
-            if(options.date!==null && options.date!==undefined && options.date.value!==null){
-                // const bodyFormData = new FormData();
-                // bodyFormData.append(filterDate.value, item);
-                //data= {'created': {'value': filterDate.value, 'operator': filterDate.operator} };
-                data['created'] = {'value' : options.date.value, 'operator': options.date.operator};
-              }
-            
-            if(options.amount.value!==null && options.amount!==null && options.amount!==undefined){
-                data['amount'] = {'value' : options.amount.value, 'operator': options.amount.operator}
-              }
-
-            if(options.status!==null && options.status!==undefined){
-                data['status'] = options.status;
-            }
-
-            if(options.metadata.site_url!==null && options.metadata!==undefined){
-                data['metadata'] = {...data['metadata'], 'site_url': options.metadata.site_url};
-            }
-            if(options.metadata.customer_email!==null && options.metadata!==undefined){
-                data['metadata'] = {...data['metadata'], 'customer_email': options.metadata.customer_email};
-            }
-            console.log(data);
+        if(limit!==undefined){
+            !params?params="?limit="+limit:params+="&limit="+limit
         }
+        if(page!==undefined){
+            !params?params="?page="+page:params+="&page="+page
+        }
+        if(options!==null && options !==undefined){
+
+            Object.entries(options).forEach(([key, value]) => {data[key] = value; console.log(data)});
+            // if(options.date!==null && options.date!==undefined && options.date.value!==null){
+            //     // const bodyFormData = new FormData();
+            //     // bodyFormData.append(filterDate.value, item);
+            //     //data= {'created': {'value': filterDate.value, 'operator': filterDate.operator} };
+            //     data['created'] = {'value' : options.date.value, 'operator': options.date.operator};
+            //   }
+            
+            // if(options.amount!==null && options.amount.value!==null && options.amount!==undefined){
+            //     data['amount'] = {'value' : options.amount.value, 'operator': options.amount.operator}
+            //   }
+
+            // if(options.status!==null && options.status!==undefined){
+            //     data['status'] = options.status;
+            // }
+            // if(options.metadata!==undefined && options.metadata!==null){
+            // if(options.metadata.site_url!==null){
+            //     data['metadata'] = {...data['metadata'], 'site_url': options.metadata.site_url};
+            // }
+            // if(options.metadata.customer_email!==null && options.metadata!==undefined){
+            //     data['metadata'] = {...data['metadata'], 'customer_email': options.metadata.customer_email};
+            // }
+        }
+          
+        
+
 
 
       const res = await axios.post(`${API_SERVER}payments/search`+params, JSON.stringify(data), {
@@ -667,7 +673,7 @@ function Tables() {
             <Select my={3} name="payment-status">
               <option defaultValue value="default">Please select an option</option>
                 <option value="succeeded">Succeeded</option>
-                <option value="refunded">Refunded</option> 
+                <option value="requires_capture">Requires Capture</option> 
                 <option value="requires_confirmation">Incomplete</option> 
                 <option value="canceled">Canceled</option>
                 <option value="requires_payment_method">Requires Payment Method</option> 

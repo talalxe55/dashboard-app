@@ -19,7 +19,14 @@ import {
   EditableInput,
   EditableTextarea,
   EditablePreview,
+  Alert,
+  AlertIcon,
+  AlertTitle,
+  AlertDescription,
+  useDisclosure,
+  CloseButton
 } from "@chakra-ui/react";
+import SweetAlert from "react-bootstrap-sweetalert";
 // Assets
 import BackgroundCard1 from "assets/img/BackgroundCard1.png";
 // Custom components
@@ -43,6 +50,7 @@ import {
 } from "variables/general";
 import axios from "axios";
 import { API_SERVER, TOKEN_TYPE, TOKEN, ACCEPT_TYPE } from "config/constant";
+import { setConstantValue } from "typescript";
 
 function Detail() {
 
@@ -54,6 +62,7 @@ function Detail() {
   const [singleCustomerSources, setSingleCustomerSources] = useState();
   const [SingleCustomerEmail, setSingleCustomerEmail] = useState();
   const [SinglePaymentMeta, setSinglePaymentMeta] = useState([]);
+  const [errorData, seterrorData] = useState(null);
   const [loading, setLoading] = useState(false);
   const history = useHistory();
 
@@ -165,8 +174,11 @@ function Detail() {
       setSinglePayment(data);
       setSingleCharge(data.charges);
       setSinglePaymentMeta(data.metadata)
-      if(data.status=='succeeded'){
+      if(data.source!==null){
         const source =  await getCustomerSource(data.source);
+      }
+      else if(data.payment_method!==null){
+        const source =  await getCustomerSource(data.payment_method);
       }
       if(data.customer!==null){
         const customer =  await getCustomerEmail(data.customer);
@@ -277,7 +289,80 @@ color={"black.300"}
     return <div>Loading...</div>;
   }
 
+  const attemptCharge = async () => {
+    setLoading(false);
+    try {
+      const res = await axios.get(`${API_SERVER}payments/confirm/${id}`, {
+        headers: {
+          Authorization: `${TOKEN_TYPE} ${TOKEN}`,
+          Accept: `${ACCEPT_TYPE}`,
+          "Content-Type": `${ACCEPT_TYPE}`,
+        },
+      });
 
+      let data = await res.data.data;
+      if(data.status=='succeeded'){
+        seterrorData({
+            'message': 'Your payment has been succeeded',
+            'status' : 'success',
+            'title': 'Payment Succeeded'
+        })
+      }
+      getCustomerID();
+
+      console.log(data);
+      //setSingleCustomerSources(data.sources);
+      //setLoading(false);
+    } catch (err) {
+        console.log(err);
+      if (err.response.status === 404) {
+        alert('The requested resource was not found');
+        console.log("Resource could not be found!");
+      } else if (err.response.status === 401) {
+        alert('Your session has expired!');
+        history.push('/auth/signin');
+        console.log("Unauthorized!");
+      } 
+      else if (err.response.status === 400) {
+        seterrorData({
+            'message': err.response.data.error.message,
+            'status' : 'error',
+            'title': 'Payment Unsuccessfull'
+        })
+      }
+      else {
+        console.log(err.message);
+      }
+    }
+
+  }
+  const AlertBox = () => {
+    const {
+        isOpen: isVisible,
+        onClose,
+        onOpen,
+      } = useDisclosure({ defaultIsOpen: true })
+    //const [message, error, status, title] = props;
+    return errorData!==null ? (
+    
+    <Alert status={errorData.status}>
+    <AlertIcon />
+    <Box>
+      <AlertTitle>{errorData.title}</AlertTitle>
+      <AlertDescription>
+        {errorData.message}
+      </AlertDescription>
+    </Box>
+    <CloseButton
+      alignSelf='flex-start'
+      position='relative'
+      right={-1}
+      top={-1}
+      onClick={() => seterrorData(null)}
+      
+    />
+  </Alert>) : ""
+  }
   const CardDetails = () => {
     if (singleCustomerSources) {
         console.log(singleCustomerSources);
@@ -322,17 +407,31 @@ color={"black.300"}
   };
 
   return (
-    
+
+      
     <Flex direction="column" pt={{ base: "120px", md: "75px" }}>
+        <AlertBox/> 
         <Flex direction={"column"} width={"30%"}>
         <Box>
+           
         { singlePayment ? <Text
               fontSize="md"
               fontWeight="bold"
               textTransform="capitalize"
           >
               {dataamount(singlePayment.amount)+' '+singlePayment.currency.toUpperCase()+' '+datadate(singlePayment.created)}
-              {setStatus()}
+              {setStatus()} {singlePayment.status=='requires_confirmation'?<Button
+                colorScheme="teal"
+                borderColor="teal.300"
+                color="teal.300"
+                variant="outline"
+                fontSize="xs"
+                p="8px 32px"
+                onClick={attemptCharge}
+              >
+                Charge Payment
+              </Button>:""}
+
           </Text>: <SkeletonText mt='4' noOfLines={3} spacing='4' />}
 
         </Box>
@@ -434,7 +533,7 @@ color={"black.300"}
                     fontWeight="bold"
                     wordBreak="break-all"
                   >
-                    {SingleCustomerEmail ? <NavLink color="blue.300" to={'/admin/billing/'+singlePayment.customer}>{SingleCustomerEmail}</NavLink>  : <SkeletonText noOfLines={1}>Email</SkeletonText>}
+                    {SingleCustomerEmail ? <NavLink color="blue.300" to={'/admin/billing/'+singlePayment.customer}>{SingleCustomerEmail}</NavLink>  : ""}
                   </Text>
                 </Flex>
               </CardBody>

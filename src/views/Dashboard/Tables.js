@@ -153,8 +153,8 @@ function Tables() {
                         email={val.email}
                         desc={val.description}
                         domain={val.object}
-                        status={
-                          val.invoice_settings.default_payment_method || "VISA"
+                        status={ val.sources.data.length>0?val.sources.data[0].card.brand.toUpperCase():""
+                         // val.invoice_settings.default_payment_method || "VISA"
                         }
                         date={datadate(val.created)}
                         viewprofile={val.id}
