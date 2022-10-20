@@ -1,6 +1,5 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 // Chakra imports
 import {
   Box,
@@ -12,6 +11,9 @@ import {
   Text,
   useColorModeValue,
   Heading,
+  Skeleton,
+  SkeletonText,
+  SkeletonCircle,
 } from "@chakra-ui/react";
 // Assets
 import BackgroundCard1 from "assets/img/BackgroundCard1.png";
@@ -25,7 +27,6 @@ import InvoicesRow from "components/Tables/InvoicesRow";
 import TransactionRow from "components/Tables/TransactionRow";
 import { Separator } from "components/Separator/Separator";
 import PaymentForm from "theme/components/PaymentForm";
-import React from "react";
 import { FaUserCircle, FaRegCalendarAlt, FaWallet } from "react-icons/fa";
 import { RiMastercardFill } from "react-icons/ri";
 import {
@@ -53,14 +54,14 @@ function Billing() {
           "Content-Type": `${ACCEPT_TYPE}`,
         },
       });
-
       let data = await res.data.data;
-
-      console.log(data.sources.data.length);
+      // console.log(data.sources.data);
       array.push(data);
       //return data;
+      console.log(data);
       setSingleCustomer(data);
       setSingleCustomerSources(data.sources);
+      console.log(singleCustomerSources);
       setLoading(false);
     } catch (err) {
       console.log(err);
@@ -94,69 +95,30 @@ function Billing() {
   }
 
   const CardDetails = () => {
-    if (singleCustomerSources !== undefined) {
-      return (
-        <Text fontSize="xl" letterSpacing="2px" fontWeight="bold">
-          XXXX XXXX XXXX {singleCustomerSources.data[0].card.last4}
-        </Text>
-      );
-      console.log(singleCustomerSources);
-      if (singleCustomerSources.total_count > 0) {
-        if (singleCustomerSources.data.length > 0) {
-          if (singleCustomerSources.data[0].card) {
-            if (singleCustomerSources.data[0].card.last4.length > 0) {
-              return (
-                <Text fontSize="xl" letterSpacing="2px" fontWeight="bold">
-                  XXXX XXXX XXXX {singleCustomerSources.data[0].card.last4}
-                </Text>
-              );
-            }
-          } else {
+    if (singleCustomerSources) {
+      // console.log(Object.keys(singleCustomerSources));
+      if (singleCustomerSources.data.length > 0) {
+        if (Object.keys(singleCustomerSources.data[0].card) !== 0) {
+          if (singleCustomerSources.data[0].card.last4.length > 0) {
             return (
               <Text fontSize="xl" letterSpacing="2px" fontWeight="bold">
-                XXXX XXXX XXXX XXXX
+                XXXX XXXX XXXX {singleCustomerSources.data[0].card.last4}
               </Text>
             );
+          } else {
+            return <SkeletonText noOfLines={1} />;
           }
         }
       } else {
         return (
           <Text fontSize="xl" letterSpacing="2px" fontWeight="bold">
-            XXXX XXXX XXXX XXXX
+            No card is attached
           </Text>
         );
       }
     } else {
-      return (
-        <Text fontSize="xl" letterSpacing="2px" fontWeight="bold">
-          XXXX XXXX XXXX XXXX
-        </Text>
-      );
+      return <SkeletonText noOfLines={1} />;
     }
-
-    // array[0] = singleCustomer;
-
-    // array.forEach((item, index) => {
-    //   console.log(item.name);
-    // });
-    // if (
-    //   singleCustomer !== undefined &&
-    //   singleCustomer["data"]["sources"]["data"] !== undefined &&
-    //   singleCustomer["data"]["sources"]["data"] !== null &&
-    //   singleCustomer["data"]["sources"]["total_count"] > 0
-    // ) {
-    //   return (
-    //     <Text fontSize="xl" letterSpacing="2px" fontWeight="bold">
-    //       {singleCustomer.data.sources.data.card.last4}
-    //     </Text>
-    //   );
-    // } else {
-    //   return (
-    //     <Text fontSize="xl" letterSpacing="2px" fontWeight="bold">
-    //       XXXX XXXX XXXX XXXX
-    //     </Text>
-    //   );
-    // }
   };
 
   return (
@@ -195,11 +157,8 @@ function Billing() {
                       fontWeight="bold"
                       textTransform="capitalize"
                     >
-                      {singleCustomer ? singleCustomer.name : "Customer Name"}
+                      {singleCustomer ? singleCustomer.name : "Customer"}
                     </Text>
-                    {/* <Text fontSize="md" fontWeight="bold">
-                    {"Name"}
-                  </Text> */}
                     <Icon
                       as={RiMastercardFill}
                       w="48px"
@@ -210,7 +169,6 @@ function Billing() {
                   <Spacer />
                   <Flex direction="column">
                     <Box>
-                      {" "}
                       <Text fontSize="xl" letterSpacing="2px" fontWeight="bold">
                         <CardDetails />
                       </Text>
@@ -219,9 +177,11 @@ function Billing() {
                       <Flex direction="column" me="34px">
                         <Text fontSize="xs">BRAND</Text>
                         <Text fontSize="xs" fontWeight="bold">
-                          {/* {singleCustomer
-                          ? singleCustomer.sources.data[0].card.brand
-                          : "VISA Card"} */}
+                          {singleCustomerSources ? (
+                            singleCustomerSources.data[0].card.brand
+                          ) : (
+                            <SkeletonText noOfLines={1} />
+                          )}
                         </Text>
                       </Flex>
                       <Flex direction="column" me="34px">
@@ -445,15 +405,9 @@ function Billing() {
                       return (
                         <>
                           <Flex p={7} bg="whiteAlpha.500" borderRadius={10}>
-                            <SkeletonTheme
-                              baseColor="#202020"
-                              highlightColor="#444"
-                            >
-                              <Heading as="h6" fontSize={18} color="gray.500">
-                                {item.owner.name}
-                              </Heading>
-                              <Skeleton />
-                            </SkeletonTheme>
+                            <Heading as="h6" fontSize={18} color="gray.500">
+                              {item.owner.name}
+                            </Heading>
                           </Flex>
                         </>
                       );
