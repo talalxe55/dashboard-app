@@ -47,7 +47,7 @@ function Billing() {
   let { id } = useParams();
   var array = [];
   const [singleCustomer, setSingleCustomer] = useState();
-  const [singleCustomerSources, setSingleCustomerSources] = useState();
+  const [singleCustomerSources, setSingleCustomerSources] = useState(null);
   const [loading, setLoading] = useState(false);
   const getCustomerID = async () => {
     setLoading(false);
@@ -63,7 +63,7 @@ function Billing() {
       // console.log(data.sources.data);
       array.push(data);
       //return data;
-      console.log(data);
+      // console.log(data);
       setSingleCustomer(data);
       setSingleCustomerSources(data.sources);
       setLoading(false);
@@ -80,7 +80,7 @@ function Billing() {
     // });
     // console.log(getCustomerID(id));
     // setSingleCustomer(getCustomerID(id));
-    // getAllPaymentsByCustomerID();
+    getAllPaymentsByCustomerID();
     getCustomerID();
   }, []);
 
@@ -182,8 +182,22 @@ function Billing() {
                       <Flex direction="column" me="34px">
                         <Text fontSize="xs">BRAND</Text>
                         <Text fontSize="xs" fontWeight="bold">
-                          {singleCustomerSources ? (
+                          {/* {singleCustomerSources !== null &&
+                          singleCustomerSources.data.length > 0 ? (
                             singleCustomerSources.data[0].card.brand
+                          ) : (
+                            <SkeletonText noOfLines={1} />
+                          )} */}
+                          {singleCustomerSources ? (
+                            singleCustomerSources.data.length > 0 ? (
+                              singleCustomerSources.data[0].card ? (
+                                singleCustomerSources.data[0].card.brand
+                              ) : (
+                                <SkeletonText noOfLines={1} />
+                              )
+                            ) : (
+                              "N/A"
+                            )
                           ) : (
                             <SkeletonText noOfLines={1} />
                           )}
@@ -192,9 +206,6 @@ function Billing() {
                       <Flex direction="column" me="34px">
                         <Text fontSize="xs">VALID THRU</Text>
                         <Text fontSize="xs" fontWeight="bold">
-                          {/* {console.log(
-                            singleCustomerSources.data[0].card.exp_month
-                          )} */}
                           {singleCustomerSources ? (
                             singleCustomerSources.data.length > 0 ? (
                               singleCustomerSources.data[0].card ? (
@@ -203,7 +214,7 @@ function Billing() {
                                 <SkeletonText noOfLines={1} />
                               )
                             ) : (
-                              <SkeletonText noOfLines={1} />
+                              "N/A"
                             )
                           ) : (
                             <SkeletonText noOfLines={1} />
@@ -221,7 +232,7 @@ function Billing() {
                                 <SkeletonText noOfLines={1} />
                               )
                             ) : (
-                              <SkeletonText noOfLines={1} />
+                              "N/A"
                             )
                           ) : (
                             <SkeletonText noOfLines={1} />
@@ -387,7 +398,7 @@ function Billing() {
                   }
                 })
               ) : (
-                <Skeleton noOfLines={3} />
+                "No Card found!"
               )
             ) : (
               <SkeletonText noOfLines={3} />
@@ -448,7 +459,9 @@ function Billing() {
                   singleCustomerSources.data.length > 0 ? (
                     singleCustomerSources.data.map((val, index) => {
                       if (val.card !== undefined) {
-                        console.log(val.owner);
+                        {
+                          /* console.log(val.owner); */
+                        }
                         return (
                           <>
                             <BillingRowSources
@@ -468,7 +481,7 @@ function Billing() {
                       }
                     })
                   ) : (
-                    <Skeleton noOfLines={8} />
+                    "There is no card!"
                   )
                 ) : (
                   <SkeletonText noOfLines={8} />

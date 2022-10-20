@@ -74,6 +74,7 @@ const getAllPaymentsByCustomerID = async () => {
         "Content-Type": `${ACCEPT_TYPE}`,
       },
     });
+    console.log(res.data.data);
   } catch (err) {
     if (err.response.status === 404) {
       console.log("Resource could not be found!");
