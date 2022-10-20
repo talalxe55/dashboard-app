@@ -845,12 +845,3 @@ function Tables() {
 export default Tables;
 
 
-
-const FilterCustomers = (props) => {
-
-  return (
-    <>
- 
-    </>
-  );
-};
