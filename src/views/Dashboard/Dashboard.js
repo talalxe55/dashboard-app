@@ -44,11 +44,15 @@ import {
 } from "components/Icons/Icons.js";
 import DashboardTableRow from "components/Tables/DashboardTableRow";
 import TimelineRow from "components/Tables/TimelineRow";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 // react icons
 import { BsArrowRight } from "react-icons/bs";
 import { IoCheckmarkDoneCircleSharp } from "react-icons/io5";
 import { dashboardTableData, timelineData } from "variables/general";
+import { NavLink, useParams, useHistory } from "react-router-dom";
+import axios from "axios";
+import { API_SERVER, TOKEN_TYPE, TOKEN, ACCEPT_TYPE } from "config/constant";
+import { setConstantValue } from "typescript";
 
 export default function Dashboard() {
   const value = "$100.000";
@@ -57,6 +61,8 @@ export default function Dashboard() {
   const iconTeal = useColorModeValue("teal.300", "teal.300");
   const iconBoxInside = useColorModeValue("white", "white");
   const textColor = useColorModeValue("gray.700", "white");
+  const [totalAmount , settotalAmount] = useState();
+  const history = useHistory();
   const [series, setSeries] = useState([
     {
       type: "area",
@@ -70,6 +76,44 @@ export default function Dashboard() {
     },
   ]);
   const overlayRef = React.useRef();
+  const dashboardData = async (options) => {
+
+    try {
+      const res = await axios.get(`${API_SERVER}account/total`, {
+        headers: {
+          Authorization: `${TOKEN_TYPE} ${TOKEN}`,
+          Accept: `${ACCEPT_TYPE}`,
+          "Content-Type": `${ACCEPT_TYPE}`,
+        },
+      });
+
+      let data = await res.data.data;
+      console.log(data);
+      settotalAmount(data);
+
+    } catch (err) {
+        console.log(err);
+      if (err.response.status === 404) {
+        
+      } else if (err.response.status === 401) {
+        localStorage.removeItem('user');
+        history.push('/auth/signin');
+      } else {
+        console.log(err.message);
+      }
+    }
+  }
+
+  const dataamount = (amount) => {
+    let cents = amount;
+    var formatedDollars = (cents / 100).toLocaleString("en-US", {style:"currency", currency:"USD"});
+    //formatedDateTime = formatedDateTime.toLocaleString();
+    return formatedDollars;
+  };
+  useEffect(() => {
+    dashboardData(null);
+    // console.log(customers.length);
+  }, []);
 
   return (
     <Flex flexDirection="column" pt={{ base: "120px", md: "75px" }}>
@@ -84,13 +128,13 @@ export default function Dashboard() {
                   fontWeight="bold"
                   pb=".1rem"
                 >
-                  Today's Money
+                  Total Balance
                 </StatLabel>
                 <Flex>
                   <StatNumber fontSize="lg" color={textColor}>
-                    $53,000
+                    {totalAmount?dataamount(totalAmount.available[0].amount):0}
                   </StatNumber>
-                  <StatHelpText
+                  {/* <StatHelpText
                     alignSelf="flex-end"
                     justifySelf="flex-end"
                     m="0px"
@@ -100,7 +144,7 @@ export default function Dashboard() {
                     fontSize="md"
                   >
                     +55%
-                  </StatHelpText>
+                  </StatHelpText> */}
                 </Flex>
               </Stat>
               <IconBox h={"45px"} w={"45px"} bg={iconTeal}>

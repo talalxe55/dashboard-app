@@ -1174,7 +1174,7 @@ const refundCharge = async (amount) => {
                     // logo={row.logo}
                     date={datadate(row.created)}
                     price={dataamount(row.amount_captured)}
-                    refund={row.refunds.data.length>0?row.refunds:null}
+                    refund={row.refunds.data.length>0?row.refunds:{data:[]}}
                   />
                 );
               }):<SkeletonText noOfLines={5}></SkeletonText>}
