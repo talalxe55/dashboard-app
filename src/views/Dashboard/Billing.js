@@ -42,6 +42,10 @@ import { VisaIcon } from "components/Icons/Icons";
 import { MastercardIcon } from "components/Icons/Icons";
 import BillingRowSources from "components/Tables/BillingRowSources";
 import { getAllPaymentsByCustomerID } from "api/ApiListing";
+import {
+  AlertUnauthorized,
+  AlertDataNotFound,
+} from "theme/components/AlertDialog";
 
 function Billing() {
   let { id } = useParams();
@@ -49,6 +53,8 @@ function Billing() {
   const [singleCustomer, setSingleCustomer] = useState();
   const [singleCustomerSources, setSingleCustomerSources] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [unauthorizedWarning, setUnauthorizedWarning] = useState(false);
+  const [noDataFound, setNoDataFound] = useState(false);
   const getCustomerID = async () => {
     setLoading(false);
     try {
@@ -68,7 +74,17 @@ function Billing() {
       setSingleCustomerSources(data.sources);
       setLoading(false);
     } catch (err) {
-      console.log(err);
+      if (err.response.status === 404) {
+        console.log("No data found!!");
+        setNoDataFound(true);
+        console.log("Resource could not be found!");
+      } else if (err.response.status === 401) {
+        console.log("Unauthorized!");
+        localStorage.removeItem("user");
+        setUnauthorizedWarning(true);
+      } else {
+        console.log(err.message);
+      }
     }
   };
 
@@ -80,7 +96,7 @@ function Billing() {
     // });
     // console.log(getCustomerID(id));
     // setSingleCustomer(getCustomerID(id));
-    getAllPaymentsByCustomerID();
+    // getAllPaymentsByCustomerID();
     getCustomerID();
   }, []);
 
@@ -101,7 +117,6 @@ function Billing() {
 
   const CardDetails = () => {
     if (singleCustomerSources) {
-      // console.log(Object.keys(singleCustomerSources));
       if (singleCustomerSources.data.length > 0) {
         if (Object.keys(singleCustomerSources.data[0].card) !== 0) {
           if (singleCustomerSources.data[0].card.last4.length > 0) {
@@ -128,6 +143,9 @@ function Billing() {
 
   return (
     <Flex direction="column" pt={{ base: "120px", md: "75px" }}>
+      {unauthorizedWarning ? <AlertUnauthorized /> : null}
+      {noDataFound ? <AlertDataNotFound /> : null}
+
       <Grid templateColumns={{ sm: "1fr", lg: "2fr 1.2fr" }} templateRows="1fr">
         <Box>
           <Grid
@@ -341,155 +359,74 @@ function Billing() {
                 <Text fontSize="lg" color={textColor} fontWeight="bold">
                   Payment Method
                 </Text>
+                {/* Create Payment Modal */}
                 <PaymentForm bg={bgButton} />
               </Flex>
             </CardHeader>
-            {singleCustomerSources ? (
-              singleCustomerSources.data.length > 0 ? (
-                singleCustomerSources.data.map((val, index) => {
-                  if (val.card !== undefined) {
-                    return (
-                      <CardBody key={index}>
-                        <Flex
-                          direction={{ sm: "column", md: "row" }}
-                          align="center"
-                          w="100%"
-                          justify="center"
-                          py="1rem"
-                        >
+            <Grid gap={5} templateColumns={{ sm: "1fr", lg: "repeat(2, 1fr)" }}>
+              {/* {console.log(singleCustomerSources.data)} */}
+              {singleCustomerSources ? (
+                singleCustomerSources.data.length > 0 ? (
+                  singleCustomerSources.data.map((val, index) => {
+                    if (val.card !== undefined) {
+                      return (
+                        <CardBody key={index}>
                           <Flex
-                            p="1rem"
-                            bg="transparent"
-                            borderRadius="15px"
-                            width="100%"
-                            border="1px solid"
-                            borderColor={borderColor}
+                            direction={{ sm: "column", md: "row" }}
                             align="center"
-                            mb={{ sm: "24px", md: "0px" }}
-                            me={{ sm: "0px", md: "24px" }}
+                            w="100%"
+                            justify="center"
+                            py="1rem"
                           >
-                            <IconBox me="10px" w="25px" h="22px">
-                              {val ? (
-                                (val.card.brand === "Visa",
-                                (<VisaIcon w="100%" h="100%" />))
-                              ) : (
-                                <VisaIcon w="100%" h="100%" />
-                              )}
-                            </IconBox>
-                            <Text
-                              color="gray.400"
-                              fontSize="md"
-                              fontWeight="semibold"
-                            >
-                              {"XXXX XXXX XXXX " + val.card.last4}
-                            </Text>
-                            <Spacer />
-                            <Button
-                              p="0px"
+                            <Flex
+                              p="1rem"
                               bg="transparent"
-                              w="16px"
-                              h="16px"
-                              variant="no-hover"
-                            ></Button>
+                              borderRadius="15px"
+                              width="100%"
+                              border="1px solid"
+                              borderColor={borderColor}
+                              align="center"
+                              mb={{ sm: "24px", md: "0px" }}
+                              me={{ sm: "0px", md: "24px" }}
+                            >
+                              <IconBox me="10px" w="25px" h="22px">
+                                {val ? (
+                                  (val.card.brand === "Visa",
+                                  (<VisaIcon w="100%" h="100%" />))
+                                ) : (
+                                  <VisaIcon w="100%" h="100%" />
+                                )}
+                              </IconBox>
+                              <Text
+                                color="gray.400"
+                                fontSize="md"
+                                fontWeight="semibold"
+                              >
+                                {"XXXX XXXX X12XXX " + val.card.last4}
+                              </Text>
+                              <Spacer />
+                              <Button
+                                p="0px"
+                                bg="transparent"
+                                w="16px"
+                                h="16px"
+                                variant="no-hover"
+                              ></Button>
+                            </Flex>
                           </Flex>
-                        </Flex>
-                      </CardBody>
-                    );
-                  }
-                })
+                        </CardBody>
+                      );
+                    }
+                  })
+                ) : (
+                  "No Card found!"
+                )
               ) : (
-                "No Card found!"
-              )
-            ) : (
-              <SkeletonText noOfLines={3} />
-            )}
+                <SkeletonText noOfLines={3} />
+              )}
+            </Grid>
           </Card>
         </Box>
-        <Card
-          p="22px"
-          my={{ sm: "24px", lg: "0px" }}
-          ms={{ sm: "0px", lg: "24px" }}
-        >
-          <CardHeader>
-            <Flex justify="space-between" align="center" mb="1rem" w="100%">
-              <Text fontSize="lg" color={textColor} fontWeight="bold">
-                Invoices
-              </Text>
-              <Button
-                colorScheme="teal"
-                borderColor="teal.300"
-                color="teal.300"
-                variant="outline"
-                fontSize="xs"
-                p="8px 32px"
-              >
-                VIEW ALL
-              </Button>
-            </Flex>
-          </CardHeader>
-          <CardBody>
-            <Flex direction="column" w="100%">
-              {invoicesData.map((row, index) => {
-                return (
-                  <InvoicesRow
-                    key={index}
-                    date={row.date}
-                    code={row.code}
-                    price={row.price}
-                    logo={row.logo}
-                    format={row.format}
-                  />
-                );
-              })}
-            </Flex>
-          </CardBody>
-        </Card>
-      </Grid>
-      <Grid templateColumns={{ sm: "1fr", lg: "1.6fr 1.2fr" }}>
-        <Card my={{ lg: "24px" }} me={{ lg: "24px" }}>
-          <Flex direction="column">
-            <CardHeader py="12px">
-              <Text color={textColor} fontSize="lg" fontWeight="bold">
-                Billing Sources
-              </Text>
-            </CardHeader>
-            <CardBody>
-              <Flex direction="column" w="100%">
-                {singleCustomerSources ? (
-                  singleCustomerSources.data.length > 0 ? (
-                    singleCustomerSources.data.map((val, index) => {
-                      if (val.card !== undefined) {
-                        {
-                          /* console.log(val.owner); */
-                        }
-                        return (
-                          <>
-                            <BillingRowSources
-                              key={index}
-                              name={val.owner.name}
-                              email={val.owner.email}
-                              phone={val.owner.phone}
-                              country={val.owner.address.country}
-                              state={val.owner.address.state}
-                              city={val.owner.address.city}
-                              line1={val.owner.address.line1}
-                              line2={val.owner.address.line2}
-                              postal_code={val.owner.address.postal_code}
-                            />
-                          </>
-                        );
-                      }
-                    })
-                  ) : (
-                    "There is no card!"
-                  )
-                ) : (
-                  <SkeletonText noOfLines={8} />
-                )}
-              </Flex>
-            </CardBody>
-          </Flex>
-        </Card>
         <Card my="24px" ms={{ lg: "24px" }}>
           <CardHeader mb="12px">
             <Flex direction="column" w="100%">
@@ -565,6 +502,91 @@ function Billing() {
           </CardBody>
         </Card>
       </Grid>
+      {/* BILLING SOURCES*/}
+      <Card my={{ lg: "24px" }} me={{ lg: "24px" }}>
+        <CardHeader py="12px">
+          <Text color={textColor} fontSize="lg" fontWeight="bold">
+            Billing Sources
+          </Text>
+        </CardHeader>
+        <Grid gap={5} templateColumns={{ sm: "1fr", lg: "repeat(2, 1fr)" }}>
+          {singleCustomerSources ? (
+            singleCustomerSources.data.length > 0 ? (
+              singleCustomerSources.data.map((val, index) => {
+                if (val.card !== undefined) {
+                  {
+                    /* console.log(val.owner); */
+                  }
+                  return (
+                    <>
+                      <CardBody>
+                        <Flex direction="column" w="100%">
+                          <BillingRowSources
+                            key={index}
+                            name={val.owner.name}
+                            email={val.owner.email}
+                            phone={val.owner.phone}
+                            country={val.owner.address.country}
+                            state={val.owner.address.state}
+                            city={val.owner.address.city}
+                            line1={val.owner.address.line1}
+                            line2={val.owner.address.line2}
+                            postal_code={val.owner.address.postal_code}
+                          />
+                        </Flex>
+                      </CardBody>
+                    </>
+                  );
+                }
+              })
+            ) : (
+              "There is no card!"
+            )
+          ) : (
+            <SkeletonText noOfLines={9} />
+          )}
+        </Grid>
+      </Card>
+      {/* INVOICES PDF  */}
+      {/* <Card
+          p="22px"
+          my={{ sm: "24px", lg: "0px" }}
+          ms={{ sm: "0px", lg: "24px" }}
+        >
+          <CardHeader>
+            <Flex justify="space-between" align="center" mb="1rem" w="100%">
+              <Text fontSize="lg" color={textColor} fontWeight="bold">
+                Invoices
+              </Text>
+              <Button
+                colorScheme="teal"
+                borderColor="teal.300"
+                color="teal.300"
+                variant="outline"
+                fontSize="xs"
+                p="8px 32px"
+              >
+                VIEW ALL
+              </Button>
+            </Flex>
+          </CardHeader>
+          <CardBody>
+            <Flex direction="column" w="100%">
+              {invoicesData.map((row, index) => {
+                return (
+                  <InvoicesRow
+                    key={index}
+                    date={row.date}
+                    code={row.code}
+                    price={row.price}
+                    logo={row.logo}
+                    format={row.format}
+                  />
+                );
+              })}
+            </Flex>
+          </CardBody>
+        </Card> */}
     </Flex>
   );
 }

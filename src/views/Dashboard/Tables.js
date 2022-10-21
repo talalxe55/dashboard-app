@@ -58,25 +58,29 @@ function Tables() {
       //     console.log(Object.keys(options[index])+' => '+ item)
       //   })
       // }
-        var params="";
-       
-        if(options!==null && options !==undefined){
+      var params = "";
 
-            if(options.limit!==undefined){
-                !params?params="?limit="+options.limit:params+="&limit="+options.limit
-            }
-
-            if(options.starting_after!==undefined){
-                !params?params="?starting_after="+options.starting_after:params+="&starting_after="+options.starting_after
-            }
-
-            if(options.ending_before!==undefined){
-                !params?params="?ending_before="+options.ending_before:params+="&ending_before="+options.ending_before
-            }
-            
+      if (options !== null && options !== undefined) {
+        if (options.limit !== undefined) {
+          !params
+            ? (params = "?limit=" + options.limit)
+            : (params += "&limit=" + options.limit);
         }
-      
-      const res = await axios.get(`${API_SERVER}customers/`+params, {
+
+        if (options.starting_after !== undefined) {
+          !params
+            ? (params = "?starting_after=" + options.starting_after)
+            : (params += "&starting_after=" + options.starting_after);
+        }
+
+        if (options.ending_before !== undefined) {
+          !params
+            ? (params = "?ending_before=" + options.ending_before)
+            : (params += "&ending_before=" + options.ending_before);
+        }
+      }
+
+      const res = await axios.get(`${API_SERVER}customers/` + params, {
         headers: {
           Authorization: `${TOKEN_TYPE} ${TOKEN}`,
           Accept: `${ACCEPT_TYPE}`,
@@ -85,30 +89,25 @@ function Tables() {
       });
       setLoading(false);
       let data = res.data.data.data;
-      if(!customers){
+      if (!customers) {
         setCustomers(data);
         setoldCustomers(data);
+      } else {
+        setCustomers((customers) => [...customers, ...data]);
+        setoldCustomers((customers) => [...customers, ...data]);
       }
-      else{
-        setCustomers((customers) => ([...customers, ...data]));
-        setoldCustomers((customers) => ([...customers, ...data]));
-      }
-      
-      
-    setisMore(res.data.data.has_more)
-    setoldload(res.data.data.has_more)
-      
-      
-      
-    }  catch (err) {
-        console.log(err);
+
+      setisMore(res.data.data.has_more);
+      setoldload(res.data.data.has_more);
+    } catch (err) {
+      console.log(err);
       if (err.response.status === 404) {
-        alert('The requested resource was not found');
+        alert("The requested resource was not found");
         console.log("Resource could not be found!");
       } else if (err.response.status === 401) {
-        alert('Your session has expired!');
-        localStorage.removeItem('user');
-        history.push('/auth/signin');
+        alert("Your session has expired!");
+        localStorage.removeItem("user");
+        history.push("/auth/signin");
       } else {
         console.log(err.message);
       }
@@ -120,95 +119,86 @@ function Tables() {
     //props.emailTextHandler(email);
   };
 
-  const filterCustomers = async (options,limit,page) => {
+  const filterCustomers = async (options, limit, page) => {
     try {
-    let data = {};
-    setLoading(true);
+      let data = {};
+      setLoading(true);
       // if(options){
       //   options.forEach((item,index) => {
       //     console.log(Object.keys(options[index])+' => '+ item)
       //   })
       // }
-        var params="";
-        if(limit!==undefined){
-            !params?params="?limit="+limit:params+="&limit="+limit
+      var params = "";
+      if (limit !== undefined) {
+        !params ? (params = "?limit=" + limit) : (params += "&limit=" + limit);
+      }
+      if (page !== undefined) {
+        !params ? (params = "?page=" + page) : (params += "&page=" + page);
+      }
+      if (options !== null && options !== undefined) {
+        Object.entries(options).forEach(([key, value]) => {
+          data[key] = value;
+          console.log(data);
+        });
+      }
+
+      const res = await axios.post(
+        `${API_SERVER}customers/search` + params,
+        JSON.stringify(data),
+        {
+          headers: {
+            Authorization: `${TOKEN_TYPE} ${TOKEN}`,
+            Accept: `${ACCEPT_TYPE}`,
+            "Content-Type": `${ACCEPT_TYPE}`,
+          },
         }
-        if(page!==undefined){
-            !params?params="?page="+page:params+="&page="+page
-        }
-        if(options!==null && options !==undefined){
-
-            Object.entries(options).forEach(([key, value]) => {data[key] = value; console.log(data)});
-
-        }
-          
-        
-
-
-
-      const res = await axios.post(`${API_SERVER}customers/search`+params, JSON.stringify(data), {
-        headers: {
-          Authorization: `${TOKEN_TYPE} ${TOKEN}`,
-          Accept: `${ACCEPT_TYPE}`,
-          "Content-Type": `${ACCEPT_TYPE}`,
-        },
-        
-       
-        
-      });
-
+      );
 
       setLoading(false);
       let resdata = res.data.data.data;
       console.log(resdata);
-      if(!options['page']){
+      if (!options["page"]) {
         setCustomers(resdata);
         filterCustomersdataRef = true;
+      } else {
+        setCustomers((customers) => [...customers, ...resdata]);
       }
-      else{
-        setCustomers((customers) => ([...customers, ...resdata]));
+
+      if (res.data.data.next_page !== null && res.data.data.has_more == true) {
+        setfilterPage(res.data.data.next_page);
       }
-      
-    if(res.data.data.next_page!==null && res.data.data.has_more==true){
-        setfilterPage(res.data.data.next_page)
-       
-    }
-    setisMore(res.data.data.has_more)
-    setfilterApplied(true);
-      
-      
-      
+      setisMore(res.data.data.has_more);
+      setfilterApplied(true);
     } catch (err) {
-        console.log(err);
+      console.log(err);
       if (err.response.status === 404) {
-        alert('The requested resource was not found');
+        alert("The requested resource was not found");
         console.log("Resource could not be found!");
       } else if (err.response.status === 401) {
-        localStorage.removeItem('user');
-        history.push('/auth/signin');
+        localStorage.removeItem("user");
+        history.push("/auth/signin");
       } else {
         console.log(err.message);
       }
     }
   };
 
-  function getMoreCustomers(){
+  function getMoreCustomers() {
     let options = [];
-    if(filterApplied){
-        options = getFilterData();
-        
-        // if(isMore){
-        //     options['page'] = filterPage;
-        // }
-        console.log(filterCustomersdataRef);
-        var moreCustomers = filterCustomers(options,isMore?filterPage:null);
-    }
-    else{
-        var table= document.querySelector('.customer-listing');
-        var lastRow = table.rows[ table.rows.length - 1 ];
-        
-        options['starting_after']=lastRow.getAttribute('customer-data')
-        var moreCustomers = getCustomersList(options);
+    if (filterApplied) {
+      options = getFilterData();
+
+      // if(isMore){
+      //     options['page'] = filterPage;
+      // }
+      console.log(filterCustomersdataRef);
+      var moreCustomers = filterCustomers(options, isMore ? filterPage : null);
+    } else {
+      var table = document.querySelector(".customer-listing");
+      var lastRow = table.rows[table.rows.length - 1];
+
+      options["starting_after"] = lastRow.getAttribute("customer-data");
+      var moreCustomers = getCustomersList(options);
     }
   }
 
@@ -244,90 +234,82 @@ function Tables() {
     setEmailFilter(email);
   };
 
-  function getFilterData(){
-
-
+  function getFilterData() {
     let options = {};
-    if(document.querySelector('input[name=payment-date]').value!==null && document.querySelector('input[name=payment-date]').value!=='' && document.querySelector('select[name=payment-date-operator]').value!==undefined && document.querySelector('select[name=payment-date-operator]').value!=='default'){
-            //jQuery('')
-        options['created'] = {'value': document.querySelector('input[name=payment-date]').value,
-                            'operator': document.querySelector('select[name=payment-date-operator]').value};
-        
-        
+    if (
+      document.querySelector("input[name=payment-date]").value !== null &&
+      document.querySelector("input[name=payment-date]").value !== "" &&
+      document.querySelector("select[name=payment-date-operator]").value !==
+        undefined &&
+      document.querySelector("select[name=payment-date-operator]").value !==
+        "default"
+    ) {
+      //jQuery('')
+      options["created"] = {
+        value: document.querySelector("input[name=payment-date]").value,
+        operator: document.querySelector("select[name=payment-date-operator]")
+          .value,
+      };
     }
-
 
     // if(document.querySelector('input[name=payment-amount]').value!==null && document.querySelector('input[name=payment-amount]').value!=='' && document.querySelector('select[name=payment-amount-operator]').value!==undefined && document.querySelector('select[name=payment-amount-operator]').value!=='default'){
-        
+
     //     options['amount'] = {'value': document.querySelector('input[name=payment-amount]').value,
     //                         'operator': document.querySelector('select[name=payment-amount-operator]').value};
-        
-        
+
     // }
     // if(document.querySelector('select[name=payment-status]')!==undefined){
-        
+
     //     options['status'] = document.querySelector('input[name=payment-status]').value;
-        
-        
+
     // }
     // if(document.querySelector('select[name=payment-currency]')!==undefined){
-        
+
     //     options['currency'] = document.querySelector('select[name=payment-currency]').value;
-        
-        
-    // }
-    
-    // if(document.querySelector('select[name=payment-metadata]').value === 'NLS' && document.querySelector('select[name=payment-metadata]').value !== 'default'){
-    //         //options['metadata']['site_url'] = "https://nolimitsocial99.com"   
-    //         options['metadata'] = { ...options['metadata'] , 'site_url': "https://nolimitsocial99.com"} 
+
     // }
 
-    if(document.querySelector('input[name=customer-email]').value !==null && document.querySelector('input[name=customer-email]').value !==''){
-        //options['metadata']['customer_email'] = document.querySelector('input[name=payment-metadata-email]').value
-        options['email'] = document.querySelector('input[name=customer-email]').value
+    // if(document.querySelector('select[name=payment-metadata]').value === 'NLS' && document.querySelector('select[name=payment-metadata]').value !== 'default'){
+    //         //options['metadata']['site_url'] = "https://nolimitsocial99.com"
+    //         options['metadata'] = { ...options['metadata'] , 'site_url': "https://nolimitsocial99.com"}
+    // }
+
+    if (
+      document.querySelector("input[name=customer-email]").value !== null &&
+      document.querySelector("input[name=customer-email]").value !== ""
+    ) {
+      //options['metadata']['customer_email'] = document.querySelector('input[name=payment-metadata-email]').value
+      options["email"] = document.querySelector(
+        "input[name=customer-email]"
+      ).value;
     }
     // if(document.querySelector('select[name=payment-status]').value !==null && document.querySelector('select[name=payment-status]').value !=='' && document.querySelector('select[name=payment-status]').value!=='default'){
-    //     options['status'] = document.querySelector('select[name=payment-status]').value    
+    //     options['status'] = document.querySelector('select[name=payment-status]').value
     // }
-    
 
-
-    if(!options){
-        
-        return null;
+    if (!options) {
+      return null;
     }
     return options;
   }
-  
-  function searchPaymentsbyfilter(){
 
+  function searchPaymentsbyfilter() {
     filterCustomersdataRef = false;
     let options = [];
     options = getFilterData();
 
-    if(Object.keys(options).length == 0){
-        setfilterApplied(false)
-        setisMore(oldload)
-        setCustomers([]);
-        var moreCustomers = getCustomersList(null);
-        
+    if (Object.keys(options).length == 0) {
+      setfilterApplied(false);
+      setisMore(oldload);
+      setCustomers([]);
+      var moreCustomers = getCustomersList(null);
+    } else {
+      var moreCustomers = filterCustomers(options);
     }
-    else{
-
-        var moreCustomers = filterCustomers(options);
-    }
- 
   }
 
-  
-  
-
   return (
-    
-
-
     <Flex direction="column" pt={{ base: "120px", md: "75px" }}>
-
       <Card overflowX={{ sm: "scroll", xl: "hidden" }}>
         <CardHeader p="0 0 30px 0">
           <Text
@@ -340,58 +322,67 @@ function Tables() {
           </Text>
         </CardHeader>
         <Box>
-        <Flex className="filter_customers">
-    <Menu>
-      <MenuButton
-        as={Button}
-        leftIcon={<AddIcon />}
-        border="1px"
-        borderStyle={"dashed"}
-        borderColor={"gray.400"}
-        color={"gray.500"}
-        bg={"none"}
-        fontSize={15}
-      >
-        {filterEmail ? "Email | " + filterEmail : "Email"}
-      </MenuButton>
-      <MenuList>
-        <Box p={3}>
-          <Flex justifyContent="space-between" alignItems="center">
-            <Text fontWeight={"bold"}>Filter By Email</Text>
-            <Button
-              p={0}
-              fontSize={15}
-              borderRadius={50}
-              onClick={() =>{ emailHandler(""); document.querySelector('input[name=customer-email]').value=""; searchPaymentsbyfilter();}}
-            >
-              <CloseIcon />
-            </Button>
-          </Flex>
-          <Flex justifyContent="center" alignItems="center" my={3}>
-            <Text fontSize={14} w={"50%"}>
-              is equal to
-            </Text>
-            <Input
-              placeholder="Enter customer email"
-              value={filterEmail}
-              onChange={(e) => setFilterEmail(e.target.value)}
-              id="filterEmail"
-              name="customer-email"
-            />
-          </Flex>
-          <Button
-            w={"100%"}
-            bg="teal.300"
-            color="white"
-            _hover={{ color: "black", bg: "gray.300" }}
-            onClick={() =>{emailHandler(filterEmail); searchPaymentsbyfilter();}}
-          >
-            Apply
-          </Button>
-        </Box>
-      </MenuList>
-    </Menu>
-    {/* <Menu>
+          <Flex className="filter_customers">
+            <Menu>
+              <MenuButton
+                as={Button}
+                leftIcon={<AddIcon />}
+                border="1px"
+                borderStyle={"dashed"}
+                borderColor={"gray.400"}
+                color={"gray.500"}
+                bg={"none"}
+                fontSize={15}
+              >
+                {filterEmail ? "Email | " + filterEmail : "Email"}
+              </MenuButton>
+              <MenuList>
+                <Box p={3}>
+                  <Flex justifyContent="space-between" alignItems="center">
+                    <Text fontWeight={"bold"}>Filter By Email</Text>
+                    <Button
+                      p={0}
+                      fontSize={15}
+                      borderRadius={50}
+                      onClick={() => {
+                        emailHandler("");
+                        document.querySelector(
+                          "input[name=customer-email]"
+                        ).value = "";
+                        searchPaymentsbyfilter();
+                      }}
+                    >
+                      <CloseIcon />
+                    </Button>
+                  </Flex>
+                  <Flex justifyContent="center" alignItems="center" my={3}>
+                    <Text fontSize={14} w={"50%"}>
+                      is equal to
+                    </Text>
+                    <Input
+                      placeholder="Enter customer email"
+                      value={filterEmail}
+                      onChange={(e) => setFilterEmail(e.target.value)}
+                      id="filterEmail"
+                      name="customer-email"
+                    />
+                  </Flex>
+                  <Button
+                    w={"100%"}
+                    bg="teal.300"
+                    color="white"
+                    _hover={{ color: "black", bg: "gray.300" }}
+                    onClick={() => {
+                      emailHandler(filterEmail);
+                      searchPaymentsbyfilter();
+                    }}
+                  >
+                    Apply
+                  </Button>
+                </Box>
+              </MenuList>
+            </Menu>
+            {/* <Menu>
       <MenuButton
         as={Button}
         leftIcon={<AddIcon />}
@@ -422,54 +413,70 @@ function Tables() {
         </Box>
       </MenuList>
     </Menu> */}
-    <Menu>
-      <MenuButton
-        as={Button}
-        leftIcon={<AddIcon />}
-        border="1px"
-        borderStyle={"dashed"}
-        borderColor={"gray.400"}
-        color={"gray.500"}
-        bg={"none"}
-        fontSize={15}
-      >
-        Created date
-        <span style={{ color: "var(--chakra-colors-primaryColor-700)" }}>
-              {filterDate}
-            </span>
-      </MenuButton>
-      <MenuList>
-        
-        <Box p={3}>
-        <Button
-                  p={0}
-                  fontSize={15}
-                  borderRadius={50}
-                  onClick={() => { setfilterDate(''); document.querySelector('input[name=payment-date]').value=''; searchPaymentsbyfilter();}}
+            <Menu>
+              <MenuButton
+                as={Button}
+                leftIcon={<AddIcon />}
+                border="1px"
+                borderStyle={"dashed"}
+                borderColor={"gray.400"}
+                color={"gray.500"}
+                bg={"none"}
+                fontSize={15}
+              >
+                Created date
+                <span
+                  style={{ color: "var(--chakra-colors-primaryColor-700)" }}
                 >
-                  <CloseIcon />
-                </Button>
-          <Text fontWeight={"bold"}>Filter By Date</Text>
-          <Select my={3} name="payment-date-operator">
-            <option value="=">is equal to</option>
-            <option value=">">is after</option>
-            <option value="<">is before</option>
-          </Select>
-          <Input type="date"  name="payment-date"/>
-          <Button
-          onClick={() => { setfilterDate(' '+document.querySelector('select[name=payment-date-operator]').value+document.querySelector('input[name=payment-date]').value); searchPaymentsbyfilter();}}
-            w={"100%"}
-            bg="teal.300"
-            color="white"
-            _hover={{ color: "black", bg: "gray.300" }}
-            mt={3}
-          >
-            Apply
-          </Button>
-        </Box>
-      </MenuList>
-    </Menu>
-    {/* <Menu>
+                  {filterDate}
+                </span>
+              </MenuButton>
+              <MenuList>
+                <Box p={3}>
+                  <Button
+                    p={0}
+                    fontSize={15}
+                    borderRadius={50}
+                    onClick={() => {
+                      setfilterDate("");
+                      document.querySelector("input[name=payment-date]").value =
+                        "";
+                      searchPaymentsbyfilter();
+                    }}
+                  >
+                    <CloseIcon />
+                  </Button>
+                  <Text fontWeight={"bold"}>Filter By Date</Text>
+                  <Select my={3} name="payment-date-operator">
+                    <option value="=">is equal to</option>
+                    <option value=">">is after</option>
+                    <option value="<">is before</option>
+                  </Select>
+                  <Input type="date" name="payment-date" />
+                  <Button
+                    onClick={() => {
+                      setfilterDate(
+                        " " +
+                          document.querySelector(
+                            "select[name=payment-date-operator]"
+                          ).value +
+                          document.querySelector("input[name=payment-date]")
+                            .value
+                      );
+                      searchPaymentsbyfilter();
+                    }}
+                    w={"100%"}
+                    bg="teal.300"
+                    color="white"
+                    _hover={{ color: "black", bg: "gray.300" }}
+                    mt={3}
+                  >
+                    Apply
+                  </Button>
+                </Box>
+              </MenuList>
+            </Menu>
+            {/* <Menu>
       <MenuButton
         as={Button}
         leftIcon={<AddIcon />}
@@ -510,7 +517,7 @@ function Tables() {
         </Box>
       </MenuList>
     </Menu> */}
-  </Flex>
+          </Flex>
         </Box>
         {!isloading ? (
           <>
@@ -532,7 +539,11 @@ function Tables() {
                   </Tr>
                 </Thead>
                 <Tbody className="customer_body" textTransform={"capitalize"}>
+                  {console.log(customerListing)}
                   {customerListing.map((val, index) => {
+                    {
+                      //console.log(val.sources.data[0].card.brand.toUpperCase());
+                    }
                     return (
                       <TablesTableRow
                         cusid={val.id}
@@ -541,8 +552,15 @@ function Tables() {
                         email={val.email}
                         desc={val.description}
                         domain={val.object}
-                        status={ val.hasOwnProperty("sources")?val.sources.data.length>0?val.sources.data[0].card.brand.toUpperCase():"":"CARD"
-                         // val.invoice_settings.default_payment_method || "VISA"
+                        status={
+                          val.hasOwnProperty("sources")
+                            ? val.sources.data.length > 0
+                              ? val.sources.data[0].id.startsWith("src")
+                                ? val.sources.data[0].card.brand.toUpperCase()
+                                : val.sources.data[0].brand
+                              : "CARD"
+                            : "CARD"
+                          // val.invoice_settings.default_payment_method || "VISA"
                         }
                         date={datadate(val.created)}
                         viewprofile={val.id}
@@ -579,28 +597,31 @@ function Tables() {
             </Flex>
           </Box>
         )}
-        {isMore?        <Button
-          onClick={getMoreCustomers}
-          bg="teal.300"
-          w={200}
-          color="white"
-          m={"20px auto"}
-          _hover={{ bg: "#000" }}
-          p="25px 0"
-        >
-          Load More
-        </Button>: ""}
+        {isMore ? (
+          <Button
+            onClick={getMoreCustomers}
+            bg="teal.300"
+            w={200}
+            color="white"
+            m={"20px auto"}
+            _hover={{ bg: "#000" }}
+            p="25px 0"
+          >
+            Load More
+          </Button>
+        ) : (
+          ""
+        )}
         <Box>
-            <Flex
-              h="50vh"
-              justifyContent="center"
-              alignItems="center"
-              direction={"column"}
-            >
-              <p>Showing {customers.length} of Customers</p>
-              
-            </Flex>
-          </Box>
+          <Flex
+            h="50vh"
+            justifyContent="center"
+            alignItems="center"
+            direction={"column"}
+          >
+            <p>Showing {customers.length} of Customers</p>
+          </Flex>
+        </Box>
       </Card>
       {/* <Card
         my="22px"
@@ -649,8 +670,5 @@ function Tables() {
 export default Tables;
 
 // const FilterCustomers = (props) => {
-
-
-
 
 // };

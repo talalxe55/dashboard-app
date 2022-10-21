@@ -26,7 +26,7 @@ function BillingRowSources(props) {
   } = props;
 
   return (
-    <Box p="24px" bg={bgColor} my="22px" borderRadius="12px">
+    <Box p="24px" bg={bgColor} my="" borderRadius="12px">
       <Flex justify="space-between" w="100%">
         <Flex direction="column" maxWidth="70%">
           <Text
