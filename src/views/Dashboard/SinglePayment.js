@@ -4,6 +4,7 @@ import { NavLink, useParams, useHistory } from "react-router-dom";
 // Chakra imports
 import {
   Box,
+  Input,
   Button,
   Flex,
   Grid,
@@ -24,7 +25,24 @@ import {
   AlertTitle,
   AlertDescription,
   useDisclosure,
-  CloseButton
+  CloseButton,
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogContent,
+  AlertDialogOverlay,
+  AlertDialogCloseButton,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  FormControl,
+  FormLabel
+  
 } from "@chakra-ui/react";
 import SweetAlert from "react-bootstrap-sweetalert";
 // Assets
@@ -61,12 +79,11 @@ function Detail() {
   const [singleCharge, setSingleCharge] = useState({data:[]});
   const [singleCustomerSources, setSingleCustomerSources] = useState();
   const [SingleCustomerEmail, setSingleCustomerEmail] = useState();
-  const [SinglePaymentMeta, setSinglePaymentMeta] = useState([]);
+  const [SinglePaymentMeta, setSinglePaymentMeta] = useState(null);
   const [errorData, seterrorData] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [refundAmount, setrefundAmount] = useState(0);
   const history = useHistory();
-
-
   const dataamount = (amount) => {
     let cents = amount;
     var formatedDollars = (cents / 100).toLocaleString("en-US", {style:"currency", currency:"USD"});
@@ -109,9 +126,8 @@ function Detail() {
         alert('The requested resource was not found');
         console.log("Resource could not be found!");
       } else if (err.response.status === 401) {
-        alert('Your session has expired!');
-        history.push('auth/signin');
-        console.log("Unauthorized!");
+        localStorage.removeItem('user');
+        history.push('/auth/signin');
       } else {
         console.log(err.message);
       }
@@ -147,8 +163,8 @@ function Detail() {
         console.log("Resource could not be found!");
       } else if (err.response.status === 401) {
         alert('Your session has expired!');
-        history.push('auth/signin');
-        console.log("Unauthorized!");
+        localStorage.removeItem('user');
+        history.push('/auth/signin');
       } else {
         console.log(err.message);
       }
@@ -192,15 +208,91 @@ function Detail() {
         alert('The requested resource was not found');
         console.log("Resource could not be found!");
       } else if (err.response.status === 401) {
-        alert('Your session has expired!');
-        history.push('auth/signin');
-        console.log("Unauthorized!");
+        localStorage.removeItem('user');
+        history.push('/auth/signin');
       } else {
         console.log(err.message);
       }
     }
   };
 
+function showMeta(){
+
+    const timesTwo = [];
+
+//console.log(timesTwo);
+}
+
+const ProductList = () => {
+    const productEntries = [SinglePaymentMeta];
+    //console.log(productEntries);
+    const keys=Object.keys(SinglePaymentMeta);
+    //console.log(keys);
+    return(
+    productEntries.map((item, index) => {
+
+        console.log(Object.keys(item));
+
+        return(
+
+            <Box p="0px" bg={"#F8F9FA"} my="22px" borderRadius="12px">
+            <Flex justify="space-between" w="100%">
+              <Flex direction="column" maxWidth="100%">
+              <ul>
+                
+                {Object.keys(item).map((val, index) => {
+                    return <Text color="gray.400" fontSize="sm" fontWeight="semibold">{val} : <Text as="span" color="gray.500">{item[val]}</Text></Text>
+                })}
+
+            </ul>
+               
+              </Flex>
+              
+            </Flex>
+          </Box>
+            
+
+            
+        )
+    })
+    )
+    // productEntries.forEach((item, index) => {
+
+    //     keys.forEach((key, index) => {
+
+    //        console.log(key, item[key])
+            
+    //     })
+
+
+    //     })
+
+    // <ul>
+    //     {productEntries.map(productEntry => (
+    //       <li key={productEntry[0]}>
+    //         {productEntry[0].customer_email}
+    //       </li>
+    //     ))}
+    //   </ul>
+    // return (
+    //     <ul>
+
+            
+    // {productEntries.forEach((item, index) => {
+
+    //     keys.forEach((key, index) => {
+
+    //         <li >{key} : {item[key]}</li>
+            
+    //     })
+
+
+    //     })}
+            
+      
+    //   </ul>
+    // )
+  }
 
 function toStatus(val) {
     var str = "";
@@ -316,18 +408,79 @@ color={"black.300"}
     } catch (err) {
         console.log(err);
       if (err.response.status === 404) {
-        alert('The requested resource was not found');
-        console.log("Resource could not be found!");
+        seterrorData({
+            'message': 'The requested resource was not found',
+            'status' : 'error',
+            'title': '404 Error'
+        })
       } else if (err.response.status === 401) {
-        alert('Your session has expired!');
+        localStorage.removeItem('user');
         history.push('/auth/signin');
-        console.log("Unauthorized!");
       } 
       else if (err.response.status === 400) {
         seterrorData({
             'message': err.response.data.error.message,
             'status' : 'error',
             'title': 'Payment Unsuccessfull'
+        })
+      }
+      else {
+        console.log(err.message);
+      }
+    }
+
+  }
+
+const refundCharge = async (amount) => {
+    setLoading(false);
+    try {
+
+        let payload ={
+            "payment_intent": singlePayment.id,
+            "amount": amount
+        };
+
+      const res = await axios.post(`${API_SERVER}refunds/create`, JSON.stringify(payload), {
+        headers: {
+          Authorization: `${TOKEN_TYPE} ${TOKEN}`,
+          Accept: `${ACCEPT_TYPE}`,
+          "Content-Type": `${ACCEPT_TYPE}`,
+        },
+        
+       
+        
+      });
+
+      let data = await res.data.data;
+      if(data.status=='succeeded'){
+        seterrorData({
+            'message': 'Payment has been refunded Successfully',
+            'status' : 'success',
+            'title': 'Refund Succeeded'
+        })
+      }
+      getCustomerID();
+
+      console.log(data);
+      //setSingleCustomerSources(data.sources);
+      //setLoading(false);
+    } catch (err) {
+        console.log(err);
+      if (err.response.status === 404) {
+        seterrorData({
+            'message': 'The requested resource was not found',
+            'status' : 'error',
+            'title': '404 Error'
+        })
+      } else if (err.response.status === 401) {
+        localStorage.removeItem('user');
+        history.push('/auth/signin');
+      } 
+      else if (err.response.status === 400) {
+        seterrorData({
+            'message': err.response.data.error.message,
+            'status' : 'error',
+            'title': 'Refund Unsuccessfull'
         })
       }
       else {
@@ -362,6 +515,62 @@ color={"black.300"}
       
     />
   </Alert>) : ""
+  }
+
+
+  const RefundPayment = () => {
+    const { isOpen, onOpen, onClose } = useDisclosure()
+
+    const initialRef = React.useRef(null)
+    const finalRef = React.useRef(null)
+    //const [message, error, status, title] = props;
+    return (
+        <>
+          <Button
+                colorScheme="teal"
+                borderColor="teal.300"
+                color="teal.300"
+                variant="outline"
+                fontSize="xs"
+                p="8px 32px"
+                onClick={onOpen}
+              >
+                Refund Payment
+              </Button>
+          <Modal
+        initialFocusRef={initialRef}
+        finalFocusRef={finalRef}
+        isOpen={isOpen}
+        onClose={onClose}
+      >
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Are you Sure?</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody pb={6}>
+            <FormControl>
+              <FormLabel>Amount</FormLabel>
+              <Input
+                  type="number"
+                  placeholder="Please Enter Amount"
+                  name="payment-refund-amount"
+                //   onChange={ (e) => setrefundAmount(e.target.value)}
+                //   value={refundAmount}
+                  id="refundAmount"
+                />
+            </FormControl>
+          </ModalBody>
+
+          <ModalFooter>
+            <Button onClick={() => {refundCharge(document.querySelector('input[name=payment-refund-amount]').value) , onClose}} colorScheme='red' ml={3} bg={iconTeal}>
+              Create Refund
+            </Button>
+            <Button onClick={onClose}>Cancel</Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+        </>
+      )
   }
   const CardDetails = () => {
     if (singleCustomerSources) {
@@ -406,11 +615,19 @@ color={"black.300"}
  
   };
 
+  function chargetitle(row){
+    var desc = row.desc?row.desc:"";
+    
+       return  desc+' Charge '+row.status.charAt(0).toUpperCase()+ row.status.slice(1)
+    
+    //row.amount_refunded>0?row.refunded==true?row.description+' Refunded':row.description+' Partial Refund':row.description+' '+row.status.charAt(0).toUpperCase()+ row.status.slice(1)
+  }
+
   return (
 
       
     <Flex direction="column" pt={{ base: "120px", md: "75px" }}>
-        <AlertBox/> 
+        
         <Flex direction={"column"} width={"30%"}>
         <Box>
            
@@ -431,14 +648,14 @@ color={"black.300"}
               >
                 Charge Payment
               </Button>:""}
-
+              {singlePayment&&singleCharge.data.length>0?singlePayment.status=='succeeded'&&singleCharge.data[0].refunded!==true?<RefundPayment/>:"":""}
           </Text>: <SkeletonText mt='4' noOfLines={3} spacing='4' />}
 
         </Box>
 
         </Flex>
 
-          
+        <AlertBox/> 
           
       <Grid templateColumns={{ sm: "1fr", lg: "2fr 1.2fr" }} templateRows="1fr">
         <Box>
@@ -776,7 +993,7 @@ color={"black.300"}
               <Text fontSize="lg" color={textColor} fontWeight="bold">
                 Payment Details
               </Text>
-              <Button
+              {/* <Button
                 colorScheme="teal"
                 borderColor="teal.300"
                 color="teal.300"
@@ -785,7 +1002,7 @@ color={"black.300"}
                 p="8px 32px"
               >
                 VIEW ALL
-              </Button>
+              </Button> */}
             </Flex>
           </CardHeader>
           <CardBody>
@@ -797,7 +1014,7 @@ color={"black.300"}
             </Editable>
             
             <Text fontSize="lg" color={textColor} fontWeight="bold">Refunded: </Text>
-            <Editable color={'red.500'} value={singleCharge.data.length>0?singleCharge.data[0].refunded==true?dataamount(singleCharge.data[0].amount_refunded):dataamount(0):<SkeletonText noOfLines={1}>XX</SkeletonText>}>
+            <Editable color={'red.500'} value={singleCharge.data.length>0?singleCharge.data[0].refunded==true||singleCharge.data[0].amount_refunded>0?dataamount(singleCharge.data[0].amount_refunded):dataamount(0):<SkeletonText noOfLines={1}>XX</SkeletonText>}>
             <EditablePreview />
             <EditableInput/>
             </Editable>
@@ -889,33 +1106,24 @@ color={"black.300"}
             </CardBody>
           </Flex>:""}
 
-        {SinglePaymentMeta.length>0? <Flex direction="column">
+        {SinglePaymentMeta!==null? <Flex direction="column">
             <CardHeader py="12px">
               <Text color={textColor} fontSize="lg" fontWeight="bold">
                 Payment Meta
               </Text>
+
             </CardHeader>
             <CardBody>
               <Flex direction="column" w="100%">
-               
-                {SinglePaymentMeta.length>0
-                  ? 
-                      
-                        
-                          <Flex p={7} bg="whiteAlpha.500" borderRadius={10}>
-                              {/* <Heading as="h6" fontSize={18} color="gray.500">
-                                {singleCustomerSources.owner.name}
-                              </Heading> */}
-                        {SinglePaymentMeta.forEach((item, index) => {
-
-                            <Text>{Object.keys(SinglePaymentMeta[index])} : {SinglePaymentMeta[index]}</Text>
-                        })}
-                     </Flex>: <SkeletonText noOfLines={9}></SkeletonText>
-                 
+                {Object.keys(SinglePaymentMeta).length>0
+                ? 
+                <Flex p={7} bg="whiteAlpha.500" borderRadius={10}>
+                <ProductList /> 
+                </Flex>: "No metadata present."
                 }
               </Flex>
             </CardBody>
-          </Flex>: ""}
+          </Flex>: <SkeletonText noOfLines={9}></SkeletonText>}
         </Card>
        {singleCharge.data.length>0? <Card my="24px" ms={{ lg: "24px" }}>
           <CardHeader mb="12px">
@@ -962,14 +1170,28 @@ color={"black.300"}
                 return (
                   <TransactionRow
                     key={index}
-                    name={row.refunded==true?row.description+' Refunded':row.description+' '+row.status.charAt(0).toUpperCase()+ row.status.slice(1)}
+                    name={chargetitle(row)}
                     // logo={row.logo}
                     date={datadate(row.created)}
                     price={dataamount(row.amount_captured)}
+                    refund={row.refunds.data.length>0?row.refunds:null}
                   />
                 );
               }):<SkeletonText noOfLines={5}></SkeletonText>}
               
+
+                {/* {singleCharge.data.refunds.data.length>0?singleCharge.data.refunds.data.map((row, index) => {
+                return (
+                  <TransactionRow
+                    key={index}
+                    name={row.status.charAt(0).toUpperCase()+row.status.slice(-1)}
+                    // logo={row.logo}
+                    date={datadate(row.created)}
+                    price={dataamount(row.amount)}
+                    
+                  />
+                );
+              }):<SkeletonText noOfLines={5}></SkeletonText>} */}
               {/* <Text
                 color="gray.400"
                 fontSize={{ sm: "sm", md: "md" }}

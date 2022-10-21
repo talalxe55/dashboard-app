@@ -93,7 +93,7 @@ function Tables() {
     let options = {};
     if(document.querySelector('input[name=payment-date]').value!==null && document.querySelector('input[name=payment-date]').value!=='' && document.querySelector('select[name=payment-date-operator]').value!==undefined && document.querySelector('select[name=payment-date-operator]').value!=='default'){
             //jQuery('')
-        options['date'] = {'value': document.querySelector('input[name=payment-date]').value,
+        options['created'] = {'value': document.querySelector('input[name=payment-date]').value,
                             'operator': document.querySelector('select[name=payment-date-operator]').value};
         
         
@@ -144,9 +144,9 @@ function Tables() {
     if(filterApplied){
         options = getFilterData();
         
-        if(isMore){
-            options['page'] = filterPage;
-        }
+        // if(isMore){
+        //     options['page'] = filterPage;
+        // }
         console.log(filterCustomersdataRef);
         var moreCustomers = filterCustomers(options,isMore?filterPage:null);
     }
@@ -160,7 +160,7 @@ function Tables() {
   }
 
 
-  //Date Filter Function
+  //Payments Filter Function
   function searchPaymentsbyfilter(){
 
     filterCustomersdataRef = false;
@@ -170,7 +170,7 @@ function Tables() {
     if(Object.keys(options).length == 0){
         setfilterApplied(false)
         setisMore(oldload)
-        setCustomers(oldCustomers);
+        setCustomers([]);
         var moreCustomers = getCustomersList(null);
         
     }
@@ -269,9 +269,8 @@ function Tables() {
         alert('The requested resource was not found');
         console.log("Resource could not be found!");
       } else if (err.response.status === 401) {
-        alert('Your session has expired!');
-        history.push('auth/signin');
-        console.log("Unauthorized!");
+        localStorage.removeItem('user');
+        history.push('/auth/signin');
       } else {
         console.log(err.message);
       }
@@ -336,9 +335,7 @@ function Tables() {
       } else if (err.response.status === 401) {
         alert('Your session has expired!');
         localStorage.removeItem('user');
-       history.push('auth/signin');
-       window.location.reload(false);
-        console.log("Unauthorized!");
+        history.push('/auth/signin');
       } else {
         console.log(err.message);
       }
@@ -359,6 +356,10 @@ function Tables() {
                 str = "refunded";
 
             }
+           else if(data.refunded==false && data.refunds.data.length > 0){
+              str = "partial_refunded";
+
+          }
             else{
                 str=val.status;
             }
