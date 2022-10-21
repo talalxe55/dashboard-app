@@ -11,7 +11,8 @@ export function SidebarHelp(props) {
     <Flex
       borderRadius="15px"
       flexDirection="column"
-      bgImage={SidebarHelpImage}
+      // bgImage={SidebarHelpImage}
+      bg={"teal.300"}
       justifyContent="flex-start"
       alignItems="start"
       boxSize="border-box"
