@@ -14,7 +14,7 @@ export const ProtectedRoute = ({ ...rest }) => {
         title="You must be signed in!"
         onCancel={() => history.push("/auth/signin")}
         onConfirm={() => history.push("/auth/signin")}
-        confirmBtnCssClass={"px-5"}
+        customClass="alert_pop"
       />
     );
   }

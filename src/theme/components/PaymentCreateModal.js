@@ -18,14 +18,14 @@ import {
   FormLabel,
   Textarea,
 } from "@chakra-ui/react";
-import { useState } from "react";
 import ReactSelect from "react-select";
 // import { getCustomerID } from "api/ApiListing";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { API_SERVER, TOKEN_TYPE, TOKEN, ACCEPT_TYPE } from "config/constant";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 const PaymentCreateModal = () => {
+  const [currency, setCurrency] = useState();
   let { id } = useParams();
   console.log(id);
   const getCustomerID = async () => {
@@ -55,6 +55,11 @@ const PaymentCreateModal = () => {
     { value: "USD 3", label: "USD 3" },
   ];
 
+  function handleCurrency(e) {
+    console.log(e.target.value);
+    setCurrency(e.target.value);
+  }
+
   return (
     <>
       <Button onClick={onOpen}>Create</Button>
@@ -83,12 +88,19 @@ const PaymentCreateModal = () => {
               </FormControl>
               <FormControl>
                 <Flex>
-                  <FormLabel>Amount</FormLabel>
+                  <FormLabel>Test</FormLabel>
                   <Box>
                     <Text mb={"-30px"} ms={1}>
                       USD
                     </Text>
-                    <Input placeholder="" value={0.0} ps={10} />
+                    <Input
+                      placeholder=""
+                      type="text"
+                      value={0.0}
+                      ps={10}
+                      onChange={handleCurrency}
+                      name="currency"
+                    />
                   </Box>
                 </Flex>
               </FormControl>
