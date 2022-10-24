@@ -134,28 +134,48 @@ function Detail() {
     }
   };
 
-  const getCustomerSource = async (id) => {
+  const getCustomerSource = async (id,cus) => {
     setLoading(false);
-    try {
-      const res = await axios.get(`${API_SERVER}sources/${id}`, {
-        headers: {
-          Authorization: `${TOKEN_TYPE} ${TOKEN}`,
-          Accept: `${ACCEPT_TYPE}`,
-          "Content-Type": `${ACCEPT_TYPE}`,
-        },
-      });
 
-      let data = await res.data.data;
-      //console.log(data);
-      //console.log(data.sources.data.length);
-      array.push(data);
-      //return data;
-      //setSinglePayment(data);
-      //setSingleCharge(data.charges);
-      //console.log(data.charges);
-      setSingleCustomerSources(data);
-      //setLoading(false);
-      return data;
+    try {
+        
+        if(id.startsWith('src')){
+            console.log(id);
+            const res = await axios.get(`${API_SERVER}sources/${id}`, {
+                headers: {
+                  Authorization: `${TOKEN_TYPE} ${TOKEN}`,
+                  Accept: `${ACCEPT_TYPE}`,
+                  "Content-Type": `${ACCEPT_TYPE}`,
+                },
+              });
+              let data = await res.data.data;
+              setSingleCustomerSources(data);
+        }
+      else if(id.startsWith('card')){
+        console.log(id);
+            const res = await axios.get(`${API_SERVER}customers/${cus}/cards/${id}`, {
+                headers: {
+                  Authorization: `${TOKEN_TYPE} ${TOKEN}`,
+                  Accept: `${ACCEPT_TYPE}`,
+                  "Content-Type": `${ACCEPT_TYPE}`,
+                },
+              });
+              let data = await res.data.data;
+              setSingleCustomerSources({card: data,
+                owner: {name : data.name,
+                    address: {city: data.address_city, 
+                    country: data.address_country, 
+                    line1: data.address_line1, 
+                    line2: data.address_line2, 
+                    state: data.address_state, 
+                    postal_code: data.address_zip},
+                    email: "",
+                    phone: ""},
+                    });
+        }
+      
+
+      
     } catch (err) {
         console.log(err);
       if (err.response.status === 404) {
@@ -191,10 +211,10 @@ function Detail() {
       setSingleCharge(data.charges);
       setSinglePaymentMeta(data.metadata)
       if(data.source!==null){
-        const source =  await getCustomerSource(data.source);
+        const source =  await getCustomerSource(data.source,data.customer);
       }
       else if(data.payment_method!==null){
-        const source =  await getCustomerSource(data.payment_method);
+        const source =  await getCustomerSource(data.payment_method,data.customer);
       }
       if(data.customer!==null){
         const customer =  await getCustomerEmail(data.customer);
@@ -228,7 +248,7 @@ const ProductList = () => {
     //console.log(productEntries);
     const keys=Object.keys(SinglePaymentMeta);
     //console.log(keys);
-    return(
+    return( 
     productEntries.map((item, index) => {
 
         console.log(Object.keys(item));
@@ -592,7 +612,7 @@ const refundCharge = async (amount) => {
            else {
             return (
               <Text fontSize="xl" letterSpacing="2px" fontWeight="bold">
-                <SkeletonText>XXXX XXXX XXXX XXXX</SkeletonText>
+                <SkeletonText noOfLines={2} />
               </Text>
             );
           }
@@ -607,7 +627,7 @@ const refundCharge = async (amount) => {
     } else {
       return (
         <Text fontSize="xl" letterSpacing="2px" fontWeight="bold">
-         <SkeletonText>XXXX XXXX XXXX XXXX</SkeletonText>
+         <SkeletonText noOfLines={2} />
         </Text>
       );
     }
@@ -697,7 +717,7 @@ const refundCharge = async (amount) => {
                     <Separator />
                   </Flex>
                   <Text fontSize="lg" color={textColor} fontWeight="bold">
-                    {singlePayment ? `${dataamount(singlePayment.amount)}` : <SkeletonText>Amount</SkeletonText>}
+                    {singlePayment ? `${dataamount(singlePayment.amount)}` : <SkeletonText noOfLines={1}>Amount</SkeletonText>}
                   </Text>
                 </Flex>
               </CardBody>
@@ -748,14 +768,14 @@ const refundCharge = async (amount) => {
                     fontSize="sm"
                     color={"blue.500"}
                     fontWeight="bold"
-                    wordBreak="break-all"
+                   
                   >
                     {SingleCustomerEmail ? <NavLink color="blue.300" to={'/admin/billing/'+singlePayment.customer}>{SingleCustomerEmail}</NavLink>  : ""}
                   </Text>
                 </Flex>
               </CardBody>
             </Card>
-            <Card p="16px" display="flex" align="center" justify="center">
+            <Card p="6px" display="flex" align="center" justify="center">
               <CardBody>
                 <Flex
                   direction="column"
@@ -802,12 +822,12 @@ const refundCharge = async (amount) => {
                     fontWeight="bold"
                     wordBreak="break-all"
                   >
-                    {singlePayment ? singlePayment.description  : <SkeletonText noOfLines={1}>Description</SkeletonText>}
+                    {singlePayment ? singlePayment.description  : <SkeletonText noOfLines={1}>Desc</SkeletonText>}
                   </Text>
                 </Flex>
               </CardBody>
             </Card>
-            <Card p="16px" display="flex" align="center" justify="center">
+            <Card p="6px" display="flex" align="center" justify="center">
               <CardBody>
                 <Flex
                   direction="column"
@@ -854,7 +874,7 @@ const refundCharge = async (amount) => {
                     fontWeight="bold"
                     wordBreak="break-all"
                   >
-                    {singlePayment ? singlePayment.statement_descriptor  : <SkeletonText noOfLines={1}>Statement</SkeletonText>}
+                    {singlePayment ? singlePayment.statement_descriptor  : <Skeleton noOfLines={1}/>}
                   </Text>
                 </Flex>
               </CardBody>
@@ -905,7 +925,7 @@ const refundCharge = async (amount) => {
                       fontWeight="bold"
                       textTransform="capitalize"
                     >
-                      {singleCustomerSources ? singleCustomerSources.owner.name : <Skeleton>Customer Name</Skeleton>}
+                      {singleCustomerSources ? singleCustomerSources.owner.name : <Skeleton>OWNER NAME</Skeleton>}
                     </Text>
                     {/* <Text fontSize="md" fontWeight="bold">
                     {"Name"}

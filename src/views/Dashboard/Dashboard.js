@@ -128,7 +128,7 @@ export default function Dashboard() {
                   fontWeight="bold"
                   pb=".1rem"
                 >
-                  Total Balance
+                  Today's Money
                 </StatLabel>
                 <Flex>
                   <StatNumber fontSize="lg" color={textColor}>
@@ -284,7 +284,7 @@ export default function Dashboard() {
                   fontWeight="bold"
                   pb=".5rem"
                 >
-                  NLS DASHBOARD
+                  NLS UI Dashboard
                 </Text>
                 <Text fontSize="sm" color="gray.400" fontWeight="normal">
                   From colors, cards, typography to complex elements, you will
@@ -441,7 +441,13 @@ export default function Dashboard() {
               <SimpleGrid gap={{ sm: "12px" }} columns={4}>
                 <Flex direction="column">
                   <Flex alignItems="center">
-                    <IconBox h={"30px"} w={"30px"} bg={iconTeal} me="6px">
+                    <IconBox
+                      
+                      h={"30px"}
+                      w={"30px"}
+                      bg={iconTeal}
+                      me="6px"
+                    >
                       <WalletIcon h={"15px"} w={"15px"} color={iconBoxInside} />
                     </IconBox>
                     <Text fontSize="sm" color="gray.400" fontWeight="semibold">
@@ -466,7 +472,13 @@ export default function Dashboard() {
                 </Flex>
                 <Flex direction="column">
                   <Flex alignItems="center">
-                    <IconBox h={"30px"} w={"30px"} bg={iconTeal} me="6px">
+                    <IconBox
+                      
+                      h={"30px"}
+                      w={"30px"}
+                      bg={iconTeal}
+                      me="6px"
+                    >
                       <RocketIcon h={"15px"} w={"15px"} color={iconBoxInside} />
                     </IconBox>
                     <Text fontSize="sm" color="gray.400" fontWeight="semibold">
@@ -491,7 +503,13 @@ export default function Dashboard() {
                 </Flex>
                 <Flex direction="column">
                   <Flex alignItems="center">
-                    <IconBox h={"30px"} w={"30px"} bg={iconTeal} me="6px">
+                    <IconBox
+                      
+                      h={"30px"}
+                      w={"30px"}
+                      bg={iconTeal}
+                      me="6px"
+                    >
                       <CartIcon h={"15px"} w={"15px"} color={iconBoxInside} />
                     </IconBox>
                     <Text fontSize="sm" color="gray.400" fontWeight="semibold">
@@ -516,7 +534,13 @@ export default function Dashboard() {
                 </Flex>
                 <Flex direction="column">
                   <Flex alignItems="center">
-                    <IconBox h={"30px"} w={"30px"} bg={iconTeal} me="6px">
+                    <IconBox
+                      
+                      h={"30px"}
+                      w={"30px"}
+                      bg={iconTeal}
+                      me="6px"
+                    >
                       <StatsIcon h={"15px"} w={"15px"} color={iconBoxInside} />
                     </IconBox>
                     <Text fontSize="sm" color="gray.400" fontWeight="semibold">
@@ -607,7 +631,7 @@ export default function Dashboard() {
               </Tr>
             </Thead>
             <Tbody key="projects-body">
-              {dashboardTableData.map((row, index) => {
+              {dashboardTableData.map((row,index) => {
                 // return (
                 //   <DashboardTableRow key={index}
                 //     name={row.name}
@@ -645,16 +669,16 @@ export default function Dashboard() {
           <CardBody ps="20px" pe="0px" mb="31px" position="relative">
             <Flex direction="column">
               {timelineData.map((row, index, arr) => {
+                
                 return (
-                  <TimelineRow
-                    key={index}
+                  <TimelineRow key={index}
                     logo={row.logo}
                     title={row.title}
                     date={row.date}
                     color={row.color}
                     index={index}
                     arrLength={arr.length}
-                    id={row.title.replace(/\s+/g, "-").toLowerCase() + index}
+                    id={row.title.replace(/\s+/g, '-').toLowerCase()+index}
                   />
                 );
               })}

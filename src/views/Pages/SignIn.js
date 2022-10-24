@@ -57,7 +57,7 @@ function SignIn() {
       });
       if (response.data && response.data.success === false) {
         setButtonText("Sign in");
-        return setError(response.data.msg);
+        return setError(response.data.message);
       }
       return setProfile(response);
     } catch (err) {
