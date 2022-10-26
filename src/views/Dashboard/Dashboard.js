@@ -593,7 +593,7 @@ export default function Dashboard() {
         templateRows={{ sm: "1fr auto", md: "1fr", lg: "1fr" }}
         gap="24px"
       >
-        <Card p="16px" overflowX={{ sm: "scroll", xl: "hidden" }}>
+        {/* <Card p="16px" overflowX={{ sm: "scroll", xl: "hidden" }}>
           <CardHeader p="12px 0px 28px 0px">
             <Flex direction="column">
               <Text
@@ -648,7 +648,7 @@ export default function Dashboard() {
               })}
             </Tbody>
           </Table>
-        </Card>
+        </Card> */}
         <Card maxH="100%">
           <CardHeader p="22px 0px 35px 14px">
             <Flex direction="column">

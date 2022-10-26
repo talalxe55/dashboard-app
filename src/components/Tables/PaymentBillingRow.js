@@ -14,7 +14,18 @@ import {
     const bgColor = useColorModeValue("#F8F9FA", "gray.800");
     const nameColor = useColorModeValue("gray.500", "white");
     const { name, address, email, number } = props;
-  
+    function getAddress(){
+      var result = "";
+      Object.entries(address).forEach(([key, value], index) => {
+        if(value !== null){
+          console.log(value, index)
+          result+= index == Object.keys(address).length - 1?value:value+", "
+        }
+      })
+      return (result!==null?<Text as="span" color="gray.500">
+      {result}
+      </Text>:"")
+    }
     return (
       <Box p="0px" bg={bgColor} my="22px" borderRadius="12px">
         <Flex justify="space-between" w="100%">
@@ -24,12 +35,13 @@ import {
             </Text>
             <Text color="gray.400" fontSize="sm" fontWeight="semibold">
               Address:{" "}
-              <Text as="span" color="gray.500">
+              {getAddress()}
+              {/* <Text as="span" color="gray.500">
               {address.line1+', '+address.line2}
               </Text>
               <Text as="span" color="gray.500">
               {', '+ address.city+', '+address.state+', '+address.country+', '+address.postal_code}
-              </Text>
+              </Text> */}
             </Text>
             <Text color="gray.400" fontSize="sm" fontWeight="semibold">
               Email Address:{" "}
