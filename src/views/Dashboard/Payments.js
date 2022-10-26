@@ -29,7 +29,7 @@ import TablesTableRow from "components/Tables/PaymentsTable.js";
 import { API_SERVER, TOKEN_TYPE, TOKEN, ACCEPT_TYPE } from "config/constant";
 import axios from "axios";
 import LoadingGif from "assets/svg/loading-infinite.svg";
-import { NavLink, useHistory, useLocation } from "react-router-dom";
+import { NavLink, useHistory, useLocation, } from "react-router-dom";
 import { AiFillDingtalkSquare } from "react-icons/ai";
 import { SiJquery } from "react-icons/si";
 import {
@@ -37,8 +37,11 @@ import {
   AlertDataNotFound,
 } from "theme/components/AlertDialog";
 import { useBlockLayout } from "react-table";
+import { IoLogoFoursquare } from "react-icons/io5";
 
 function Tables() {
+  const { search } = useLocation();
+  let query = React.useMemo(() => new URLSearchParams(search), [search]);
   const [customers, setCustomers] = useState([]);
   const [oldCustomers, setoldCustomers] = useState([]);
   const [oldload, setoldload] = useState(false);
@@ -170,6 +173,9 @@ function Tables() {
         "select[name=payment-status]"
       ).value;
     }
+    if(query.get("customer")!==null){
+      options["customer"] = query.get("customer");
+    }
 
     if (!options) {
       return null;
@@ -185,7 +191,7 @@ function Tables() {
       //     options['page'] = filterPage;
       // }
       console.log(filterCustomersdataRef);
-      var moreCustomers = filterCustomers(options, isMore ? filterPage : null);
+      var moreCustomers = filterCustomers(options, null, isMore ? filterPage : null);
     } else {
       var table = document.querySelector(".customer-listing");
       var lastRow = table.rows[table.rows.length - 1];
@@ -227,10 +233,10 @@ function Tables() {
       //   })
       // }
       var params = "";
-      if (limit !== undefined) {
+      if (limit !== undefined && limit !== null) {
         !params ? (params = "?limit=" + limit) : (params += "&limit=" + limit);
       }
-      if (page !== undefined) {
+      if (page !== undefined && page !== null) {
         !params ? (params = "?page=" + page) : (params += "&page=" + page);
       }
       if (options !== null && options !== undefined) {
@@ -275,7 +281,7 @@ function Tables() {
 
       setLoading(false);
       let resdata = res.data.data.data;
-      if (!options["page"]) {
+      if (page==null) {
         setCustomers(resdata);
         filterCustomersdataRef = true;
       } else {
@@ -417,7 +423,16 @@ function Tables() {
   };
 
   useEffect(() => {
-    getCustomersList(null);
+
+    if(query.get("customer")!==null){
+      searchPaymentsbyfilter();
+    }
+    else{
+      getCustomersList(null);
+    }
+    // const queryParams = new URLSearchParams(window.location.search)
+    // const term = queryParams.get("customer")
+    // console.log(term)
   }, []);
 
   useEffect(() => {
