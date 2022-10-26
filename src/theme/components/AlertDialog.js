@@ -15,6 +15,23 @@ const AlertCustomerCreated = () => {
   );
 };
 
+const AlertPaymentCreated = () => {
+  const history = useHistory();
+  return (
+    <SweetAlert
+      success
+      title="Payment has been created successfully!"
+      confirmBtnText="OKK!"
+      onCancel={() => history.push("/auth/dashboard")}
+      onConfirm={() => history.push("/auth/dashboard")}
+      showCloseButton= {true}
+      showConfirm= {true}
+      closeOnConfirm= {true} 
+      customClass="alert_pop"
+    />
+  );
+};
+
 const AlertUnauthorized = () => {
   const history = useHistory();
   return (
@@ -22,8 +39,8 @@ const AlertUnauthorized = () => {
       danger
       title="Your session has expired!"
       confirmBtnText="OKK!"
-      onCancel={() => history.push("/auth/dashboard")}
-      onConfirm={() => history.push("/auth/dashboard")}
+      onCancel={() => history.push("/auth/signin")}
+      onConfirm={() => {localStorage.removeItem("user"); history.push("/auth/signin")}}
       customClass="alert_pop"
     />
   );
@@ -42,4 +59,4 @@ const AlertDataNotFound = () => {
     />
   );
 };
-export { AlertCustomerCreated, AlertUnauthorized, AlertDataNotFound };
+export { AlertCustomerCreated, AlertUnauthorized, AlertDataNotFound, AlertPaymentCreated };

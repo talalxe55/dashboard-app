@@ -29,13 +29,14 @@ import TablesTableRow from "components/Tables/PaymentsTable.js";
 import { API_SERVER, TOKEN_TYPE, TOKEN, ACCEPT_TYPE } from "config/constant";
 import axios from "axios";
 import LoadingGif from "assets/svg/loading-infinite.svg";
-import { NavLink, useHistory } from "react-router-dom";
+import { NavLink, useHistory, useLocation } from "react-router-dom";
 import { AiFillDingtalkSquare } from "react-icons/ai";
 import { SiJquery } from "react-icons/si";
 import {
   AlertUnauthorized,
   AlertDataNotFound,
 } from "theme/components/AlertDialog";
+import { useBlockLayout } from "react-table";
 
 function Tables() {
   const [customers, setCustomers] = useState([]);
@@ -826,7 +827,7 @@ function Tables() {
                       Status
                     </Th>
                     <Th color="gray.400">Description</Th>
-                    <Th color="gray.400">Customer</Th>
+                    <Th color="gray.400">Customer Meta Email / Receipt Email</Th>
                     <Th color="gray.400">Date</Th>
                     <Th></Th>
                   </Tr>

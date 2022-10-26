@@ -25,10 +25,10 @@ import {
             <Text color="gray.400" fontSize="sm" fontWeight="semibold">
               Address:{" "}
               <Text as="span" color="gray.500">
-              {address.line1+','+address.line2}
+              {address.line1+', '+address.line2}
               </Text>
               <Text as="span" color="gray.500">
-              {address.city+' '+address.state+' '+address.country+' '+address.postal_code}
+              {', '+ address.city+', '+address.state+', '+address.country+', '+address.postal_code}
               </Text>
             </Text>
             <Text color="gray.400" fontSize="sm" fontWeight="semibold">

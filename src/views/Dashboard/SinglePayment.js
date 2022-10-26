@@ -41,7 +41,7 @@ import {
   ModalBody,
   ModalCloseButton,
   FormControl,
-  FormLabel
+  FormLabel,
   
 } from "@chakra-ui/react";
 import SweetAlert from "react-bootstrap-sweetalert";

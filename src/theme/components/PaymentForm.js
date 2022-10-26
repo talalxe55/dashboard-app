@@ -28,6 +28,18 @@ import {
   Radio,
   Box,
   Checkbox,
+  Alert,
+  AlertIcon,
+  AlertTitle,
+  AlertDescription,
+  CloseButton,
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogContent,
+  AlertDialogOverlay,
+  AlertDialogCloseButton,
 } from "@chakra-ui/react";
 import {
   TriangleDownIcon,
@@ -43,16 +55,16 @@ import {
   getCustomersList,
   getAllPayments,
   getAllRefunds,
+  createPayment
 } from "api/ApiListing";
+import { isReturnStatement } from "typescript";
+import {
+  AlertUnauthorized,
+  AlertDataNotFound,
+  AlertPaymentCreated
+} from "theme/components/AlertDialog";
+import { useHistory } from "react-router-dom";
 const PaymentForm = (props) => {
-  const [vals, setVals] = useState({
-    amt: 0,
-    customers: "",
-    currency: "USD",
-    desc: "",
-    descriptor: "FOXTAIL-TURF-OK",
-    cardnumber: "",
-  });
 
   useEffect(() => {
     // getCustomersList();
@@ -67,9 +79,36 @@ const PaymentForm = (props) => {
   ];
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [currency, setCurrency] = useState("USD$");
+  const [std, setstd] = useState("No Limit Social 99");
+  const [errorData, seterrorData] = useState(null);
+  const [isUnauthorized, setisUnauthorized] = useState(null);
+  const {customer, defaultsource, sources, email} = props;
   const initialRef = React.useRef(null);
   const finalRef = React.useRef(null);
 
+  const [vals, setVals] = useState({
+    amount: 1,
+    customer: customer.id,
+    currency: "usd",
+    description: "",
+    statement_descriptor: "No Limit Social 99",
+    source: defaultsource.card.id,
+    metadata: {
+      site_url: "https://nolimitsocial99.com",
+    },
+    receipt_email: "josh@nolimitsocial99.com",
+    confirm: true
+  });
+
+  const errSet = {
+  amount: "",
+  customer: "",
+  currency: "",
+  description: "",
+  statement_descriptor: "",
+  source: "",}
+  const [errvals, seterrVals] = useState(errSet);
+  
   const handleAmount = (e) => {
     if (e.target.value <= 1) {
       e.target.value === "";
@@ -86,17 +125,163 @@ const PaymentForm = (props) => {
     });
   };
 
+
   const getAllValues = (e) => {
-    console.log(e);
-    console.log(vals);
+    var checked=true;
+    let payload = {}
+    Object.entries(vals).forEach(([key, value]) => {
+      if(value === null || value==="" || value < 1){
+        checked=false
+        console.log(key)
+        errvals[key] = "Please provide "+key;
+        seterrVals({...errvals})       
+      }
+      else{
+        payload[key] = value
+        errvals[key] = "";
+        seterrVals({...errvals})
+      }
+      
+    });
+    
+    if(!checked){
+      return;
+    }
+    //vals.metadata = 
+    console.log(email)
+    console.log(payload)
+    if(email){
+      payload['metadata'] = {...payload['metadata'], customer_email: email}
+    }
+  const response = createPayment(payload);
+  response.then(res => {
+    console.log(response)
+    seterrorData({
+      'message': 'Your payment has been created!',
+      'status' : 'success',
+      'title': 'Payment Succeeded'
+  })
+    console.log(res)
+  }).catch( err => {
+    if(err.response.status==400){
+      if(err.response.data.success==false){
+      if(err.response.data.error.amount){
+        errvals['amount'] = err.response.data.error.amount
+        seterrVals({...errvals})
+      }
+      if(err.response.data.error.currency){
+        errvals['currency'] = err.response.data.error.currency
+        seterrVals({...errvals})
+      }
+    }
+      else{
+        seterrorData({
+          'message': err.response.data.error.message,
+          'status' : 'error',
+          'title': 'Payment Unsuccessfull'
+      })
+      errvals[err.response.data.error.param] = err.response.data.error.message
+      seterrVals({...errvals})
+      }
+
+    }
+    if(err.response.status==501){
+      seterrorData({
+        'message': err.response.data.error.message,
+        'status' : 'error',
+        'title': 'Payment Unsuccessfull'
+    })
+      }
+
+    if(err.response.status==401){
+    setisUnauthorized(true);
+    }
+
+  
+  })
   };
+
 
   const getCreditData = (data) => {
     // console.log("Data comming from CreditCard", data);
     setVals({ ...vals, data });
   };
+
+  const Descriptor = (props) => {
+    function EditableControls() {
+      const {
+        isEditing,
+        getSubmitButtonProps,
+        getCancelButtonProps,
+        getEditButtonProps,
+      } = useEditableControls();
+  
+      return isEditing ? (
+        <ButtonGroup justifyContent="start" size="sm">
+          <IconButton icon={<CheckIcon />} {...getSubmitButtonProps()} onClick={(e) => {vals.statement_descriptor = document.querySelector('input[name="statement_descriptor"]').value; setVals({...vals})}} />
+          <IconButton icon={<CloseIcon />} {...getCancelButtonProps()} />
+        </ButtonGroup>
+      ) : (
+        <IconButton
+          size="sm"
+          ms={2}
+          bg="transparent"
+          icon={<EditIcon />}
+          {...getEditButtonProps()}
+        />
+      );
+    }
+  
+    return (
+      <Editable
+        fontSize="md"
+        isPreviewFocusable={false}
+        defaultValue={vals.statement_descriptor}
+      >
+        <EditablePreview />
+        {/* Here is the custom input */}
+        <Input
+          as={EditableInput}
+          name="statement_descriptor"
+          // onChange={
+          //   ((e) =>{console.log(e.target.value, std); setstd(e.target.value)})}
+        />
+        <EditableControls />
+      </Editable>
+    );
+  };
+
+
+  const AlertBox = () => {
+    const {
+        isOpen: isVisible,
+        onClose,
+        onOpen,
+      } = useDisclosure({ defaultIsOpen: true })
+    //const [message, error, status, title] = props;
+    return errorData!==null ? (
+    
+    <Alert status={errorData.status}>
+    <AlertIcon />
+    <Box>
+      <AlertTitle>{errorData.title}</AlertTitle>
+      <AlertDescription>
+        {errorData.message}
+      </AlertDescription>
+    </Box>
+    <CloseButton
+      alignSelf='flex-start'
+      position='relative'
+      right={-1}
+      top={-1}
+      onClick={() => seterrorData(null)}
+      
+    />
+  </Alert>) : ""
+  }
   return (
     <>
+    {isUnauthorized?<AlertUnauthorized />:null}
       <Button
         bg={props.bg}
         color="white"
@@ -119,6 +304,7 @@ const PaymentForm = (props) => {
           <ModalHeader>Create Payment</ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6} overflowY={{ sm: "auto" }}>
+          {<AlertBox/>}
             <form>
               <FormControl isRequired>
                 <Box>
@@ -136,15 +322,17 @@ const PaymentForm = (props) => {
                     <Input
                       ref={initialRef}
                       type="number"
-                      name="amt"
+                      name="amount"
                       placeholder=""
                       autoComplete="off"
                       ps={12}
                       minLength={1}
                       onChange={(handleAmount, handleValues)}
-                      value={vals.amt}
+                      value={vals.amount}
                     />
-                    <Stack width={300}>
+                    
+                    
+                    {/* <Stack width={300}>
                       <Select
                         id="currencysym"
                         icon={<TriangleDownIcon />}
@@ -160,6 +348,7 @@ const PaymentForm = (props) => {
                           handleValues)
                         }
                       >
+                        
                         {Currency.map((val, index) => {
                           return (
                             <option value={val.abbreviation} key={index}>
@@ -168,16 +357,17 @@ const PaymentForm = (props) => {
                           );
                         })}
                       </Select>
-                    </Stack>
+                    </Stack> */}
                   </Flex>
+                  <Text color={"red.500"}>{errvals.amount}</Text>
                 </Box>
               </FormControl>
               <FormControl mt={4}>
                 <Flex>
                   <FormLabel>Customer </FormLabel>
-                  <Text color="gray">(Optional)</Text>
+                  {/* <Text color="gray">(Optional)</Text> */}
                 </Flex>
-                <ReactSelect
+                {/* <ReactSelect
                   className="select_drop"
                   options={options}
                   placeholder="Find Customer"
@@ -185,8 +375,17 @@ const PaymentForm = (props) => {
                   onChange={(e) => {
                     setVals({ ...vals, customer: e });
                   }}
+                  
                   // value={vals.customer}
+                /> */}
+                <Input
+                  placeholder="Customer"
+                  name="customer"
+                  onChange={handleValues}
+                  value={customer.name+', '+customer.email}
+                  readOnly={true}
                 />
+                <Text color={"red.500"}>{errvals.customer}</Text>
               </FormControl>
               <FormControl mt={4}>
                 <Flex alignItems={"center"}>
@@ -203,9 +402,10 @@ const PaymentForm = (props) => {
                 </Flex>
                 <Input
                   placeholder="Products or services associated with payment"
-                  name="desc"
+                  name="description"
                   onChange={handleValues}
                 />
+                <Text color={"red.500"}>{errvals.description}</Text>
               </FormControl>
               <FormControl mt={4}>
                 <Flex alignItems={"center"}>
@@ -221,16 +421,39 @@ const PaymentForm = (props) => {
                   </Tooltip>
                 </Flex>
                 <Descriptor />
+                <Text color={"red.500"}> {errvals.statement_descriptor}</Text>
               </FormControl>
               <FormControl mt={4}>
                 <Heading fontSize="xl">Payment method</Heading>
                 <Divider my={4} />
-                <Radio value="master" defaultChecked="true">
+                {/* <Radio value="master" defaultChecked="true">
                   Manually enter card information
                 </Radio>
-                <CreditCard getCreditData={getCreditData} />
+                <CreditCard getCreditData={getCreditData} /> */}
+                                    <Stack width={400}>
+                      <Select
+                        id="source"
+                        icon={<TriangleDownIcon />}
+                        name="source"
+                        onChange={
+                          ((e) =>
+                          handleValues(e))
+                        }
+                      >
+                        {sources.data.map((val, index) => {
+                          return val.object==="card"?(
+                            <option value={val.id} key={index}>
+                              XXXX XXXX {val.last4} {val.exp_month} / {val.exp_year} {val.brand}
+                            </option>
+                          ):(<option value={val.id} key={index}>
+                            XXXX XXXX {val.card.last4} {val.card.exp_month} / {val.card.exp_year} {val.card.brand}
+                          </option>);
+                        })}
+                      </Select>
+                    </Stack>
+                   <Text color={"red.500"}>{errvals.source}</Text>
               </FormControl>
-              <BillingAdd />
+              {/* <BillingAdd /> */}
             </form>
           </ModalBody>
           <ModalFooter>
@@ -243,50 +466,10 @@ const PaymentForm = (props) => {
       </Modal>
     </>
   );
+
+
 };
 
-const Descriptor = (props) => {
-  function EditableControls() {
-    const {
-      isEditing,
-      getSubmitButtonProps,
-      getCancelButtonProps,
-      getEditButtonProps,
-    } = useEditableControls();
-
-    return isEditing ? (
-      <ButtonGroup justifyContent="start" size="sm">
-        <IconButton icon={<CheckIcon />} {...getSubmitButtonProps()} />
-        <IconButton icon={<CloseIcon />} {...getCancelButtonProps()} />
-      </ButtonGroup>
-    ) : (
-      <IconButton
-        size="sm"
-        ms={2}
-        bg="transparent"
-        icon={<EditIcon />}
-        {...getEditButtonProps()}
-      />
-    );
-  }
-
-  return (
-    <Editable
-      defaultValue="FOXTAIL-TURF"
-      fontSize="md"
-      isPreviewFocusable={false}
-    >
-      <EditablePreview />
-      {/* Here is the custom input */}
-      <Input
-        as={EditableInput}
-        name="descriptor"
-        onChange={(props.handleValues, (e) => console.log(e.target.value))}
-      />
-      <EditableControls />
-    </Editable>
-  );
-};
 
 const BillingAdd = () => {
   const [ischecked, setChecked] = useState(false);

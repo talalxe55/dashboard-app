@@ -65,25 +65,18 @@ const getAllPayments = async () => {
   }
 };
 
-const getAllPaymentsByCustomerID = async () => {
-  try {
-    const res = await axios.get(`${API_SERVER}payments/cus_MUAJ4H3JWVHQiR`, {
+const getAllPaymentsByCustomerID = async (id) => {
+    let cusid = id;
+
+    const res = await axios.get(`${API_SERVER}payments/${cusid}`, {
       headers: {
         Authorization: `${TOKEN_TYPE} ${TOKEN}`,
         Accept: `${ACCEPT_TYPE}`,
         "Content-Type": `${ACCEPT_TYPE}`,
       },
     });
-    console.log(res.data.data);
-  } catch (err) {
-    if (err.response.status === 404) {
-      console.log("Resource could not be found!");
-    } else if (err.response.status === 401) {
-      console.log("Unauthorized!");
-    } else {
-      console.log(err.message);
-    }
-  }
+    return res;
+
 };
 
 const getAllRefunds = async () => {
@@ -103,10 +96,33 @@ const getAllRefunds = async () => {
   }
 };
 
+const createPayment = async (data) => {
+  
+    const payload = {}
+    Object.entries(data).forEach(([key, value]) => {
+      console.log(key, value)
+      payload[key] = value;
+      
+    });
+    const res = await axios.post(`${API_SERVER}payments/create`, JSON.stringify(payload),  {
+      headers: {
+        Authorization: `${TOKEN_TYPE} ${TOKEN}`,
+        Accept: `${ACCEPT_TYPE}`,
+        "Content-Type": `${ACCEPT_TYPE}`,
+      },
+    });
+    return res;
+    // let data = await res.json();
+    // console.log(res.data.data.data);
+    // console.log(res.status);
+   
+};
+
 export {
   getCustomersList,
   getAllPayments,
   getAllPaymentsByCustomerID,
   getAllRefunds,
   getCustomerID,
+  createPayment
 };
