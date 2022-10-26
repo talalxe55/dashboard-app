@@ -23,6 +23,7 @@ import {
   useColorMode,
   useColorModeValue,
 } from "@chakra-ui/react";
+import { AlertUnauthorized } from "theme/components/AlertDialog";
 // assets
 import peopleImage from "assets/img/people-image.png";
 import logoNLS from "assets/img/logos/nls-logo-w.png";
@@ -61,6 +62,7 @@ export default function Dashboard() {
   const iconTeal = useColorModeValue("teal.300", "teal.300");
   const iconBoxInside = useColorModeValue("white", "white");
   const textColor = useColorModeValue("gray.700", "white");
+  const [isUnauthorized, setisUnauthorized] = useState(false);
   const [totalAmount , settotalAmount] = useState();
   const history = useHistory();
   const [series, setSeries] = useState([
@@ -96,8 +98,7 @@ export default function Dashboard() {
       if (err.response.status === 404) {
         
       } else if (err.response.status === 401) {
-        localStorage.removeItem('user');
-        history.push('/auth/signin');
+        setisUnauthorized(true);
       } else {
         console.log(err.message);
       }
@@ -117,6 +118,7 @@ export default function Dashboard() {
 
   return (
     <Flex flexDirection="column" pt={{ base: "120px", md: "75px" }}>
+      {isUnauthorized?<AlertUnauthorized />:null}
       <SimpleGrid columns={{ sm: 1, md: 2, xl: 4 }} spacing="24px">
         <Card minH="83px">
           <CardBody>

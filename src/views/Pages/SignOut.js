@@ -9,13 +9,34 @@ function SignOut() {
   let { user } = useAuth();
 
   const handleLogout = async () => {
-    console.log("test");
-    // await AuthApi.Logout(user);
+    if(localStorage.getItem('user')){
+    try{
+      const response = await AuthApi.Logout(user);
+      if(response.status==200){
+        if(response.data.success==true){
+          localStorage.removeItem("user");
+          setUser(null)
+          history.push("/auth/signin");
+          window.location.reload(false);
+        }
+      }
+
+    }
+    catch(err){
+      if(err.response.status==401){
+        history.push("/auth/signin");
+        window.location.reload(false);
+      }
+      
+      
+    }
+
+    
     // await setUser(null);
-    localStorage.removeItem("user");
-    alert("User removed");
+  }
+  else{
     history.push("/auth/signin");
-    window.location.reload(false);
+  }
   };
 
   useEffect(() => {

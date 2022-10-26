@@ -1,4 +1,5 @@
 import axios from "./index";
+import { API_SERVER, TOKEN_TYPE, TOKEN, ACCEPT_TYPE } from "config/constant";
 
 class AuthApi {
   static Login = (data) => {
@@ -9,8 +10,14 @@ class AuthApi {
     return axios.post(`${base}/register`, data);
   };
 
-  static Logout = (data) => {
-    return axios.get(`${base}/logout`, data);
+  static Logout = () => {
+    return axios.get(`${base}/logout`, {
+      headers: {
+        Authorization: `${TOKEN_TYPE} ${TOKEN}`,
+        Accept: `${ACCEPT_TYPE}`,
+        "Content-Type": `${ACCEPT_TYPE}`,
+      },
+    });
   };
 }
 

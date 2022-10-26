@@ -1,5 +1,6 @@
 import { useHistory } from "react-router-dom";
 import SweetAlert from "react-bootstrap-sweetalert";
+import { useAuth } from "../../auth-context/auth.context";
 
 const AlertCustomerCreated = () => {
   const history = useHistory();
@@ -34,13 +35,14 @@ const AlertPaymentCreated = () => {
 
 const AlertUnauthorized = () => {
   const history = useHistory();
+  const { setUser } = useAuth();
   return (
     <SweetAlert
       danger
       title="Your session has expired!"
       confirmBtnText="OKK!"
       onCancel={() => history.push("/auth/signin")}
-      onConfirm={() => {localStorage.removeItem("user"); history.push("/auth/signin")}}
+      onConfirm={() => {setUser(null); localStorage.removeItem("user"); history.push("/auth/signin")}}
       customClass="alert_pop"
     />
   );

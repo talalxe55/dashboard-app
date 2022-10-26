@@ -157,6 +157,7 @@ function SignIn() {
                   type="text"
                   placeholder="Your email adress"
                   size="lg"
+                  id="email"
                   defaultValue={email}
                   onChange={(event) => {
                     setEmail(event.target.value);
@@ -169,6 +170,7 @@ function SignIn() {
                 <Input
                   borderRadius="15px"
                   mb="36px"
+                  id="password"
                   fontSize="sm"
                   type="password"
                   placeholder="Your password"
@@ -179,7 +181,7 @@ function SignIn() {
                     setError(undefined);
                   }}
                 />
-                <FormControl display="flex" alignItems="center">
+                {/* <FormControl display="flex" alignItems="center">
                   <Switch id="remember-login" colorscheme="teal" me="10px" />
                   <FormLabel
                     htmlFor="remember-login"
@@ -189,7 +191,7 @@ function SignIn() {
                   >
                     Remember me
                   </FormLabel>
-                </FormControl>
+                </FormControl> */}
                 <h4
                   style={{
                     fontSize: ".9em",

@@ -37,6 +37,7 @@ import {
   FaTwitter,
 } from "react-icons/fa";
 import { IoDocumentsSharp } from "react-icons/io5";
+import { useAuth } from "../../auth-context/auth.context";
 
 function Profile() {
   // Chakra color mode
@@ -50,6 +51,8 @@ function Profile() {
     "rgba(255, 255, 255, 0.31)"
   );
   const emailColor = useColorModeValue("gray.400", "gray.300");
+  let { user } = useAuth();
+  console.log(user)
 
   return (
     <Flex direction="column">
@@ -103,7 +106,7 @@ function Profile() {
             >
               <Avatar
                 me={{ md: "22px" }}
-                src={avatar4}
+                
                 w="80px"
                 h="80px"
                 borderRadius="15px"
@@ -115,18 +118,18 @@ function Profile() {
                   fontWeight="bold"
                   ms={{ sm: "8px", md: "0px" }}
                 >
-                  Esthera Jackson
+                  {user.name}
                 </Text>
                 <Text
                   fontSize={{ sm: "sm", md: "md" }}
                   color={emailColor}
                   fontWeight="semibold"
                 >
-                  esthera@simmmple.com
+                  {user.email}
                 </Text>
               </Flex>
             </Flex>
-            <Flex
+            {/* <Flex
               direction={{ sm: "column", lg: "row" }}
               w={{ sm: "100%", md: "50%", lg: "auto" }}
             >
@@ -179,12 +182,12 @@ function Profile() {
                   </Text>
                 </Flex>
               </Button>
-            </Flex>
+            </Flex> */}
           </Flex>
         </Box>
       </Box>
       <Grid templateColumns={{ sm: "1fr", xl: "repeat(3, 1fr)" }} gap="22px">
-        <Card p="16px">
+        {/* <Card p="16px">
           <CardHeader p="12px 5px" mb="12px">
             <Text fontSize="lg" color={textColor} fontWeight="bold">
               Platform Settings
@@ -271,7 +274,7 @@ function Profile() {
               </Flex>
             </Flex>
           </CardBody>
-        </Card>
+        </Card> */}
         <Card p="16px" my={{ sm: "24px", xl: "0px" }}>
           <CardHeader p="12px 5px" mb="12px">
             <Text fontSize="lg" color={textColor} fontWeight="bold">
@@ -380,7 +383,7 @@ function Profile() {
             </Flex>
           </CardBody>
         </Card>
-        <Card p="16px">
+        {/* <Card p="16px">
           <CardHeader p="12px 5px" mb="12px">
             <Text fontSize="lg" color={textColor} fontWeight="bold">
               Conversations
@@ -535,7 +538,7 @@ function Profile() {
               </Flex>
             </Flex>
           </CardBody>
-        </Card>
+        </Card> */}
       </Grid>
       <Card p="16px" my="24px">
         <CardHeader p="12px 5px" mb="12px">
