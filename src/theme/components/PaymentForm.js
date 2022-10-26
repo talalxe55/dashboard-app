@@ -55,17 +55,16 @@ import {
   getCustomersList,
   getAllPayments,
   getAllRefunds,
-  createPayment
+  createPayment,
 } from "api/ApiListing";
 import { isReturnStatement } from "typescript";
 import {
   AlertUnauthorized,
   AlertDataNotFound,
-  AlertPaymentCreated
+  AlertPaymentCreated,
 } from "theme/components/AlertDialog";
 import { useHistory } from "react-router-dom";
 const PaymentForm = (props) => {
-
   useEffect(() => {
     // getCustomersList();
     // getAllPayments();
@@ -82,7 +81,7 @@ const PaymentForm = (props) => {
   const [std, setstd] = useState("No Limit Social 99");
   const [errorData, seterrorData] = useState(null);
   const [isUnauthorized, setisUnauthorized] = useState(null);
-  const {customer, defaultsource, sources, email} = props;
+  const { customer, defaultsource, sources, email } = props;
   const initialRef = React.useRef(null);
   const finalRef = React.useRef(null);
 
@@ -97,18 +96,19 @@ const PaymentForm = (props) => {
       site_url: "https://nolimitsocial99.com",
     },
     receipt_email: "josh@nolimitsocial99.com",
-    confirm: true
+    confirm: true,
   });
 
   const errSet = {
-  amount: "",
-  customer: "",
-  currency: "",
-  description: "",
-  statement_descriptor: "",
-  source: "",}
+    amount: "",
+    customer: "",
+    currency: "",
+    description: "",
+    statement_descriptor: "",
+    source: "",
+  };
   const [errvals, seterrVals] = useState(errSet);
-  
+
   const handleAmount = (e) => {
     if (e.target.value <= 1) {
       e.target.value === "";
@@ -125,82 +125,77 @@ const PaymentForm = (props) => {
     });
   };
 
-
   const getAllValues = (e) => {
-    var checked=true;
-    let payload = {}
+    var checked = true;
+    let payload = {};
     Object.entries(vals).forEach(([key, value]) => {
-      if(value === null || value==="" || value < 1){
-        checked=false
-        console.log(key)
-        errvals[key] = "Please provide "+key;
-        seterrVals({...errvals})       
-      }
-      else{
-        payload[key] = value
+      if (value === null || value === "" || value < 1) {
+        checked = false;
+        console.log(key);
+        errvals[key] = "Please provide " + key;
+        seterrVals({ ...errvals });
+      } else {
+        payload[key] = value;
         errvals[key] = "";
-        seterrVals({...errvals})
+        seterrVals({ ...errvals });
       }
-      
     });
-    
-    if(!checked){
+
+    if (!checked) {
       return;
     }
-    //vals.metadata = 
-    console.log(email)
-    console.log(payload)
-    if(email){
-      payload['metadata'] = {...payload['metadata'], customer_email: email}
+    //vals.metadata =
+    console.log(email);
+    console.log(payload);
+    if (email) {
+      payload["metadata"] = { ...payload["metadata"], customer_email: email };
     }
-  const response = createPayment(payload);
-  response.then(res => {
-    console.log(response)
-    seterrorData({
-      'message': 'Your payment has been created!',
-      'status' : 'success',
-      'title': 'Payment Succeeded'
-  })
-    console.log(res)
-  }).catch( err => {
-    if(err.response.status==400){
-      if(err.response.data.success==false){
-      if(err.response.data.error.amount){
-        errvals['amount'] = err.response.data.error.amount
-        seterrVals({...errvals})
-      }
-      if(err.response.data.error.currency){
-        errvals['currency'] = err.response.data.error.currency
-        seterrVals({...errvals})
-      }
-    }
-      else{
+    const response = createPayment(payload);
+    response
+      .then((res) => {
+        console.log(response);
         seterrorData({
-          'message': err.response.data.error.message,
-          'status' : 'error',
-          'title': 'Payment Unsuccessfull'
+          message: "Your payment has been created!",
+          status: "success",
+          title: "Payment Succeeded",
+        });
+        console.log(res);
       })
-      errvals[err.response.data.error.param] = err.response.data.error.message
-      seterrVals({...errvals})
-      }
+      .catch((err) => {
+        if (err.response.status == 400) {
+          if (err.response.data.success == false) {
+            if (err.response.data.error.amount) {
+              errvals["amount"] = err.response.data.error.amount;
+              seterrVals({ ...errvals });
+            }
+            if (err.response.data.error.currency) {
+              errvals["currency"] = err.response.data.error.currency;
+              seterrVals({ ...errvals });
+            }
+          } else {
+            seterrorData({
+              message: err.response.data.error.message,
+              status: "error",
+              title: "Payment Unsuccessfull",
+            });
+            errvals[err.response.data.error.param] =
+              err.response.data.error.message;
+            seterrVals({ ...errvals });
+          }
+        }
+        if (err.response.status == 501) {
+          seterrorData({
+            message: err.response.data.error.message,
+            status: "error",
+            title: "Payment Unsuccessfull",
+          });
+        }
 
-    }
-    if(err.response.status==501){
-      seterrorData({
-        'message': err.response.data.error.message,
-        'status' : 'error',
-        'title': 'Payment Unsuccessfull'
-    })
-      }
-
-    if(err.response.status==401){
-    setisUnauthorized(true);
-    }
-
-  
-  })
+        if (err.response.status == 401) {
+          setisUnauthorized(true);
+        }
+      });
   };
-
 
   const getCreditData = (data) => {
     // console.log("Data comming from CreditCard", data);
@@ -215,10 +210,19 @@ const PaymentForm = (props) => {
         getCancelButtonProps,
         getEditButtonProps,
       } = useEditableControls();
-  
+
       return isEditing ? (
         <ButtonGroup justifyContent="start" size="sm">
-          <IconButton icon={<CheckIcon />} {...getSubmitButtonProps()} onClick={(e) => {vals.statement_descriptor = document.querySelector('input[name="statement_descriptor"]').value; setVals({...vals})}} />
+          <IconButton
+            icon={<CheckIcon />}
+            {...getSubmitButtonProps()}
+            onClick={(e) => {
+              vals.statement_descriptor = document.querySelector(
+                'input[name="statement_descriptor"]'
+              ).value;
+              setVals({ ...vals });
+            }}
+          />
           <IconButton icon={<CloseIcon />} {...getCancelButtonProps()} />
         </ButtonGroup>
       ) : (
@@ -231,7 +235,7 @@ const PaymentForm = (props) => {
         />
       );
     }
-  
+
     return (
       <Editable
         fontSize="md"
@@ -251,37 +255,33 @@ const PaymentForm = (props) => {
     );
   };
 
-
   const AlertBox = () => {
-    const {
-        isOpen: isVisible,
-        onClose,
-        onOpen,
-      } = useDisclosure({ defaultIsOpen: true })
+    const { isOpen: isVisible, onClose, onOpen } = useDisclosure({
+      defaultIsOpen: true,
+    });
     //const [message, error, status, title] = props;
-    return errorData!==null ? (
-    
-    <Alert status={errorData.status}>
-    <AlertIcon />
-    <Box>
-      <AlertTitle>{errorData.title}</AlertTitle>
-      <AlertDescription>
-        {errorData.message}
-      </AlertDescription>
-    </Box>
-    <CloseButton
-      alignSelf='flex-start'
-      position='relative'
-      right={-1}
-      top={-1}
-      onClick={() => seterrorData(null)}
-      
-    />
-  </Alert>) : ""
-  }
+    return errorData !== null ? (
+      <Alert status={errorData.status}>
+        <AlertIcon />
+        <Box>
+          <AlertTitle>{errorData.title}</AlertTitle>
+          <AlertDescription>{errorData.message}</AlertDescription>
+        </Box>
+        <CloseButton
+          alignSelf="flex-start"
+          position="relative"
+          right={-1}
+          top={-1}
+          onClick={() => seterrorData(null)}
+        />
+      </Alert>
+    ) : (
+      ""
+    );
+  };
   return (
     <>
-    {isUnauthorized?<AlertUnauthorized />:null}
+      {isUnauthorized ? <AlertUnauthorized /> : null}
       <Button
         bg={props.bg}
         color="white"
@@ -304,7 +304,7 @@ const PaymentForm = (props) => {
           <ModalHeader>Create Payment</ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6} overflowY={{ sm: "auto" }}>
-          {<AlertBox/>}
+            {<AlertBox />}
             <form>
               <FormControl isRequired>
                 <Box>
@@ -330,8 +330,7 @@ const PaymentForm = (props) => {
                       onChange={(handleAmount, handleValues)}
                       value={vals.amount}
                     />
-                    
-                    
+
                     {/* <Stack width={300}>
                       <Select
                         id="currencysym"
@@ -382,7 +381,7 @@ const PaymentForm = (props) => {
                   placeholder="Customer"
                   name="customer"
                   onChange={handleValues}
-                  value={customer.name+', '+customer.email}
+                  value={customer.name + ", " + customer.email}
                   readOnly={true}
                 />
                 <Text color={"red.500"}>{errvals.customer}</Text>
@@ -430,28 +429,41 @@ const PaymentForm = (props) => {
                   Manually enter card information
                 </Radio>
                 <CreditCard getCreditData={getCreditData} /> */}
-                                    <Stack width={400}>
-                      <Select
-                        id="source"
-                        icon={<TriangleDownIcon />}
-                        name="source"
-                        onChange={
-                          ((e) =>
-                          handleValues(e))
-                        }
-                      >
-                        {sources.data.map((val, index) => {
-                          return val.object==="card"?(
-                            <option value={val.id} key={index}>
-                              XXXX XXXX {val.last4} {val.exp_month} / {val.exp_year} {val.brand}
-                            </option>
-                          ):(<option value={val.id} key={index}>
-                            XXXX XXXX {val.card.last4} {val.card.exp_month} / {val.card.exp_year} {val.card.brand}
-                          </option>);
-                        })}
-                      </Select>
-                    </Stack>
-                   <Text color={"red.500"}>{errvals.source}</Text>
+                <Stack width={400}>
+                  <Select
+                    id="source"
+                    icon={<TriangleDownIcon />}
+                    name="source"
+                    onChange={(e) => handleValues(e)}
+                  >
+                    {sources.data.map((val, index) => {
+                      return val.object === "card" ? (
+                        <option value={val.id} key={index}>
+                          XXXX XXXX {val.last4} {val.exp_month} / {val.exp_year}{" "}
+                          {val.brand}
+                        </option>
+                      ) : (
+                        <option value={val.id} key={index}>
+                          {val.card
+                            ? "XXXX XXXX XXXX " +
+                              val.card.last4 +
+                              " " +
+                              val.card.exp_month +
+                              " / " +
+                              val.card.exp_year +
+                              " " +
+                              val.card.brand
+                            : val.ach_credit_transfer
+                            ? val.ach_credit_transfer.bank_name +
+                              " " +
+                              val.ach_credit_transfer.account_number
+                            : ""}
+                        </option>
+                      );
+                    })}
+                  </Select>
+                </Stack>
+                <Text color={"red.500"}>{errvals.source}</Text>
               </FormControl>
               {/* <BillingAdd /> */}
             </form>
@@ -466,10 +478,7 @@ const PaymentForm = (props) => {
       </Modal>
     </>
   );
-
-
 };
-
 
 const BillingAdd = () => {
   const [ischecked, setChecked] = useState(false);
