@@ -89,3 +89,13 @@ body.chakra-ui-dark {
     transition: $transition;
   }
 }
+
+a.anchor_hover {
+  transition: $transition;
+  border-radius: 8px;
+  padding: 0 10px;
+  &:hover {
+    background-color: #f4f3f3;
+    transition: $transition;
+  }
+}

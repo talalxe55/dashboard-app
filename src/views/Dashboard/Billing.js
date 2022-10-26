@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { NavLink, useParams } from "react-router-dom";
 // Chakra imports
 import {
   Box,
@@ -22,7 +22,8 @@ import {
   ModalFooter,
   ModalBody,
   ModalCloseButton,
-  useDisclosure
+  useDisclosure,
+  Tooltip,
 } from "@chakra-ui/react";
 import {
   FaArrowDown,
@@ -33,7 +34,7 @@ import {
   FaHtml5,
   FaShoppingCart,
 } from "react-icons/fa";
-import { PhoneIcon, AddIcon, WarningIcon, InfoIcon } from '@chakra-ui/icons'
+import { PhoneIcon, AddIcon, WarningIcon, InfoIcon } from "@chakra-ui/icons";
 // Assets
 import BackgroundCard1 from "assets/img/BackgroundCard1.png";
 // Custom components
@@ -71,40 +72,44 @@ function Billing() {
   const [singleCustomer, setSingleCustomer] = useState();
   const [singleCustomerPayments, setSingleCustomerPayments] = useState(null);
   const [singleCustomerSources, setSingleCustomerSources] = useState(null);
-  const [singleCustomerDefaultSource, setsingleCustomerDefaultSource] = useState(null);
+  const [
+    singleCustomerDefaultSource,
+    setsingleCustomerDefaultSource,
+  ] = useState(null);
   const [customerMetaEmail, setcustomerMetaEmail] = useState(null);
   const [loading, setLoading] = useState(false);
   const [unauthorizedWarning, setUnauthorizedWarning] = useState(false);
   const [noDataFound, setNoDataFound] = useState(false);
 
   const extractSource = (sourceData) => {
-    
-    if(sourceData.data.length>0){
-      let data = sourceData.data[0]
-      
-    if(data.object=="card"){
-        const card = {card: data,
-        owner: {name : data.name,
-            address: {city: data.address_city, 
-            country: data.address_country, 
-            line1: data.address_line1, 
-            line2: data.address_line2, 
-            state: data.address_state, 
-            postal_code: data.address_zip},
+    if (sourceData.data.length > 0) {
+      let data = sourceData.data[0];
+
+      if (data.object == "card") {
+        const card = {
+          card: data,
+          owner: {
+            name: data.name,
+            address: {
+              city: data.address_city,
+              country: data.address_country,
+              line1: data.address_line1,
+              line2: data.address_line2,
+              state: data.address_state,
+              postal_code: data.address_zip,
+            },
             email: "",
-            phone: ""},
-            };
-            setsingleCustomerDefaultSource(card);
+            phone: "",
+          },
+        };
+        setsingleCustomerDefaultSource(card);
+      } else if (data.object == "source") {
+        setsingleCustomerDefaultSource(data);
+      }
+    } else {
+      return null;
     }
-    else if(data.object=="source"){
-      setsingleCustomerDefaultSource(data);
-    }
-  
-  }
-  else{
-    return null;
-  }
-  }
+  };
   const getCustomerID = async () => {
     setLoading(false);
     try {
@@ -119,7 +124,7 @@ function Billing() {
       // console.log(data.sources.data);
       array.push(data);
       //return data;
-      console.log(data);
+      // console.log(data);
       setSingleCustomer(data);
       setSingleCustomerSources(data.sources);
       extractSource(data.sources);
@@ -147,26 +152,24 @@ function Billing() {
     // });
     // console.log(getCustomerID(id));
     // setSingleCustomer(getCustomerID(id));
-    console.log(id);
     const response = getAllPaymentsByCustomerID(id);
-    response.then(res => {
-      console.log(res.data.data)
-      setSingleCustomerPayments(res.data.data)
-
-    }).catch( err => {
-      if(err.response.status==400){
-        console.log(err)
-      }
-      if(err.response.status==401){
-      setUnauthorizedWarning(true);
-      }
-  
-    
-    })
+    response
+      .then((res) => {
+        console.log(res.data.data);
+        setSingleCustomerPayments(res.data.data);
+      })
+      .catch((err) => {
+        if (err.response.status == 400) {
+          console.log(err);
+        }
+        if (err.response.status == 401) {
+          setUnauthorizedWarning(true);
+        }
+      });
     getCustomerID();
   }, []);
 
-useEffect(() => {
+  useEffect(() => {
     // custData.then((value) => {
     //   // console.log(value.data.data);
     //   setSingleCustomer(value.data.data);
@@ -174,19 +177,22 @@ useEffect(() => {
     // });
     // console.log(getCustomerID(id));
     // setSingleCustomer(getCustomerID(id));
- 
-    if(singleCustomerPayments!==null && singleCustomerPayments.data.length> 0){
+
+    if (
+      singleCustomerPayments !== null &&
+      singleCustomerPayments.data.length > 0
+    ) {
       singleCustomerPayments.data.forEach((item, index) => {
-        if(item.metadata!==null){
-          if('customer_email' in item.metadata){
-            console.log(item.metadata.customer_email)
-            setcustomerMetaEmail(item.metadata.customer_email)
+        if (item.metadata !== null) {
+          if ("customer_email" in item.metadata) {
+            console.log(item.metadata.customer_email);
+            setcustomerMetaEmail(item.metadata.customer_email);
             return;
           }
         }
-      })
+      });
     }
-  }, [singleCustomerPayments])
+  }, [singleCustomerPayments]);
 
   // Chakra color mode
   const iconTeal = useColorModeValue("teal.300", "teal.300");
@@ -205,7 +211,10 @@ useEffect(() => {
 
   const dataamount = (amount) => {
     let cents = amount;
-    var formatedDollars = (cents / 100).toLocaleString("en-US", {style:"currency", currency:"USD"});
+    var formatedDollars = (cents / 100).toLocaleString("en-US", {
+      style: "currency",
+      currency: "USD",
+    });
     //formatedDateTime = formatedDateTime.toLocaleString();
     return formatedDollars;
   };
@@ -221,42 +230,39 @@ useEffect(() => {
   const CardDetails = () => {
     if (singleCustomerDefaultSource) {
       //console.log(singleCustomerDefaultSource);
-  //   return (
-  //     <Text fontSize="xl" letterSpacing="2px" fontWeight="bold">
-  //       XXXX XXXX XXXX {singleCustomerSources.data[0].card.last4}
-  //     </Text>
-  //   );
-    if (Object.keys(singleCustomerDefaultSource.card) !== 0) {
-        
-          if (singleCustomerDefaultSource.card.last4.length > 0) {
-            return (
-              <Text fontSize="xl" letterSpacing="2px" fontWeight="bold">
-                XXXX XXXX XXXX {singleCustomerDefaultSource.card.last4}
-              </Text>
-            );
-          }
-         else {
+      //   return (
+      //     <Text fontSize="xl" letterSpacing="2px" fontWeight="bold">
+      //       XXXX XXXX XXXX {singleCustomerSources.data[0].card.last4}
+      //     </Text>
+      //   );
+      if (Object.keys(singleCustomerDefaultSource.card) !== 0) {
+        if (singleCustomerDefaultSource.card.last4.length > 0) {
+          return (
+            <Text fontSize="xl" letterSpacing="2px" fontWeight="bold">
+              XXXX XXXX XXXX {singleCustomerDefaultSource.card.last4}
+            </Text>
+          );
+        } else {
           return (
             <Text fontSize="xl" letterSpacing="2px" fontWeight="bold">
               <SkeletonText noOfLines={2} />
             </Text>
           );
         }
-      
+      } else {
+        return (
+          <Text fontSize="xl" letterSpacing="2px" fontWeight="bold">
+            No card is attached
+          </Text>
+        );
+      }
     } else {
       return (
         <Text fontSize="xl" letterSpacing="2px" fontWeight="bold">
-          No card is attached
+          <SkeletonText noOfLines={2} />
         </Text>
       );
     }
-  } else {
-    return (
-      <Text fontSize="xl" letterSpacing="2px" fontWeight="bold">
-       <SkeletonText noOfLines={2} />
-      </Text>
-    );
-  }
   };
 
   return (
@@ -275,108 +281,111 @@ useEffect(() => {
             templateRows={{ sm: "auto auto auto", md: "1fr auto", xl: "1fr" }}
             gap="26px"
           >
-           { singleCustomerDefaultSource?<Card
-              backgroundImage={BackgroundCard1}
-              backgroundRepeat="no-repeat"
-              background="cover"
-              bgPosition="10%"
-              p="16px"
-              h={{ sm: "220px", xl: "100%" }}
-              gridArea={{ md: "1 / 1 / 2 / 3", xl: "1 / 1 / 2 / 3" }}
-            >
-              <CardBody h="100%" w="100%">
-                <Flex
-                  direction="column"
-                  color="white"
-                  h="100%"
-                  p="0px 10px 20px 10px"
-                  w="100%"
-                >
-                  <Flex justify="space-between" align="center">
-                    <Text
-                      fontSize="md"
-                      fontWeight="bold"
-                      textTransform="capitalize"
-                    >
-                      {singleCustomer ? singleCustomer.name : "Customer"}
-                    </Text>
-                    <Icon
-                      as={RiMastercardFill}
-                      w="48px"
-                      h="auto"
-                      color="gray.400"
-                    />
-                  </Flex>
-                  <Spacer />
-                  <Flex direction="column">
-                    <Box>
-                      <Text fontSize="xl" letterSpacing="2px" fontWeight="bold">
-                        <CardDetails />
+            {singleCustomerDefaultSource ? (
+              <Card
+                backgroundImage={BackgroundCard1}
+                backgroundRepeat="no-repeat"
+                background="cover"
+                bgPosition="10%"
+                p="16px"
+                h={{ sm: "220px", xl: "100%" }}
+                gridArea={{ md: "1 / 1 / 2 / 3", xl: "1 / 1 / 2 / 3" }}
+              >
+                <CardBody h="100%" w="100%">
+                  <Flex
+                    direction="column"
+                    color="white"
+                    h="100%"
+                    p="0px 10px 20px 10px"
+                    w="100%"
+                  >
+                    <Flex justify="space-between" align="center">
+                      <Text
+                        fontSize="md"
+                        fontWeight="bold"
+                        textTransform="capitalize"
+                      >
+                        {singleCustomer ? singleCustomer.name : "Customer"}
                       </Text>
-                    </Box>
-                    <Flex mt="14px">
-                      <Flex direction="column" me="34px">
-                        <Text fontSize="xs">BRAND</Text>
-                        <Text fontSize="xs" fontWeight="bold">
-                          {/* {singleCustomerSources !== null &&
+                      <Icon
+                        as={RiMastercardFill}
+                        w="48px"
+                        h="auto"
+                        color="gray.400"
+                      />
+                    </Flex>
+                    <Spacer />
+                    <Flex direction="column">
+                      <Box>
+                        <Text
+                          fontSize="xl"
+                          letterSpacing="2px"
+                          fontWeight="bold"
+                        >
+                          <CardDetails />
+                        </Text>
+                      </Box>
+                      <Flex mt="14px">
+                        <Flex direction="column" me="34px">
+                          <Text fontSize="xs">BRAND</Text>
+                          <Text fontSize="xs" fontWeight="bold">
+                            {/* {singleCustomerSources !== null &&
                           singleCustomerSources.data.length > 0 ? (
                             singleCustomerSources.data[0].card.brand
                           ) : (
                             <SkeletonText noOfLines={1} />
                           )} */}
-                          {singleCustomerDefaultSource ? (
-                            
-                            singleCustomerDefaultSource.card ? (
-                              singleCustomerDefaultSource.card.brand
+                            {singleCustomerDefaultSource ? (
+                              singleCustomerDefaultSource.card ? (
+                                singleCustomerDefaultSource.card.brand
                               ) : (
                                 <SkeletonText noOfLines={1} />
                               )
-                          ) : (
-                            <SkeletonText noOfLines={1} />
-                          )}
-                        </Text>
-                      </Flex>
-                      <Flex direction="column" me="34px">
-                        <Text fontSize="xs">VALID THRU</Text>
-                        <Text fontSize="xs" fontWeight="bold">
-                          {singleCustomerDefaultSource ? (
-                            
-                            singleCustomerDefaultSource.card ? (
+                            ) : (
+                              <SkeletonText noOfLines={1} />
+                            )}
+                          </Text>
+                        </Flex>
+                        <Flex direction="column" me="34px">
+                          <Text fontSize="xs">VALID THRU</Text>
+                          <Text fontSize="xs" fontWeight="bold">
+                            {singleCustomerDefaultSource ? (
+                              singleCustomerDefaultSource.card ? (
                                 `${singleCustomerDefaultSource.card.exp_month}/${singleCustomerDefaultSource.card.exp_year}`
                               ) : (
                                 <SkeletonText noOfLines={1} />
                               )
                             ) : (
                               "N/A"
-                            )
-                          }
-                        </Text>
-                      </Flex>
-                      <Flex direction="column">
-                        <Text fontSize="xs">CVV</Text>
-                        <Text fontSize="xs" fontWeight="bold">
-                          {singleCustomerDefaultSource ? (
-                            
-                            singleCustomerDefaultSource.card ? (
-                              singleCustomerDefaultSource.card.cvc_check
+                            )}
+                          </Text>
+                        </Flex>
+                        <Flex direction="column">
+                          <Text fontSize="xs">CVV</Text>
+                          <Text fontSize="xs" fontWeight="bold">
+                            {singleCustomerDefaultSource ? (
+                              singleCustomerDefaultSource.card ? (
+                                singleCustomerDefaultSource.card.cvc_check
                               ) : (
                                 <SkeletonText noOfLines={1} />
                               )
                             ) : (
                               "N/A"
-                            )
-                           }
-                        </Text>
+                            )}
+                          </Text>
+                        </Flex>
                       </Flex>
                     </Flex>
                   </Flex>
-                </Flex>
-              </CardBody>
-            </Card>: ""}
+                </CardBody>
+              </Card>
+            ) : (
+              ""
+            )}
             <Card p="16px" display="flex" align="center" justify="center">
               <CardBody>
                 <Flex direction="column" align="center" w="100%" py="14px">
-                  <IconBox as="box" h={"60px"} w={"60px"} bg={iconTeal}>
+                  <IconBox h={"60px"} w={"60px"} bg={iconTeal}>
                     <Icon h={"24px"} w={"24px"} color="white" as={FaWallet} />
                   </IconBox>
                   <Flex
@@ -415,7 +424,7 @@ useEffect(() => {
                   w="100%"
                   py="14px"
                 >
-                  <IconBox as="box" h={"60px"} w={"60px"} bg={iconTeal}>
+                  <IconBox h={"60px"} w={"60px"} bg={iconTeal}>
                     <Icon
                       h={"24px"}
                       w={"24px"}
@@ -471,7 +480,20 @@ useEffect(() => {
                   Payment Method
                 </Text>
                 {/* Create Payment Modal */}
-                {singleCustomer&&singleCustomerSources&&singleCustomerDefaultSource&&singleCustomerPayments?<PaymentForm customer={singleCustomer} defaultsource={singleCustomerDefaultSource} sources={singleCustomerSources} email={customerMetaEmail} bg={bgButton} />:""}
+                {singleCustomer &&
+                singleCustomerSources &&
+                singleCustomerDefaultSource &&
+                singleCustomerPayments ? (
+                  <PaymentForm
+                    customer={singleCustomer}
+                    defaultsource={singleCustomerDefaultSource}
+                    sources={singleCustomerSources}
+                    email={customerMetaEmail}
+                    bg={bgButton}
+                  />
+                ) : (
+                  ""
+                )}
               </Flex>
             </CardHeader>
             <Grid gap={5} templateColumns={{ sm: "1fr", lg: "repeat(2, 1fr)" }}>
@@ -479,7 +501,18 @@ useEffect(() => {
               {singleCustomerSources ? (
                 singleCustomerSources.data.length > 0 ? (
                   singleCustomerSources.data.map((val, index) => {
-                    if (val.card !== undefined && val.object=="source") {
+                    if (val.object === "source" && val.ach_credit_transfer) {
+                      return (
+                        <Text>
+                          {val.ach_credit_transfer.bank_name +
+                            " | " +
+                            val.ach_credit_transfer.account_number}
+                        </Text>
+                      );
+                    } else if (
+                      val.card !== undefined &&
+                      val.object == "source"
+                    ) {
                       return (
                         <CardBody key={index}>
                           <Flex
@@ -513,7 +546,9 @@ useEffect(() => {
                                 fontSize="md"
                                 fontWeight="semibold"
                               >
-                                {"XXXX XXXX XXXX " + val.card.last4}
+                                {val.card
+                                  ? "XXXX XXXX XXXX " + val.card.last4
+                                  : ""}
                               </Text>
                               <Spacer />
                               <Button
@@ -522,13 +557,20 @@ useEffect(() => {
                                 w="16px"
                                 h="16px"
                                 variant="no-hover"
-                              ><InfoIcon /></Button>
+                              >
+                                <Tooltip
+                                  hasArrow
+                                  label="This is the business name your customers will see on their card statements and other transactions."
+                                  color="white"
+                                >
+                                  <InfoIcon />
+                                </Tooltip>
+                              </Button>
                             </Flex>
                           </Flex>
                         </CardBody>
                       );
-                    }
-                    else{
+                    } else {
                       return (
                         <CardBody key={index}>
                           <Flex
@@ -550,12 +592,17 @@ useEffect(() => {
                               me={{ sm: "0px", md: "24px" }}
                             >
                               <IconBox me="10px" w="25px" h="22px">
-                                {val ? 
-                                  val.brand === "Visa"?
-                                  <VisaIcon w="100%" h="100%" />
-                                 : val.brand==="MasterCard"? 
-                                  <MastercardIcon w="100%" h="100%" />:<VisaIcon w="100%" h="100%" />:""
-                                }
+                                {val ? (
+                                  val.brand === "Visa" ? (
+                                    <VisaIcon w="100%" h="100%" />
+                                  ) : val.brand === "MasterCard" ? (
+                                    <MastercardIcon w="100%" h="100%" />
+                                  ) : (
+                                    <VisaIcon w="100%" h="100%" />
+                                  )
+                                ) : (
+                                  ""
+                                )}
                               </IconBox>
                               <Text
                                 color="gray.400"
@@ -571,7 +618,9 @@ useEffect(() => {
                                 w="16px"
                                 h="16px"
                                 variant="no-hover"
-                              ><InfoIcon /></Button>
+                              >
+                                <InfoIcon />
+                              </Button>
                             </Flex>
                           </Flex>
                         </CardBody>
@@ -587,81 +636,107 @@ useEffect(() => {
             </Grid>
           </Card>
         </Box>
-        {singleCustomerPayments?<Card my="24px" ms={{ lg: "24px" }}>
-          <CardHeader mb="12px">
-            <Flex direction="column" w="100%">
-              <Flex
-                direction={{ sm: "column", lg: "row" }}
-                justify={{ sm: "center", lg: "space-between" }}
-                align={{ sm: "center" }}
-                w="100%"
-                my={{ md: "12px" }}
-              >
-                <Text
-                  color={textColor}
-                  fontSize={{ sm: "lg", md: "xl", lg: "lg" }}
-                  fontWeight="bold"
+        {singleCustomerPayments ? (
+          <Card my="24px" ms={{ lg: "24px" }}>
+            <CardHeader mb="12px">
+              <Flex direction="column" w="100%">
+                <Flex
+                  direction={{ sm: "column", lg: "row" }}
+                  justify={{ sm: "center", lg: "space-between" }}
+                  align={{ sm: "center" }}
+                  w="100%"
+                  my={{ md: "12px" }}
                 >
-                  Your Transactions
-                </Text>
-                <Flex align="center">
-                  <Icon
-                    as={FaRegCalendarAlt}
-                    color="gray.400"
-                    fontSize="md"
-                    me="6px"
-                  ></Icon>
-                  {/* <Text color="gray.400" fontSize="sm" fontWeight="semibold">
+                  <Text
+                    color={textColor}
+                    fontSize={{ sm: "lg", md: "xl", lg: "lg" }}
+                    fontWeight="bold"
+                  >
+                    Customer Transactions
+                  </Text>
+                  <Flex align="center">
+                    {/* <Icon
+                      as={FaRegCalendarAlt}
+                      color="gray.400"
+                      fontSize="md"
+                      me="6px"
+                    ></Icon> */}
+                    {/* <Text color="gray.400" fontSize="sm" fontWeight="semibold">
                     23 - 30 March 2021
                   </Text> */}
+                  </Flex>
                 </Flex>
               </Flex>
-            </Flex>
-          </CardHeader>
-          <CardBody>
-            <Flex direction="column" w="100%">
-              <Text
-                color="gray.400"
-                fontSize={{ sm: "sm", md: "md" }}
-                fontWeight="semibold"
-                my="12px"
-              >
-                NEWEST
-              </Text>
-              {singleCustomerPayments.data.length>0?singleCustomerPayments.data.map((row, index) => {
-                return (
-                  <TransactionRowBilling
-                    key={index}
-                    name={row.description}
-                    status={row.status}
-                    logo={FaArrowUp}
-                    date={datadate(row.created)}
-                    price={dataamount(row.amount)}
-                  />
-                );
-              }):""}
-              <Text
-                color="gray.400"
-                fontSize={{ sm: "sm", md: "md" }}
-                fontWeight="semibold"
-                my="12px"
-              >
-                OLDER
-              </Text>
-              {olderTransactions.map((row, index) => {
-                return (
-                  <TransactionRowBilling
-                    key={index}
-                    name={row.name}
-                    logo={row.logo}
-                    date={row.date}
-                    price={row.price}
-                  />
-                );
-              })}
-            </Flex>
-          </CardBody>
-        </Card>:""}
+            </CardHeader>
+            <CardBody>
+              <Flex direction="column" w="100%">
+                {singleCustomerPayments.data.length > 0
+                  ? singleCustomerPayments.data.map((row, index) => {
+                      return (
+                        <>
+                          <NavLink
+                            to={`/admin/detail/${row.id}`}
+                            className="anchor_hover"
+                          >
+                            <TransactionRowBilling
+                              key={index}
+                              name={row.description}
+                              status={row.status}
+                              logo={row.status}
+                              date={datadate(row.created)}
+                              price={dataamount(row.amount)}
+                              charges={row.charges}
+                            />
+                          </NavLink>
+                        </>
+                      );
+                    })
+                  : ""}
+                {singleCustomerPayments &&
+                singleCustomerPayments.data.length > 0 ? (
+                  <NavLink
+                    to={`/admin/payments/?customer=${id}`}
+                    style={{ textAlign: "center" }}
+                  >
+                    <Button
+                      textAlign="center"
+                      bg="teal.300"
+                      w={200}
+                      color="#fff"
+                      borderRadius={6}
+                      py={15}
+                      mt={5}
+                      _hover={{ color: "#fff", bg: "#000" }}
+                    >
+                      See More
+                    </Button>
+                  </NavLink>
+                ) : null}
+                {/* <Text
+                  color="gray.400"
+                  fontSize={{ sm: "sm", md: "md" }}
+                  fontWeight="semibold"
+                  my="12px"
+                >
+                  OLDER
+                </Text>
+                {olderTransactions.map((row, index) => {
+                  return (
+                    <TransactionRowBilling
+                      key={index}
+                      name={row.name}
+                      logo={row.logo}
+                      date={row.date}
+                      price={row.price}
+                    />
+                  );
+                })} */}
+              </Flex>
+            </CardBody>
+          </Card>
+        ) : (
+          ""
+        )}
       </Grid>
       {/* BILLING SOURCES*/}
       <Card my={{ lg: "24px" }} me={{ lg: "24px" }}>
