@@ -14,6 +14,7 @@ import {
   StatHelpText,
   StatLabel,
   StatNumber,
+  Spinner,
   Table,
   Tbody,
   Text,
@@ -64,6 +65,8 @@ export default function Dashboard() {
   const textColor = useColorModeValue("gray.700", "white");
   const [isUnauthorized, setisUnauthorized] = useState(false);
   const [totalAmount , settotalAmount] = useState();
+  const [todayAmount , settodayAmount] = useState();
+  const [todayCharges , settodayCharges] = useState(null);
   const history = useHistory();
   const [series, setSeries] = useState([
     {
@@ -78,7 +81,7 @@ export default function Dashboard() {
     },
   ]);
   const overlayRef = React.useRef();
-  const dashboardData = async (options) => {
+  const totalSalesData = async (options) => {
 
     try {
       const res = await axios.get(`${API_SERVER}account/total`, {
@@ -105,16 +108,70 @@ export default function Dashboard() {
     }
   }
 
+  const todaySalesData = async (options) => {
+    
+    try {
+      let payload = {};
+      if(options!==null){
+        Object.entries(options).forEach(([key,value]) => {
+          payload[key] = value;
+        })
+      }
+      const res = await axios.post(`${API_SERVER}account/transactions?limit=100&type=charge`, JSON.stringify(payload),{
+        headers: {
+          Authorization: `${TOKEN_TYPE} ${TOKEN}`,
+          Accept: `${ACCEPT_TYPE}`,
+          "Content-Type": `${ACCEPT_TYPE}`,
+        },
+      });
+
+      let data = await res.data.data;
+      settodayCharges(data)
+
+    } catch (err) {
+        console.log(err);
+      if (err.response.status === 404) {
+        
+      } else if (err.response.status === 401) {
+        setisUnauthorized(true);
+      } else {
+        console.log(err.message);
+      }
+    }
+  }
   const dataamount = (amount) => {
     let cents = amount;
     var formatedDollars = (cents / 100).toLocaleString("en-US", {style:"currency", currency:"USD"});
     //formatedDateTime = formatedDateTime.toLocaleString();
     return formatedDollars;
   };
+  const datadate = (created) => {
+    let epochDate = created;
+    var formatedDateTime = new Date(epochDate * 1000);
+
+    formatedDateTime = formatedDateTime.toLocaleString();
+    return formatedDateTime;
+  };
   useEffect(() => {
-    dashboardData(null);
+    totalSalesData(null);
+    let options = {created: {gte: new Date().toLocaleDateString()}}
+    todaySalesData(options);
     // console.log(customers.length);
   }, []);
+
+  useEffect(() => {
+    if(todayCharges !== null){
+      console.log(todayCharges);
+      if(todayCharges.data.length > 0){
+        let amount = 0;
+        todayCharges.data.forEach((item, index) => {
+          amount+= item.amount
+        })
+        settodayAmount(dataamount(amount))
+      }
+    }
+    // console.log(customers.length);
+  }, [todayCharges]);
 
   return (
     <Flex flexDirection="column" pt={{ base: "120px", md: "75px" }}>
@@ -134,7 +191,7 @@ export default function Dashboard() {
                 </StatLabel>
                 <Flex>
                   <StatNumber fontSize="lg" color={textColor}>
-                    {totalAmount?dataamount(totalAmount.available[0].amount):0}
+                    {todayAmount?todayAmount:<Spinner color='red.500' />}
                   </StatNumber>
                   {/* <StatHelpText
                     alignSelf="flex-end"
@@ -155,7 +212,7 @@ export default function Dashboard() {
             </Flex>
           </CardBody>
         </Card>
-        <Card minH="83px">
+        {/* <Card minH="83px">
           <CardBody>
             <Flex flexDirection="row" align="center" justify="center" w="100%">
               <Stat me="auto">
@@ -189,7 +246,7 @@ export default function Dashboard() {
               </IconBox>
             </Flex>
           </CardBody>
-        </Card>
+        </Card> */}
         <Card minH="83px">
           <CardBody>
             <Flex flexDirection="row" align="center" justify="center" w="100%">
@@ -200,7 +257,7 @@ export default function Dashboard() {
                   fontWeight="bold"
                   pb=".1rem"
                 >
-                  New Clients
+                  New Users
                 </StatLabel>
                 <Flex>
                   <StatNumber fontSize="lg" color={textColor}>
@@ -240,9 +297,9 @@ export default function Dashboard() {
                 </StatLabel>
                 <Flex>
                   <StatNumber fontSize="lg" color={textColor} fontWeight="bold">
-                    $173,000
+                  {totalAmount?dataamount(totalAmount.available[0].amount):<Spinner color='red.500' />}
                   </StatNumber>
-                  <StatHelpText
+                  {/* <StatHelpText
                     alignSelf="flex-end"
                     justifySelf="flex-end"
                     m="0px"
@@ -252,7 +309,7 @@ export default function Dashboard() {
                     fontSize="md"
                   >
                     +8%
-                  </StatHelpText>
+                  </StatHelpText> */}
                 </Flex>
               </Stat>
               <IconBox h={"45px"} w={"45px"} bg={iconTeal}>

@@ -80,7 +80,8 @@ function Detail() {
   const [SinglePaymentMeta, setSinglePaymentMeta] = useState(null);
   const [errorData, seterrorData] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [refundAmount, setrefundAmount] = useState(0);
+  const [refundAmount, setrefundAmount] = useState(false);
+  const [refundbtntext, setrefundbtntext] = useState("Create Refund");
   const history = useHistory();
   const dataamount = (amount) => {
     let cents = amount;
@@ -315,11 +316,16 @@ function Detail() {
     var str = "";
 
     if (val.status === "succeeded") {
-      if (val.charges.data !== null) {
+      if (val.charges.data.length !== null) {
         var data = val.charges.data[val.charges.data.length - 1];
         if (data.refunded == true && data.refunds.data.length > 0) {
           str = "refunded";
-        } else {
+        }
+        else if (data.amount_refunded > 0){
+          str = "partial_refunded"
+        }
+        
+        else {
           str = val.status;
         }
       } else {
@@ -352,7 +358,20 @@ function Detail() {
           {status}
         </Text>
       );
-    } else {
+    } 
+    else if (status==="Refunded" || status ==="Partial Refunded") {
+      return (
+        <Text
+          fontSize="xl"
+          fontWeight="bold"
+          textTransform="capitalize"
+          color={"teal.300"}
+        >
+          {status}
+        </Text>
+      );
+    }
+    else {
       return (
         <Text
           fontSize="xl"
@@ -568,17 +587,18 @@ function Detail() {
             <ModalFooter>
               <Button
                 onClick={() => {
+                  // setrefundAmount(true),
+                  
                   refundCharge(
                     document.querySelector("input[name=payment-refund-amount]")
                       .value
-                  ),
-                    onClose;
+                  )
                 }}
                 colorScheme="red"
                 ml={3}
                 bg={iconTeal}
               >
-                Create Refund
+                {refundbtntext}
               </Button>
               <Button onClick={onClose}>Cancel</Button>
             </ModalFooter>
@@ -640,6 +660,7 @@ function Detail() {
 
   return (
     <Flex direction="column" pt={{ base: "120px", md: "75px" }}>
+      <AlertBox />
       <Flex direction={"column"} width={"30%"}>
         <Box>
           {singlePayment ? (
@@ -682,7 +703,7 @@ function Detail() {
         </Box>
       </Flex>
 
-      <AlertBox />
+      
 
       <Grid templateColumns={{ sm: "1fr", lg: "2fr 1.2fr" }} templateRows="1fr">
         <Box>
@@ -695,7 +716,7 @@ function Detail() {
             templateRows={{ sm: "auto auto auto", md: "1fr auto", xl: "1fr" }}
             gap="26px"
           >
-            <Card p="16px" display="flex" align="center" justify="center">
+            <Card p="6px" display="flex" align="center" justify="center">
               <CardBody>
                 <Flex direction="column" align="center" w="100%" py="14px">
                   <IconBox as="box" h={"60px"} w={"60px"} bg={iconTeal}>
@@ -733,7 +754,7 @@ function Detail() {
               </CardBody>
             </Card>
 
-            <Card p="16px" display="flex" align="center" justify="center">
+            <Card p="6px" display="flex" align="center" justify="center">
               <CardBody>
                 <Flex
                   direction="column"

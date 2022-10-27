@@ -19,6 +19,46 @@ import {
     const bgStatus = useColorModeValue("gray.400", "#1a202c");
     const colorStatus = useColorModeValue("white", "gray.400");
 
+    function setStatus(originalstatus) {
+      var status = originalstatus;
+      if (status === "Succeeded") {
+        return (
+          <Text
+            fontSize="sm"
+            fontWeight="bold"
+            textTransform="capitalize"
+            color={"green.300"}
+          >
+            {status}
+          </Text>
+        );
+      } 
+      else if (status==="Refunded" || status ==="Partial Refunded") {
+        return (
+          <Text
+            fontSize="sm"
+            fontWeight="bold"
+            textTransform="capitalize"
+            color={"teal.300"}
+          >
+            {status}
+          </Text>
+        );
+      }
+      else {
+        return (
+          <Text
+            fontSize="sm"
+            fontWeight="bold"
+            textTransform="capitalize"
+            color={"black.300"}
+          >
+            {status}
+          </Text>
+        );
+      }
+  
+    }
     return (
       <Tr payment-data={cusid}>
         <Td minWidth={{ sm: "100px" }} pl="0px">
@@ -40,7 +80,7 @@ import {
         <Td minWidth={{ sm: "100px" }} pl="0px">
           <Flex align="center" py=".8rem" minWidth="100%" flexWrap="nowrap">
             {/* <Avatar src={logo} w="50px" borderRadius="12px" me="18px" /> */}
-            {status==="Succeeded"? <Flex direction="column">
+            {/* {status==="Succeeded"? <Flex direction="column">
         <Text
           fontSize="sm"
           color="green.400"
@@ -56,7 +96,8 @@ import {
         >
           {status}
         </Text>
-      </Flex>}
+      </Flex>} */}
+      {setStatus(status)}
           </Flex>
         </Td>
   

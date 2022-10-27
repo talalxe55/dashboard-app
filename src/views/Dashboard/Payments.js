@@ -244,27 +244,7 @@ function Tables() {
           data[key] = value;
           console.log(data);
         });
-        // if(options.date!==null && options.date!==undefined && options.date.value!==null){
-        //     // const bodyFormData = new FormData();
-        //     // bodyFormData.append(filterDate.value, item);
-        //     //data= {'created': {'value': filterDate.value, 'operator': filterDate.operator} };
-        //     data['created'] = {'value' : options.date.value, 'operator': options.date.operator};
-        //   }
 
-        // if(options.amount!==null && options.amount.value!==null && options.amount!==undefined){
-        //     data['amount'] = {'value' : options.amount.value, 'operator': options.amount.operator}
-        //   }
-
-        // if(options.status!==null && options.status!==undefined){
-        //     data['status'] = options.status;
-        // }
-        // if(options.metadata!==undefined && options.metadata!==null){
-        // if(options.metadata.site_url!==null){
-        //     data['metadata'] = {...data['metadata'], 'site_url': options.metadata.site_url};
-        // }
-        // if(options.metadata.customer_email!==null && options.metadata!==undefined){
-        //     data['metadata'] = {...data['metadata'], 'customer_email': options.metadata.customer_email};
-        // }
       }
 
       const res = await axios.post(
@@ -300,7 +280,6 @@ function Tables() {
         // alert('The requested resource was not found');
         console.log("Resource could not be found!");
       } else if (err.response.status === 401) {
-        localStorage.removeItem("user");
         setUnauthorizedWarning(true);
       } else {
         console.log(err.message);
@@ -363,9 +342,7 @@ function Tables() {
         alert("The requested resource was not found");
         console.log("Resource could not be found!");
       } else if (err.response.status === 401) {
-        alert("Your session has expired!");
-        localStorage.removeItem("user");
-        history.push("/auth/signin");
+        setUnauthorizedWarning(true)
       } else {
         console.log(err.message);
       }
@@ -376,13 +353,16 @@ function Tables() {
     var str = "";
 
     if (val.status === "succeeded") {
-      if (val.charges.data !== null) {
+      if (val.charges.data.length !== null) {
         var data = val.charges.data[val.charges.data.length - 1];
         if (data.refunded == true && data.refunds.data.length > 0) {
           str = "refunded";
-        } else if (data.refunded == false && data.refunds.data.length > 0) {
-          str = "partial_refunded";
-        } else {
+        }
+        else if (data.amount_refunded > 0){
+          str = "partial_refunded"
+        }
+        
+        else {
           str = val.status;
         }
       } else {
@@ -399,7 +379,7 @@ function Tables() {
     for (const word of arr) {
       result.push(word.charAt(0).toUpperCase() + word.slice(1));
     }
-    //console.log(result);
+
     return result.join(" ");
   }
 
