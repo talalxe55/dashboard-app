@@ -24,6 +24,7 @@ import {
   ModalCloseButton,
   useDisclosure,
   Tooltip,
+  Badge,
 } from "@chakra-ui/react";
 import {
   FaArrowDown,
@@ -34,6 +35,7 @@ import {
   FaHtml5,
   FaShoppingCart,
 } from "react-icons/fa";
+import { BsFillCreditCard2FrontFill, BsBank2 } from "react-icons/bs";
 import { PhoneIcon, AddIcon, WarningIcon, InfoIcon } from "@chakra-ui/icons";
 // Assets
 import BackgroundCard1 from "assets/img/BackgroundCard1.png";
@@ -76,11 +78,42 @@ function Billing() {
     singleCustomerDefaultSource,
     setsingleCustomerDefaultSource,
   ] = useState(null);
+  const [billingSourceOwner, setBillingSourceOwner] = useState(null);
   const [customerMetaEmail, setcustomerMetaEmail] = useState(null);
   const [loading, setLoading] = useState(false);
   const [unauthorizedWarning, setUnauthorizedWarning] = useState(false);
   const [noDataFound, setNoDataFound] = useState(false);
 
+  const extractBilling = (sourceData) => {
+    // console.log(sourceData);
+    if (sourceData.data.length > 0) {
+      let data = [];
+      sourceData.data.forEach((element) => {
+        if (element.object == "card") {
+          const owner = {
+            owner: {
+              address: {
+                city: element.address_city,
+                country: element.address_country,
+                line1: element.address_line1,
+                line2: element.address_line2,
+                state: element.address_state,
+                postal_code: element.address_zip,
+              },
+              name: element.name,
+              email: "N/A",
+              phone: "N/A",
+            },
+          };
+          data.push(owner);
+        } else if (element.object == "source") {
+          data.push(element);
+        }
+      });
+
+      setBillingSourceOwner(data);
+    }
+  };
   const extractSource = (sourceData) => {
     if (sourceData.data.length > 0) {
       let data = sourceData.data[0];
@@ -110,6 +143,7 @@ function Billing() {
       return null;
     }
   };
+
   const getCustomerID = async () => {
     setLoading(false);
     try {
@@ -128,6 +162,7 @@ function Billing() {
       setSingleCustomer(data);
       setSingleCustomerSources(data.sources);
       extractSource(data.sources);
+      extractBilling(data.sources);
       setLoading(false);
     } catch (err) {
       if (err.response.status === 404) {
@@ -155,7 +190,7 @@ function Billing() {
     const response = getAllPaymentsByCustomerID(id);
     response
       .then((res) => {
-        console.log(res.data.data);
+        // console.log(res.data.data);
         setSingleCustomerPayments(res.data.data);
       })
       .catch((err) => {
@@ -462,7 +497,7 @@ function Billing() {
                     fontWeight="bold"
                     wordBreak="break-all"
                   >
-                    {singleCustomer ? singleCustomer.email : "Email"}
+                    {singleCustomer ? singleCustomer.email : "Email Address"}
                   </Text>
                 </Flex>
               </CardBody>
@@ -503,11 +538,55 @@ function Billing() {
                   singleCustomerSources.data.map((val, index) => {
                     if (val.object === "source" && val.ach_credit_transfer) {
                       return (
-                        <Text>
-                          {val.ach_credit_transfer.bank_name +
-                            " | " +
-                            val.ach_credit_transfer.account_number}
-                        </Text>
+                        <CardBody key={index}>
+                          <Flex
+                            direction={{ sm: "column", md: "row" }}
+                            align="center"
+                            w="100%"
+                            justify="center"
+                            py="1rem"
+                          >
+                            <Flex
+                              p="1rem"
+                              bg="transparent"
+                              borderRadius="15px"
+                              width="100%"
+                              border="1px solid"
+                              borderColor={borderColor}
+                              align="center"
+                              mb={{ sm: "24px", md: "0px" }}
+                              me={{ sm: "0px", md: "24px" }}
+                            >
+                              <IconBox me="10px" w="25px" h="22px">
+                                <BsBank2 />
+                              </IconBox>
+                              <Text
+                                color="gray.400"
+                                fontSize="md"
+                                fontWeight="semibold"
+                              >
+                                {/* {val.ach_credit_transfer.bank_name} */}
+                                {val.ach_credit_transfer.account_number}
+                              </Text>
+                              <Spacer />
+                              <Button
+                                p="0px"
+                                bg="transparent"
+                                w="16px"
+                                h="16px"
+                                variant="no-hover"
+                              >
+                                <Tooltip
+                                  hasArrow
+                                  label="Click to view Bank details"
+                                  color="white"
+                                >
+                                  <InfoIcon />
+                                </Tooltip>
+                              </Button>
+                            </Flex>
+                          </Flex>
+                        </CardBody>
                       );
                     } else if (
                       val.card !== undefined &&
@@ -538,7 +617,7 @@ function Billing() {
                                   (val.card.brand === "Visa",
                                   (<VisaIcon w="100%" h="100%" />))
                                 ) : (
-                                  <VisaIcon w="100%" h="100%" />
+                                  <BsFillCreditCard2FrontFill />
                                 )}
                               </IconBox>
                               <Text
@@ -560,7 +639,7 @@ function Billing() {
                               >
                                 <Tooltip
                                   hasArrow
-                                  label="This is the business name your customers will see on their card statements and other transactions."
+                                  label="Click to view Card details"
                                   color="white"
                                 >
                                   <InfoIcon />
@@ -628,7 +707,9 @@ function Billing() {
                     }
                   })
                 ) : (
-                  "No Card found!"
+                  <Badge colorScheme="red" p={2}>
+                    No Card found!
+                  </Badge>
                 )
               ) : (
                 <SkeletonText noOfLines={3} />
@@ -668,50 +749,42 @@ function Billing() {
                 </Flex>
               </Flex>
             </CardHeader>
-            <CardBody>
-              <Flex direction="column" w="100%">
-                {singleCustomerPayments.data.length > 0
-                  ? singleCustomerPayments.data.map((row, index) => {
-                      return (
-                        <>
-                          <NavLink
-                            to={`/admin/detail/${row.id}`}
-                            className="anchor_hover"
-                          >
-                            <TransactionRowBilling
-                              key={index}
-                              name={row.description}
-                              status={row.status}
-                              logo={row.status}
-                              date={datadate(row.created)}
-                              price={dataamount(row.amount)}
-                              charges={row.charges}
-                            />
-                          </NavLink>
-                        </>
-                      );
-                    })
-                  : ""}
-                {singleCustomerPayments &&
-                singleCustomerPayments.data.length > 0 ? (
-                  <NavLink
-                    to={`/admin/payments/?customer=${id}`}
-                    style={{ textAlign: "center" }}
-                  >
-                    <Button
-                      textAlign="center"
-                      bg="teal.300"
-                      w={200}
-                      color="#fff"
-                      borderRadius={6}
-                      py={15}
-                      mt={5}
-                      _hover={{ color: "#fff", bg: "#000" }}
-                    >
-                      See More
-                    </Button>
-                  </NavLink>
-                ) : null}
+            <CardBody style={{ flexDirection: "column" }}>
+              <Flex
+                direction="column"
+                w="100%"
+                style={
+                  singleCustomerPayments.data.length > 5
+                    ? { overflowY: "scroll", height: "377px" }
+                    : null
+                }
+              >
+                {singleCustomerPayments.data.length > 0 ? (
+                  singleCustomerPayments.data.map((row, index) => {
+                    return (
+                      <>
+                        <NavLink
+                          to={`/admin/detail/${row.id}`}
+                          className="anchor_hover"
+                        >
+                          <TransactionRowBilling
+                            key={index}
+                            name={row.description}
+                            status={row.status}
+                            logo={row.status}
+                            date={datadate(row.created)}
+                            price={dataamount(row.amount)}
+                            charges={row.charges}
+                          />
+                        </NavLink>
+                      </>
+                    );
+                  })
+                ) : (
+                  <Badge colorScheme="red" p={2}>
+                    There's no transactions!
+                  </Badge>
+                )}
                 {/* <Text
                   color="gray.400"
                   fontSize={{ sm: "sm", md: "md" }}
@@ -732,6 +805,24 @@ function Billing() {
                   );
                 })} */}
               </Flex>
+              <Box textAlign="center">
+                {singleCustomerPayments &&
+                singleCustomerPayments.data.length > 0 ? (
+                  <NavLink to={`/admin/payments/?customer=${id}`}>
+                    <Button
+                      bg="teal.300"
+                      w={200}
+                      color="#fff"
+                      borderRadius={6}
+                      py={15}
+                      mt={5}
+                      _hover={{ color: "#fff", bg: "#000" }}
+                    >
+                      See More
+                    </Button>
+                  </NavLink>
+                ) : null}
+              </Box>
             </CardBody>
           </Card>
         ) : (
@@ -746,41 +837,65 @@ function Billing() {
           </Text>
         </CardHeader>
         <Grid gap={5} templateColumns={{ sm: "1fr", lg: "repeat(2, 1fr)" }}>
-          {singleCustomerSources ? (
-            singleCustomerSources.data.length > 0 ? (
-              singleCustomerSources.data.map((val, index) => {
-                if (val.card !== undefined) {
-                  {
-                    /* console.log(val.owner); */
-                  }
-                  return (
-                    <>
-                      <CardBody>
-                        <Flex direction="column" w="100%">
-                          <BillingRowSources
-                            key={index}
-                            name={val.owner.name}
-                            email={val.owner.email}
-                            phone={val.owner.phone}
-                            country={val.owner.address.country}
-                            state={val.owner.address.state}
-                            city={val.owner.address.city}
-                            line1={val.owner.address.line1}
-                            line2={val.owner.address.line2}
-                            postal_code={val.owner.address.postal_code}
-                          />
-                        </Flex>
-                      </CardBody>
-                    </>
-                  );
+          {billingSourceOwner !== null
+            ? billingSourceOwner.map((val, index) => {
+                {
+                  console.log(val);
                 }
+                return (
+                  <CardBody>
+                    <Flex direction="column" w="100%">
+                      <BillingRowSources
+                        key={index}
+                        name={val.owner.name !== null ? val.owner.name : "N/A"}
+                        email={
+                          val.owner.email !== null ? val.owner.email : "N/A"
+                        }
+                        phone={
+                          val.owner.phone !== null ? val.owner.phone : "N/A"
+                        }
+                        country={
+                          val.owner.address !== null &&
+                          val.owner.address.country !== null
+                            ? val.owner.address.country
+                            : "N/A"
+                        }
+                        state={
+                          val.owner.address !== null &&
+                          val.owner.address.state !== null
+                            ? val.owner.address.state
+                            : "N/A"
+                        }
+                        city={
+                          val.owner.address !== null &&
+                          val.owner.address.city !== null
+                            ? val.owner.address.city
+                            : "N/A"
+                        }
+                        line1={
+                          val.owner.address !== null &&
+                          val.owner.address.line1 !== null
+                            ? val.owner.address.line1
+                            : "N/A"
+                        }
+                        line2={
+                          val.owner.address !== null &&
+                          val.owner.address.line2 !== null
+                            ? val.owner.address.line2
+                            : "N/A"
+                        }
+                        postal_code={
+                          val.owner.address !== null &&
+                          val.owner.address.postal_code !== null
+                            ? val.owner.address.postal_code
+                            : "N/A"
+                        }
+                      />
+                    </Flex>
+                  </CardBody>
+                );
               })
-            ) : (
-              "There is no card!"
-            )
-          ) : (
-            <SkeletonText noOfLines={9} />
-          )}
+            : ""}
         </Grid>
       </Card>
       {/* INVOICES PDF  */}

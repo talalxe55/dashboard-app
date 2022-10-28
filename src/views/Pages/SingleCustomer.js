@@ -21,6 +21,7 @@ import {
   TableContainer,
   Checkbox,
   Badge,
+  Table,
 } from "@chakra-ui/react";
 
 import { ChevronDownIcon } from "@chakra-ui/icons";

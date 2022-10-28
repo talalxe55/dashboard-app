@@ -87,7 +87,7 @@ function BillingRowSources(props) {
             </Text>
           </Text>
         </Flex>
-        <Flex
+        {/* <Flex
           direction={{ sm: "column", md: "row" }}
           align="flex-start"
           p={{ md: "24px" }}
@@ -113,7 +113,7 @@ function BillingRowSources(props) {
               </Text>
             </Flex>
           </Button>
-        </Flex>
+        </Flex> */}
       </Flex>
     </Box>
   );

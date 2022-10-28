@@ -25,9 +25,9 @@ const AlertPaymentCreated = () => {
       confirmBtnText="OKK!"
       onCancel={() => history.push("/auth/dashboard")}
       onConfirm={() => history.push("/auth/dashboard")}
-      showCloseButton= {true}
-      showConfirm= {true}
-      closeOnConfirm= {true} 
+      showCloseButton={true}
+      showConfirm={true}
+      closeOnConfirm={true}
       customClass="alert_pop"
     />
   );
@@ -42,7 +42,11 @@ const AlertUnauthorized = () => {
       title="Your session has expired!"
       confirmBtnText="OKK!"
       onCancel={() => history.push("/auth/signin")}
-      onConfirm={() => {setUser(null); localStorage.removeItem("user"); history.push("/auth/signin")}}
+      onConfirm={() => {
+        setUser(null);
+        localStorage.removeItem("user");
+        history.push("/auth/signin");
+      }}
       customClass="alert_pop"
     />
   );
@@ -61,4 +65,10 @@ const AlertDataNotFound = () => {
     />
   );
 };
-export { AlertCustomerCreated, AlertUnauthorized, AlertDataNotFound, AlertPaymentCreated };
+
+export {
+  AlertCustomerCreated,
+  AlertUnauthorized,
+  AlertDataNotFound,
+  AlertPaymentCreated,
+};
