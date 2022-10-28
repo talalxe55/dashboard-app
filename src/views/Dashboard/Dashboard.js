@@ -169,6 +169,7 @@ export default function Dashboard() {
         })
         settodayAmount(dataamount(amount))
       }
+      else {settodayAmount(dataamount(0))}
     }
     // console.log(customers.length);
   }, [todayCharges]);
@@ -247,7 +248,7 @@ export default function Dashboard() {
             </Flex>
           </CardBody>
         </Card> */}
-        <Card minH="83px">
+        {/* <Card minH="83px">
           <CardBody>
             <Flex flexDirection="row" align="center" justify="center" w="100%">
               <Stat>
@@ -282,7 +283,7 @@ export default function Dashboard() {
               </IconBox>
             </Flex>
           </CardBody>
-        </Card>
+        </Card> */}
         <Card minH="83px">
           <CardBody>
             <Flex flexDirection="row" align="center" justify="center" w="100%">

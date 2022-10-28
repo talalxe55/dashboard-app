@@ -383,17 +383,7 @@ function Detail() {
         </Text>
       );
     }
-    //     {singlePayment.status==='Succeeded' ?  <Text
-    //     fontSize="md"
-    //     fontWeight="bold"
-    //     textTransform="capitalize"
-    //     color={"green.300"}
-    // >{singlePayment.status}</Text>:<Text
-    // fontSize="md"
-    // fontWeight="bold"
-    // textTransform="capitalize"
-    // color={"green.300"}
-    // >{singlePayment.status}</Text>}
+
   }
   useEffect(() => {
     getCustomerID();

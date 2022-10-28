@@ -10,6 +10,7 @@ import SignOut from "views/Pages/SignOut.js";
 import SingleCustomer from "views/Pages/SingleCustomer";
 import Payments from "views/Dashboard/Payments.js";
 import Detail from "views/Dashboard/SinglePayment.js";
+import Users from "views/Dashboard/Users.js";
 
 import {
   HomeIcon,
@@ -98,6 +99,15 @@ var dashRoutes = [
       //   component: Profile,
       //   layout: "/admin",
       // },
+      {
+        path: "/users",
+        name: "Users",
+        rtlName: "لوحة القيادة",
+        icon: <PersonIcon color="inherit" />,
+        secondaryNavbar: true,
+        component: Users,
+        layout: "/admin",
+      },
       {
         path: "/signin",
         name: "Sign In",
