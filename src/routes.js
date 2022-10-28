@@ -50,14 +50,14 @@ var dashRoutes = [
     layout: "/admin",
     hide: true,
   },
-  {
-    path: "/listing/:id",
-    name: "Listing",
-    component: SingleCustomer,
-    icon: <CreditIcon color="inherit" />,
-    layout: "/admin",
-    hide: true,
-  },
+  // {
+  //   path: "/listing/",
+  //   name: "Listing",
+  //   component: SingleCustomer,
+  //   icon: <CreditIcon color="inherit" />,
+  //   layout: "/admin",
+  //   hide: true,
+  // },
 
   {
     path: "/payments/",
