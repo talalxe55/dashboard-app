@@ -7,6 +7,7 @@ import Profile from "views/Dashboard/Profile.js";
 import SignIn from "views/Pages/SignIn.js";
 import SignUp from "views/Pages/SignUp.js";
 import SignOut from "views/Pages/SignOut.js";
+import ForgotPassword from "views/Pages/ForgotPassword";
 import SingleCustomer from "views/Pages/SingleCustomer";
 import Payments from "views/Dashboard/Payments.js";
 import Detail from "views/Dashboard/SinglePayment.js";
@@ -21,7 +22,8 @@ import {
   RocketIcon,
   SupportIcon,
   VisaIcon,
-  WalletIcon
+  WalletIcon,
+  SettingsIcon
 } from "components/Icons/Icons";
 
 var dashRoutes = [
@@ -56,7 +58,7 @@ var dashRoutes = [
     component: SingleCustomer,
     icon: <CreditIcon color="inherit" />,
     layout: "/admin",
-    hide: false,
+    hide: true,
   },
 
   {
@@ -90,15 +92,15 @@ var dashRoutes = [
     rtlName: "صفحات",
     state: "pageCollapse",
     views: [
-      // {
-      //   path: "/profile",
-      //   name: "Profile",
-      //   rtlName: "لوحة القيادة",
-      //   icon: <PersonIcon color="inherit" />,
-      //   secondaryNavbar: true,
-      //   component: Profile,
-      //   layout: "/admin",
-      // },
+      {
+        path: "/profile",
+        name: "Profile",
+        rtlName: "لوحة القيادة",
+        icon: <PersonIcon color="inherit" />,
+        secondaryNavbar: true,
+        component: Profile,
+        layout: "/admin",
+      },
       {
         path: "/users",
         name: "Users",
@@ -107,7 +109,20 @@ var dashRoutes = [
         secondaryNavbar: true,
         component: Users,
         layout: "/admin",
+        hide: true,
       },
+      
+      // {
+      //   path: "/setting",
+      //   name: "Settings",
+      //   rtlName: "لوحة القيادة",
+      //   icon: <SettingsIcon color="inherit" />,
+      //   secondaryNavbar: true,
+      //   component: Users,
+      //   layout: "/admin",
+      //   hide: false,
+      // },
+
       {
         path: "/signin",
         name: "Sign In",
@@ -117,16 +132,26 @@ var dashRoutes = [
         layout: "/auth",
         hide: true,
       },
+
       {
-        path: "/signup",
-        name: "Sign Up",
+        path: "/forgot-password",
+        name: "Reset Password",
         rtlName: "لوحة القيادة",
-        icon: <RocketIcon color="inherit" />,
-        secondaryNavbar: true,
-        component: SignUp,
+        icon: <DocumentIcon color="inherit" />,
+        component: ForgotPassword,
         layout: "/auth",
         hide: true,
       },
+      // {
+      //   path: "/signup",
+      //   name: "Sign Up",
+      //   rtlName: "لوحة القيادة",
+      //   icon: <RocketIcon color="inherit" />,
+      //   secondaryNavbar: true,
+      //   component: SignUp,
+      //   layout: "/auth",
+      //   hide: true,
+      // },
       {
         path: "/signout",
         name: "Logout",

@@ -81,7 +81,10 @@ const PaymentForm = (props) => {
   const [std, setstd] = useState("No Limit Social 99");
   const [errorData, seterrorData] = useState(null);
   const [isUnauthorized, setisUnauthorized] = useState(null);
-  const { customer, defaultsource, sources, email } = props;
+  const [isSuccess, setisSuccess] = useState(false);
+  const [paymentbtnLoader, setpaymentbtnLoader] = useState(false);
+  const [CreatepaymentBtnText, setCreatepaymentBtnText] = useState("Create Payment");
+  const { customer, defaultsource, sources, email, setisReload, setReloadState } = props;
   const initialRef = React.useRef(null);
   const finalRef = React.useRef(null);
 
@@ -131,7 +134,8 @@ const PaymentForm = (props) => {
     Object.entries(vals).forEach(([key, value]) => {
       if (value === null || value === "" || value < 1) {
         checked = false;
-        console.log(key);
+        setpaymentbtnLoader(false)
+        setCreatepaymentBtnText("Create Payment");
         errvals[key] = "Please provide " + key;
         seterrVals({ ...errvals });
       } else {
@@ -153,15 +157,15 @@ const PaymentForm = (props) => {
     const response = createPayment(payload);
     response
       .then((res) => {
-        console.log(response);
-        seterrorData({
-          message: "Your payment has been created!",
-          status: "success",
-          title: "Payment Succeeded",
-        });
-        console.log(res);
+        setisReload(true)
+        setReloadState(true)
+        setisSuccess(true);
+        setpaymentbtnLoader(false)
+        setCreatepaymentBtnText("Payment Created!");
       })
       .catch((err) => {
+        setpaymentbtnLoader(false)
+        setCreatepaymentBtnText("Payment Failed!");
         if (err.response.status == 400) {
           if (err.response.data.success == false) {
             if (err.response.data.error.amount) {
@@ -272,7 +276,7 @@ const PaymentForm = (props) => {
           position="relative"
           right={-1}
           top={-1}
-          onClick={() => seterrorData(null)}
+          onClick={() => {setCreatepaymentBtnText("Create Payment"); seterrorData(null);}}
         />
       </Alert>
     ) : (
@@ -282,6 +286,7 @@ const PaymentForm = (props) => {
   return (
     <>
       {isUnauthorized ? <AlertUnauthorized /> : null}
+      {isSuccess ? <AlertPaymentCreated setisSuccess={setisSuccess}/>: null}
       <Button
         bg={props.bg}
         color="white"
@@ -469,8 +474,8 @@ const PaymentForm = (props) => {
             </form>
           </ModalBody>
           <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={getAllValues}>
-              Submit Payment
+            <Button isLoading={paymentbtnLoader} loadingText='Creating Payment!' colorScheme="blue" mr={3} onClick={() => {setpaymentbtnLoader(true); setCreatepaymentBtnText('Creating Payment!'); getAllValues()}}>
+             {CreatepaymentBtnText}
             </Button>
             <Button onClick={onClose}>Cancel</Button>
           </ModalFooter>

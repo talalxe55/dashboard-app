@@ -42,6 +42,7 @@ function Tables() {
   const [custLimit, setCustLimit] = useState(10);
   const [customerType, setCustomerType] = useState("NLS");
   const [filterEmail, setFilterEmail] = useState("");
+  const [filterName, setFilterName] = useState("");
   const [filterApplied, setfilterApplied] = useState(false);
   const [isMore, setisMore] = useState(false);
   const [filterPage, setfilterPage] = useState();
@@ -129,10 +130,10 @@ function Tables() {
       //   })
       // }
       var params = "";
-      if (limit !== undefined) {
+      if (limit !== undefined && limit !== null) {
         !params ? (params = "?limit=" + limit) : (params += "&limit=" + limit);
       }
-      if (page !== undefined) {
+      if (page !== undefined && page !== null) {
         !params ? (params = "?page=" + page) : (params += "&page=" + page);
       }
       if (options !== null && options !== undefined) {
@@ -157,7 +158,7 @@ function Tables() {
       setLoading(false);
       let resdata = res.data.data.data;
       console.log(resdata);
-      if (!options["page"]) {
+      if (page==null) {
         setCustomers(resdata);
         filterCustomersdataRef = true;
       } else {
@@ -192,7 +193,7 @@ function Tables() {
       //     options['page'] = filterPage;
       // }
       console.log(filterCustomersdataRef);
-      var moreCustomers = filterCustomers(options, isMore ? filterPage : null);
+      var moreCustomers = filterCustomers(options, null, isMore ? filterPage : null);
     } else {
       var table = document.querySelector(".customer-listing");
       var lastRow = table.rows[table.rows.length - 1];
@@ -258,11 +259,11 @@ function Tables() {
     //                         'operator': document.querySelector('select[name=payment-amount-operator]').value};
 
     // }
-    // if(document.querySelector('select[name=payment-status]')!==undefined){
+    if(document.querySelector('input[name=customer-name]').value!==null && document.querySelector('input[name=customer-name]').value!==""){
 
-    //     options['status'] = document.querySelector('input[name=payment-status]').value;
+        options['name'] = document.querySelector('input[name=customer-name]').value;
 
-    // }
+    }
     // if(document.querySelector('select[name=payment-currency]')!==undefined){
 
     //     options['currency'] = document.querySelector('select[name=payment-currency]').value;
@@ -374,6 +375,69 @@ function Tables() {
                     _hover={{ color: "black", bg: "gray.300" }}
                     onClick={() => {
                       emailHandler(filterEmail);
+                      searchPaymentsbyfilter();
+                    }}
+                  >
+                    Apply
+                  </Button>
+                </Box>
+              </MenuList>
+            </Menu>
+
+
+
+
+
+            <Menu>
+              <MenuButton
+                as={Button}
+                leftIcon={<AddIcon />}
+                border="1px"
+                borderStyle={"dashed"}
+                borderColor={"gray.400"}
+                color={"gray.500"}
+                bg={"none"}
+                fontSize={15}
+              >
+                {filterName ? "Name | " + filterName : "Name"}
+              </MenuButton>
+              <MenuList>
+                <Box p={3}>
+                  <Flex justifyContent="space-between" alignItems="center">
+                    <Text fontWeight={"bold"}>Filter By Name</Text>
+                    <Button
+                      p={0}
+                      fontSize={15}
+                      borderRadius={50}
+                      onClick={() => {
+                        setFilterName("");
+                        document.querySelector(
+                          "input[name=customer-name]"
+                        ).value = "";
+                        searchPaymentsbyfilter();
+                      }}
+                    >
+                      <CloseIcon />
+                    </Button>
+                  </Flex>
+                  <Flex justifyContent="center" alignItems="center" my={3}>
+                    <Text fontSize={14} w={"50%"}>
+                      is equal to
+                    </Text>
+                    <Input
+                      placeholder="Enter customer name"
+                      value={filterName}
+                      onChange={(e) => setFilterName(e.target.value)}
+                      id="filterName"
+                      name="customer-name"
+                    />
+                  </Flex>
+                  <Button
+                    w={"100%"}
+                    bg="teal.300"
+                    color="white"
+                    _hover={{ color: "black", bg: "gray.300" }}
+                    onClick={() => {
                       searchPaymentsbyfilter();
                     }}
                   >

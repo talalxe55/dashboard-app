@@ -21,7 +21,7 @@ import AuthApi from "../../api/auth";
 
 import { NavLink, useHistory } from "react-router-dom";
 
-function SignIn() {
+function ForgotPassword() {
   // Chakra color mode
   const titleColor = useColorModeValue("red.450", "red.500");
   const textColor = useColorModeValue("gray.400", "white");
@@ -34,7 +34,7 @@ function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(undefined);
-  const [buttonText, setButtonText] = useState("Sign in");
+  const [buttonText, setButtonText] = useState("Send Email!");
 
   const login = async (event) => {
     if (event) {
@@ -82,7 +82,7 @@ function SignIn() {
   };
 
   return (
-    <Flex position="relative" mb="40px">
+    <Flex position="relative">
       <Flex
         h={{ sm: "initial", md: "75vh", lg: "85vh" }}
         w="100%"
@@ -98,7 +98,7 @@ function SignIn() {
           style={{ userSelect: "none" }}
           w={{ base: "100%", md: "50%", lg: "42%" }}
         >
-          {user && user.token ? (
+{/*           
             <div>
               <Heading color={titleColor} fontSize="32px" mt="10px" mb="10px">
                 Welcome Back
@@ -125,8 +125,8 @@ function SignIn() {
               >
                 {`Let's go`}
               </Button>
-            </div>
-          ) : (
+            </div> */}
+          
             <Flex
               direction="column"
               w="100%"
@@ -144,7 +144,7 @@ function SignIn() {
                 fontWeight="bold"
                 fontSize="14px"
               >
-                Enter your email and password to sign in
+                Enter your account email address.
               </Text>
               <FormControl>
                 <FormLabel ms="4px" fontSize="sm" fontWeight="normal">
@@ -164,7 +164,7 @@ function SignIn() {
                     setError(undefined);
                   }}
                 />
-                <FormLabel ms="4px" fontSize="sm" fontWeight="normal">
+                {/* <FormLabel ms="4px" fontSize="sm" fontWeight="normal">
                   Password
                 </FormLabel>
                 <Input
@@ -180,7 +180,7 @@ function SignIn() {
                     setPassword(event.target.value);
                     setError(undefined);
                   }}
-                />
+                /> */}
                 {/* <FormControl display="flex" alignItems="center">
                   <Switch id="remember-login" colorscheme="teal" me="10px" />
                   <FormLabel
@@ -222,7 +222,7 @@ function SignIn() {
                 >
                   {buttonText}
                 </Button>
-                <NavLink color="teal.300" _hover={{color: "teal.300"}} to={"/auth/forgot-password"}>               <Text
+                {/* <NavLink color="teal.300" _hover={{color: "teal.300"}} to={"/auth/forgot-password"}>               <Text
                 mb="36px"
                 ms="4px"
                 color={textColor}
@@ -231,7 +231,7 @@ function SignIn() {
                 _hover={{color: "teal.300"}}
               >
                 Forgot Password?
-              </Text></NavLink>
+              </Text></NavLink> */}
               </FormControl>
               <Flex
                 flexDirection="column"
@@ -241,9 +241,9 @@ function SignIn() {
                 mt="0px"
               ></Flex>
             </Flex>
-          )}
+          
         </Flex>
-        <Box
+        {/* <Box
           display={{ base: "none", md: "block" }}
           overflowX="hidden"
           h="100%"
@@ -263,10 +263,10 @@ function SignIn() {
             borderBottomLeftRadius="0"
             backgroundColor={"white"}
           ></Box>
-        </Box>
+        </Box> */}
       </Flex>
     </Flex>
   );
 }
 
-export default SignIn;
+export default ForgotPassword;

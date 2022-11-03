@@ -42,6 +42,7 @@ import {
   ModalCloseButton,
   FormControl,
   FormLabel,
+  Spinner
 } from "@chakra-ui/react";
 import SweetAlert from "react-bootstrap-sweetalert";
 // Assets
@@ -60,6 +61,11 @@ import React from "react";
 import { FaUserCircle, FaRegCalendarAlt, FaWallet } from "react-icons/fa";
 import { RiMastercardFill } from "react-icons/ri";
 import {
+  AlertUnauthorized,
+  AlertDataNotFound,
+  AlertChargeSucceeded
+} from "theme/components/AlertDialog";
+import {
   billingData,
   invoicesData,
   newestTransactions,
@@ -68,11 +74,12 @@ import {
 import axios from "axios";
 import { API_SERVER, TOKEN_TYPE, TOKEN, ACCEPT_TYPE } from "config/constant";
 import { setConstantValue } from "typescript";
+import RefundForm from "../../theme/components/RefundForm.js";
 
 function Detail() {
   let { id } = useParams();
   var array = [];
-  const [singleCustomer, setSingleCustomer] = useState();
+  const [singleCustomer, setSingleCustomer] = useState(null);
   const [singlePayment, setSinglePayment] = useState();
   const [singleCharge, setSingleCharge] = useState({ data: [] });
   const [singleCustomerSources, setSingleCustomerSources] = useState();
@@ -80,8 +87,13 @@ function Detail() {
   const [SinglePaymentMeta, setSinglePaymentMeta] = useState(null);
   const [errorData, seterrorData] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [isReload, setisReload] = useState(false);
+  const [chargeSuccess, setchargeSuccess] = useState(false);
   const [refundAmount, setrefundAmount] = useState(false);
   const [refundbtntext, setrefundbtntext] = useState("Create Refund");
+  const [paymentbtnLoader, setpaymentbtnLoader] = useState(false);
+  const [isUnauthorized, setisUnauthorized] = useState(null);
+  const [datanotFound, setdatanotFound] = useState(null);
   const history = useHistory();
   const dataamount = (amount) => {
     let cents = amount;
@@ -123,15 +135,11 @@ function Detail() {
       //setLoading(false);
       //return data.email;
     } catch (err) {
-      console.log(err);
       if (err.response.status === 404) {
-        alert("The requested resource was not found");
-        console.log("Resource could not be found!");
+        setdatanotFound(true);
       } else if (err.response.status === 401) {
-        localStorage.removeItem("user");
-        history.push("/auth/signin");
+        setisUnauthorized(true);
       } else {
-        console.log(err.message);
       }
     }
   };
@@ -184,14 +192,10 @@ function Detail() {
     } catch (err) {
       console.log(err);
       if (err.response.status === 404) {
-        alert("The requested resource was not found");
-        console.log("Resource could not be found!");
+        setdatanotFound(true);
       } else if (err.response.status === 401) {
-        alert("Your session has expired!");
-        localStorage.removeItem("user");
-        history.push("/auth/signin");
+        setisUnauthorized(true);
       } else {
-        console.log(err.message);
       }
     }
   };
@@ -230,13 +234,10 @@ function Detail() {
       //setSingleCustomerSources(data.sources);
       //setLoading(false);
     } catch (err) {
-      console.log(err);
       if (err.response.status === 404) {
-        alert("The requested resource was not found");
-        console.log("Resource could not be found!");
+        setdatanotFound(true);
       } else if (err.response.status === 401) {
-        localStorage.removeItem("user");
-        history.push("/auth/signin");
+        setisUnauthorized(true);
       } else {
         console.log(err.message);
       }
@@ -389,6 +390,24 @@ function Detail() {
     getCustomerID();
   }, []);
 
+  useEffect(() => {
+    // custData.then((value) => {
+    //   // console.log(value.data.data);
+    //   setSingleCustomer(value.data.data);
+    //   // console.log(singleCustomer);
+    // });
+    // console.log(getCustomerID(id));
+    // setSingleCustomer(getCustomerID(id));
+    if(isReload){
+    getCustomerID();
+    }
+  }, [isReload]);
+ const setReloadState = (value) =>{
+    if(value==true){
+      getCustomerID();
+    }
+    
+  } 
   // Chakra color mode
   const iconTeal = useColorModeValue("teal.300", "teal.300");
   const textColor = useColorModeValue("gray.700", "white");
@@ -417,28 +436,19 @@ function Detail() {
 
       let data = await res.data.data;
       if (data.status == "succeeded") {
-        seterrorData({
-          message: "Your payment has been succeeded",
-          status: "success",
-          title: "Payment Succeeded",
-        });
+        setpaymentbtnLoader(false);
+        setchargeSuccess(true);
       }
       getCustomerID();
 
-      console.log(data);
       //setSingleCustomerSources(data.sources);
       //setLoading(false);
     } catch (err) {
-      console.log(err);
+      setpaymentbtnLoader(false);
       if (err.response.status === 404) {
-        seterrorData({
-          message: "The requested resource was not found",
-          status: "error",
-          title: "404 Error",
-        });
+        setdatanotFound(true);
       } else if (err.response.status === 401) {
-        localStorage.removeItem("user");
-        history.push("/auth/signin");
+        setisUnauthorized(true);
       } else if (err.response.status === 400) {
         seterrorData({
           message: err.response.data.error.message,
@@ -451,61 +461,6 @@ function Detail() {
     }
   };
 
-  const refundCharge = async (amount) => {
-    setLoading(false);
-    try {
-      let payload = {
-        payment_intent: singlePayment.id,
-        amount: amount,
-      };
-
-      const res = await axios.post(
-        `${API_SERVER}refunds/create`,
-        JSON.stringify(payload),
-        {
-          headers: {
-            Authorization: `${TOKEN_TYPE} ${TOKEN}`,
-            Accept: `${ACCEPT_TYPE}`,
-            "Content-Type": `${ACCEPT_TYPE}`,
-          },
-        }
-      );
-
-      let data = await res.data.data;
-      if (data.status == "succeeded") {
-        seterrorData({
-          message: "Payment has been refunded Successfully",
-          status: "success",
-          title: "Refund Succeeded",
-        });
-      }
-      getCustomerID();
-
-      console.log(data);
-      //setSingleCustomerSources(data.sources);
-      //setLoading(false);
-    } catch (err) {
-      console.log(err);
-      if (err.response.status === 404) {
-        seterrorData({
-          message: "The requested resource was not found",
-          status: "error",
-          title: "404 Error",
-        });
-      } else if (err.response.status === 401) {
-        localStorage.removeItem("user");
-        history.push("/auth/signin");
-      } else if (err.response.status === 400) {
-        seterrorData({
-          message: err.response.data.error.message,
-          status: "error",
-          title: "Refund Unsuccessfull",
-        });
-      } else {
-        console.log(err.message);
-      }
-    }
-  };
   const AlertBox = () => {
     const { isOpen: isVisible, onClose, onOpen } = useDisclosure({
       defaultIsOpen: true,
@@ -531,72 +486,6 @@ function Detail() {
     );
   };
 
-  const RefundPayment = () => {
-    const { isOpen, onOpen, onClose } = useDisclosure();
-
-    const initialRef = React.useRef(null);
-    const finalRef = React.useRef(null);
-    //const [message, error, status, title] = props;
-    return (
-      <>
-        <Button
-          colorScheme="teal"
-          borderColor="teal.300"
-          color="teal.300"
-          variant="outline"
-          fontSize="xs"
-          p="8px 32px"
-          onClick={onOpen}
-        >
-          Refund Payment
-        </Button>
-        <Modal
-          initialFocusRef={initialRef}
-          finalFocusRef={finalRef}
-          isOpen={isOpen}
-          onClose={onClose}
-        >
-          <ModalOverlay />
-          <ModalContent>
-            <ModalHeader>Are you Sure?</ModalHeader>
-            <ModalCloseButton />
-            <ModalBody pb={6}>
-              <FormControl>
-                <FormLabel>Amount</FormLabel>
-                <Input
-                  type="number"
-                  placeholder="Please Enter Amount"
-                  name="payment-refund-amount"
-                  //   onChange={ (e) => setrefundAmount(e.target.value)}
-                  //   value={refundAmount}
-                  id="refundAmount"
-                />
-              </FormControl>
-            </ModalBody>
-
-            <ModalFooter>
-              <Button
-                onClick={() => {
-                  // setrefundAmount(true),
-                  
-                  refundCharge(
-                    document.querySelector("input[name=payment-refund-amount]")
-                      .value
-                  )
-                }}
-                colorScheme="red"
-                ml={3}
-                bg={iconTeal}
-              >
-                {refundbtntext}
-              </Button>
-              <Button onClick={onClose}>Cancel</Button>
-            </ModalFooter>
-          </ModalContent>
-        </Modal>
-      </>
-    );
-  };
   const CardDetails = () => {
     if (singleCustomerSources) {
       console.log(singleCustomerSources);
@@ -649,10 +538,20 @@ function Detail() {
   }
 
   return (
+    
     <Flex direction="column" pt={{ base: "120px", md: "75px" }}>
       <AlertBox />
-      <Flex direction={"column"} width={"30%"}>
+      {chargeSuccess ? <AlertChargeSucceeded setisSuccess={setchargeSuccess}/>:null}
+      {isUnauthorized ? <AlertUnauthorized />:null}
+      {datanotFound ? <AlertDataNotFound setisSuccess={setdatanotFound}/>:null}
+      <Flex direction={"column"} width={"100%"}>
         <Box>
+        <Flex
+                justify="space-between"
+                align="center"
+                minHeight="60px"
+                w="100%"
+              >
           {singlePayment ? (
             <Text fontSize="md" fontWeight="bold" textTransform="capitalize">
               {dataamount(singlePayment.amount) +
@@ -669,7 +568,9 @@ function Detail() {
                   variant="outline"
                   fontSize="xs"
                   p="8px 32px"
-                  onClick={attemptCharge}
+                  onClick={ () => {setpaymentbtnLoader(true); attemptCharge();}}
+                  isLoading={paymentbtnLoader}
+                  loadingText='Attempting Charge!'
                 >
                   Charge Payment
                 </Button>
@@ -679,7 +580,11 @@ function Detail() {
               {singlePayment && singleCharge.data.length > 0 ? (
                 singlePayment.status == "succeeded" &&
                 singleCharge.data[0].refunded !== true ? (
-                  <RefundPayment />
+                  <RefundForm
+                  bg={"teal.300"}
+                  payment={singlePayment}  
+                  setisReload={setisReload}
+                  setReloadState={setReloadState} />
                 ) : (
                   ""
                 )
@@ -690,6 +595,7 @@ function Detail() {
           ) : (
             <SkeletonText mt="4" noOfLines={3} spacing="4" />
           )}
+          </Flex>
         </Box>
       </Flex>
 
@@ -794,7 +700,7 @@ function Detail() {
                         {SingleCustomerEmail}
                       </NavLink>
                     ) : (
-                      ""
+                      <Spinner color='red.500' />
                     )}
                   </Text>
                 </Flex>

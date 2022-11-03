@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 // Chakra imports
 import {
   Avatar,
@@ -14,6 +14,7 @@ import {
   Text,
   useColorModeValue,
 } from "@chakra-ui/react";
+import {EditIcon, UnlockIcon} from "@chakra-ui/icons"
 // Custom components
 import Card from "components/Card/Card";
 import CardBody from "components/Card/CardBody";
@@ -38,6 +39,13 @@ import {
 } from "react-icons/fa";
 import { IoDocumentsSharp } from "react-icons/io5";
 import { useAuth } from "../../auth-context/auth.context";
+import PasswordForm from "theme/components/ChangePassword";
+import {
+  AlertUnauthorized,
+  AlertDataNotFound,
+  AlertRefundCreated,
+  AlertPasswordUpdated
+} from "theme/components/AlertDialog";
 
 function Profile() {
   // Chakra color mode
@@ -52,10 +60,26 @@ function Profile() {
   );
   const emailColor = useColorModeValue("gray.400", "gray.300");
   let { user } = useAuth();
-  console.log(user)
+  const [isSuccess, setisSuccess] = useState(false);
+  const [isUnauthorized, setisUnauthorized] = useState(false);
+  const [datanotFound, setdatanotFound] = useState(false);
 
+  const isSuccessHandler = (value) => {
+    if(value==true){
+      setisSuccess(true);
+    }
+  }
+
+  const isUnauthorizedHandler = (value) => {
+    if(value==true){
+      setisUnauthorized(true);
+    }
+  }
   return (
+    
     <Flex direction="column">
+      {isSuccess?<AlertPasswordUpdated />:null}
+      {isUnauthorized?<AlertUnauthorized />:null}
       <Box
         mb={{ sm: "205px", md: "75px", xl: "70px" }}
         borderRadius="15px"
@@ -129,11 +153,11 @@ function Profile() {
                 </Text>
               </Flex>
             </Flex>
-            {/* <Flex
+            <Flex
               direction={{ sm: "column", lg: "row" }}
               w={{ sm: "100%", md: "50%", lg: "auto" }}
             >
-              <Button p="0px" bg="transparent" _hover={{ bg: "none" }}>
+              {/* <Button p="0px" bg="transparent" _hover={{ bg: "none" }} onClick={<PasswordForm />}>
                 <Flex
                   align="center"
                   w={{ sm: "100%", lg: "135px" }}
@@ -147,10 +171,11 @@ function Profile() {
                 >
                   <Icon as={FaCube} me="6px" />
                   <Text fontSize="xs" color={textColor} fontWeight="bold">
-                    OVERVIEW
+                    CHANGE PASSWORD
                   </Text>
                 </Flex>
-              </Button>
+              </Button> */}
+              {<PasswordForm bg={"teal.300"} isSuccessHandler={isSuccessHandler} isUnauthorizedHandler={isUnauthorizedHandler} />}
               <Button p="0px" bg="transparent" _hover={{ bg: "none" }}>
                 <Flex
                   align="center"
@@ -160,14 +185,16 @@ function Profile() {
                   py="10px"
                   mx={{ lg: "1rem" }}
                   cursor="pointer"
+                  
                 >
-                  <Icon as={IoDocumentsSharp} me="6px" />
+                  {/* <Icon as={IoDocumentsSharp} me="6px" /> */}
+                  <EditIcon me="6px" />
                   <Text fontSize="xs" color={textColor} fontWeight="bold">
-                    TEAMS
+                    EDIT INFO
                   </Text>
                 </Flex>
               </Button>
-              <Button p="0px" bg="transparent" _hover={{ bg: "none" }}>
+              {/* <Button p="0px" bg="transparent" _hover={{ bg: "none" }}>
                 <Flex
                   align="center"
                   w={{ lg: "135px" }}
@@ -181,8 +208,8 @@ function Profile() {
                     PROJECTS
                   </Text>
                 </Flex>
-              </Button>
-            </Flex> */}
+              </Button> */}
+            </Flex>
           </Flex>
         </Box>
       </Box>
@@ -283,12 +310,12 @@ function Profile() {
           </CardHeader>
           <CardBody px="5px">
             <Flex direction="column">
-              <Text fontSize="md" color="gray.500" fontWeight="400" mb="30px">
+              {/* <Text fontSize="md" color="gray.500" fontWeight="400" mb="30px">
                 Hi, I’m Esthera Jackson, Decisions: If you can’t decide, the
                 answer is no. If two equally difficult paths, choose the one
                 more painful in the short term (pain avoidance is creating an
                 illusion of equality).
-              </Text>
+              </Text> */}
               <Flex align="center" mb="18px">
                 <Text
                   fontSize="md"
@@ -299,10 +326,10 @@ function Profile() {
                   Full Name:{" "}
                 </Text>
                 <Text fontSize="md" color="gray.500" fontWeight="400">
-                  Esthera Jackson
+                  {user.name}
                 </Text>
               </Flex>
-              <Flex align="center" mb="18px">
+              {/* <Flex align="center" mb="18px">
                 <Text
                   fontSize="md"
                   color={textColor}
@@ -314,7 +341,7 @@ function Profile() {
                 <Text fontSize="md" color="gray.500" fontWeight="400">
                   (44) 123 1234 123
                 </Text>
-              </Flex>
+              </Flex> */}
               <Flex align="center" mb="18px">
                 <Text
                   fontSize="md"
@@ -325,10 +352,10 @@ function Profile() {
                   Email:{" "}
                 </Text>
                 <Text fontSize="md" color="gray.500" fontWeight="400">
-                  esthera@simmmple.com
+                  {user.email}
                 </Text>
               </Flex>
-              <Flex align="center" mb="18px">
+              {/* <Flex align="center" mb="18px">
                 <Text
                   fontSize="md"
                   color={textColor}
@@ -340,8 +367,8 @@ function Profile() {
                 <Text fontSize="md" color="gray.500" fontWeight="400">
                   United States
                 </Text>
-              </Flex>
-              <Flex align="center" mb="18px">
+              </Flex> */}
+              {/* <Flex align="center" mb="18px">
                 <Text
                   fontSize="md"
                   color={textColor}
@@ -379,7 +406,7 @@ function Profile() {
                     <Icon as={FaTwitter} />
                   </Link>
                 </Flex>
-              </Flex>
+              </Flex> */}
             </Flex>
           </CardBody>
         </Card>

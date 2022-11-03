@@ -118,11 +118,78 @@ const createPayment = async (data) => {
    
 };
 
+const editCustomer = async (data,cusid) => {
+  
+  const payload = {}
+  Object.entries(data).forEach(([key, value]) => {
+    console.log(key, value)
+    payload[key] = value;
+    
+  });
+  const res = await axios.post(`${API_SERVER}customers/edit/${cusid}`, JSON.stringify(payload),  {
+    headers: {
+      Authorization: `${TOKEN_TYPE} ${TOKEN}`,
+      Accept: `${ACCEPT_TYPE}`,
+      "Content-Type": `${ACCEPT_TYPE}`,
+    },
+  });
+  return res;
+  // let data = await res.json();
+  // console.log(res.data.data.data);
+  // console.log(res.status);
+ 
+};
+
+const refundCharge = async (data) => {
+
+    const payload = {}
+    Object.entries(data).forEach(([key, value]) => {
+      console.log(key, value)
+      payload[key] = value;
+      
+    });
+
+    const res = await axios.post(`${API_SERVER}refunds/create`, JSON.stringify(payload),  {
+      headers: {
+        Authorization: `${TOKEN_TYPE} ${TOKEN}`,
+        Accept: `${ACCEPT_TYPE}`,
+        "Content-Type": `${ACCEPT_TYPE}`,
+      },
+    });
+    return res;
+
+
+};
+
+const updatePassword = async (data) => {
+
+  const payload = {}
+  Object.entries(data).forEach(([key, value]) => {
+    console.log(key, value)
+    payload[key] = value;
+    
+  });
+
+  const res = await axios.post(`${API_SERVER}users/change-password`, JSON.stringify(payload),  {
+    headers: {
+      Authorization: `${TOKEN_TYPE} ${TOKEN}`,
+      Accept: `${ACCEPT_TYPE}`,
+      "Content-Type": `${ACCEPT_TYPE}`,
+    },
+  });
+  return res;
+
+
+};
+
 export {
   getCustomersList,
   getAllPayments,
   getAllPaymentsByCustomerID,
   getAllRefunds,
   getCustomerID,
-  createPayment
+  createPayment,
+  editCustomer,
+  refundCharge,
+  updatePassword
 };

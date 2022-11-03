@@ -18,6 +18,8 @@ import {
   Tr,
   Th,
   Td,
+  Thead,
+  Tbody,
   TableContainer,
   Checkbox,
   Badge,
