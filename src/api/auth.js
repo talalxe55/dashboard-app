@@ -10,6 +10,9 @@ class AuthApi {
     return axios.post(`${base}/register`, data);
   };
 
+  static ForgotPassword = (data) => {
+    return axios.post(`password/forgot-password`, JSON.stringify(data));
+  };
   static Logout = () => {
     return axios.get(`${base}/logout`, {
       headers: {

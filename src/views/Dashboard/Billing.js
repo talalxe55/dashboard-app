@@ -877,7 +877,7 @@ function Billing() {
               </Flex>
               <Box textAlign="center">
                 {singleCustomerPayments &&
-                singleCustomerPayments.data.length > 0 ? (
+                singleCustomerPayments.data.length > 0 && singleCustomerPayments.has_more==true? (
                   <NavLink to={`/admin/payments/?customer=${id}`}>
                     <Button
                       bg="teal.300"

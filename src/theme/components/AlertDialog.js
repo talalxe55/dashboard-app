@@ -95,13 +95,31 @@ const AlertPasswordUpdated = (props) => {
   );
 };
 
+const AlertPasswordReset = (props) => {
+  const history = useHistory();
+  const {setisSuccess} = props;
+  const { setUser } = useAuth();
+  return (
+    <SweetAlert
+      success
+      title="Password reset successfull!"
+      confirmBtnText="OKK!"
+      //onCancel={() => setisSuccess(false)}
+      onConfirm={() => {
+        
+        history.push("/auth/signin"); }}
+      customClass="alert_pop"
+    />
+  );
+};
+
 const AlertUnauthorized = () => {
   const history = useHistory();
   const { setUser } = useAuth();
   return (
     <SweetAlert
       danger
-      title="Your session has expired!"
+      title="You are not authorized or Your session has expired!"
       confirmBtnText="OKK!"
       onCancel={() => history.push("/auth/signin")}
       onConfirm={() => {
@@ -137,5 +155,6 @@ export {
   AlertPaymentCreated,
   AlertRefundCreated,
   AlertChargeSucceeded,
-  AlertPasswordUpdated
+  AlertPasswordUpdated,
+  AlertPasswordReset
 };

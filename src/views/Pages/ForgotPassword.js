@@ -12,6 +12,7 @@ import {
   Switch,
   Text,
   useColorModeValue,
+  useToast,
 } from "@chakra-ui/react";
 // Assets
 import signInImage from "assets/img/no-limi-RED-logo-opt-2.png";
@@ -20,9 +21,11 @@ import { useAuth } from "../../auth-context/auth.context";
 import AuthApi from "../../api/auth";
 
 import { NavLink, useHistory } from "react-router-dom";
+import { forgotPassword } from "api/ApiListing";
 
 function ForgotPassword() {
   // Chakra color mode
+  const toast = useToast();
   const titleColor = useColorModeValue("red.450", "red.500");
   const textColor = useColorModeValue("gray.400", "white");
   const primaryColor = useColorModeValue("primaryColor.700");
@@ -32,6 +35,7 @@ function ForgotPassword() {
   const { user } = useAuth();
 
   const [email, setEmail] = useState("");
+  const [isloading, setisloading] = useState(false);
   const [password, setPassword] = useState("");
   const [error, setError] = useState(undefined);
   const [buttonText, setButtonText] = useState("Send Email!");
@@ -40,34 +44,133 @@ function ForgotPassword() {
     if (event) {
       event.preventDefault();
     }
-    if (user && user.token) {
-      return history.push("/dashboard");
-    }
+
     if (email === "") {
       return setError("You must enter your email.");
     }
-    if (password === "") {
-      return setError("You must enter your password");
-    }
-    setButtonText("Signing in");
-    try {
-      let response = await AuthApi.Login({
-        email,
-        password,
-      });
-      if (response.data && response.data.success === false) {
-        setButtonText("Sign in");
-        return setError(response.data.message);
-      }
-      return setProfile(response);
-    } catch (err) {
-      console.log(err);
-      setButtonText("Sign in");
-      if (err.response) {
-        return setError(err.response.data.msg);
-      }
-      return setError("There has been an error.");
-    }
+
+    //setButtonText("Signing in");
+   
+    let payload ={};
+    payload['email'] = email;
+    const response = forgotPassword(payload)
+            response.then((res) => {
+            setisloading(false);
+            console.log(res);
+            console.log(res.data);
+            console.log(res.data.status);
+            if(res.data.status=="passwords.sent"){
+                setButtonText("Email sent!");
+                          toast({
+                title: 'Email Sent Successfully!',
+                description: res.data.message,
+                status: 'success',
+                duration: 9000,
+                isClosable: true,
+              })
+            }
+        }).catch((err) => {
+            setisloading(false);
+            setButtonText("Resend Email!");
+            if (err.response) {
+              if(err.response.data.message.email){
+                return setError(err.response.data.message.email);
+              }
+              else{
+                return setError(err.response.data.message);
+              }
+              
+            }
+            else{
+                return setError("Email could not be sent. Please try again!");
+            }
+        })
+    //   try{
+    //     let response = await AuthApi.ForgotPassword({
+    //         "email": email,
+            
+    //       });
+    //     console.log(response);
+    //     setisloading(false);
+    //     setButtonText("Email sent!");
+    //               toast({
+    //     title: 'Email Sent Successfully!',
+    //     description: res.data.message,
+    //     status: 'success',
+    //     duration: 9000,
+    //     isClosable: true,
+    //   })
+    //     if(response.data.status=="passwords.sent"){
+    //         setisloading(false);
+    //         setButtonText("Email sent!");
+    //                   toast({
+    //         title: 'Email Sent Successfully!',
+    //         description: res.data.message,
+    //         status: 'success',
+    //         duration: 9000,
+    //         isClosable: true,
+    //       })
+    //     }
+    //     // response.then(res => {
+    //     //     setisloading(false);
+    //     //     console.log(res);
+    //     //     console.log(res.data);
+    //     //     console.log(res.data.status);
+    //     //     if(res.data.status=="passwords.sent"){
+    //     //         setButtonText("Email sent!");
+    //     //                   toast({
+    //     //         title: 'Email Sent Successfully!',
+    //     //         description: res.data.message,
+    //     //         status: 'success',
+    //     //         duration: 9000,
+    //     //         isClosable: true,
+    //     //       })
+    //     //     }
+    //     // })
+
+    //   }
+    //   catch(err){
+    //     setisloading(false);
+    //     setButtonText("Resend Email!");
+    //     if (err.response) {
+          
+    //       return setError(err.response.data.message);
+    //     }
+    //     else{
+    //         return setError("Email could not be sent. Please try again!");
+    //     }
+    //   }
+      
+    //   response.then( res => {
+    //     setisloading(false);
+    //     if(res.data.status=="passwords.sent"){
+    //         setButtonText("Email sent!");
+    //                   toast({
+    //         title: 'Email Sent Successfully!',
+    //         description: res.data.message,
+    //         status: 'success',
+    //         duration: 9000,
+    //         isClosable: true,
+    //       })
+    //     }
+    //   }).catch( err => {
+    //     setisloading(false);
+    //     setButtonText("Resend Email!");
+    //     if (err.response) {
+          
+    //       return setError(err.response.data.message);
+    //     }
+    //     else{
+    //         return setError("Email could not be sent. Please try again!");
+    //     }
+        
+    //   })
+    //   if (response.data && response.data.success === false) {
+    //     setButtonText("Sign in");
+    //     return setError(response.data.message);
+    //   }
+      //return setProfile(response);
+    
   };
 
   const setProfile = async (response) => {
@@ -88,7 +191,7 @@ function ForgotPassword() {
         w="100%"
         maxW="1044px"
         mx="auto"
-        justifyContent="space-between"
+        justifyContent="center"
         mb="30px"
         pt={{ sm: "100px", md: "0px" }}
       >
@@ -135,7 +238,7 @@ function ForgotPassword() {
               mt={{ md: "150px", lg: "80px" }}
             >
               <Heading color={titleColor} fontSize="32px" mt="10px" mb="10px">
-                NLS99 Payments
+                Reset Password
               </Heading>
               <Text
                 mb="36px"
@@ -205,6 +308,8 @@ function ForgotPassword() {
                 </h4>
                 <Button
                   fontSize="18px"
+                  isLoading={isloading}
+                  loadingText={"Sending Email.."}
                   type="submit"
                   bg={primaryColor}
                   w="100%"
@@ -218,7 +323,7 @@ function ForgotPassword() {
                   _active={{
                     bg: "teal.400",
                   }}
-                  onClick={login}
+                  onClick={() => {setisloading(true); login()}}
                 >
                   {buttonText}
                 </Button>

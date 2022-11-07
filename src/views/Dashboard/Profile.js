@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 // Chakra imports
 import {
   Avatar,
@@ -14,7 +14,7 @@ import {
   Text,
   useColorModeValue,
 } from "@chakra-ui/react";
-import {EditIcon, UnlockIcon} from "@chakra-ui/icons"
+import {EditIcon, UnlockIcon, WarningIcon} from "@chakra-ui/icons"
 // Custom components
 import Card from "components/Card/Card";
 import CardBody from "components/Card/CardBody";
@@ -46,6 +46,7 @@ import {
   AlertRefundCreated,
   AlertPasswordUpdated
 } from "theme/components/AlertDialog";
+import { sendverifyEmail, getUser } from "api/ApiListing";
 
 function Profile() {
   // Chakra color mode
@@ -59,10 +60,23 @@ function Profile() {
     "rgba(255, 255, 255, 0.31)"
   );
   const emailColor = useColorModeValue("gray.400", "gray.300");
-  let { user } = useAuth();
+  const { setUser } = useAuth();
+  const userSet = {
+    id: null,
+    name: "N/A",
+    email: "N/A",
+    email_verified_at: "N/A",
+    status: "N/A",
+    created_at: "N/A",
+    updated_at: "N/A",
+    role : "N/A"
+  }
+  const [user, setNewUser] = useState(userSet);
   const [isSuccess, setisSuccess] = useState(false);
   const [isUnauthorized, setisUnauthorized] = useState(false);
   const [datanotFound, setdatanotFound] = useState(false);
+  const [verifyEmailText, setverifyEmailText] = useState("VERIFY EMAIL");
+  const [verifyEmailLoader, setverifyEmailLoader] = useState(false);
 
   const isSuccessHandler = (value) => {
     if(value==true){
@@ -75,11 +89,61 @@ function Profile() {
       setisUnauthorized(true);
     }
   }
+
+  const verifyEmail = () => {
+    const response = sendverifyEmail();
+    response.then((res) => {
+      if(res.data.success==true){
+        setverifyEmailLoader(false);
+        setverifyEmailText('Verification Link Sent!');
+      }
+
+    }).catch((err) => {
+      setverifyEmailLoader(false);
+      if(err.response.data.message=="Email already verified."){
+        setUser(user);
+      }
+      setverifyEmailText(err.response.data.message);
+
+    })
+
+  }
+
+  useEffect(() => {
+    
+    
+        
+        const response = getUser();
+
+        response.then((res) => {
+        
+        if(res.data.success==true){
+          setNewUser(res.data.data)
+            
+        //               toast({
+        //     title: 'Password Reset Successfully!',
+        //     description: res.data.message,
+        //     status: 'success',
+        //     duration: 9000,
+        //     isClosable: true,
+        //   })
+        
+        }
+    }).catch((err) => {
+        setdatanotFound(true);
+        return;
+    })
+      
+    
+
+
+  }, []);
   return (
     
     <Flex direction="column">
       {isSuccess?<AlertPasswordUpdated />:null}
       {isUnauthorized?<AlertUnauthorized />:null}
+      {datanotFound?<AlertDataNotFound />:null}
       <Box
         mb={{ sm: "205px", md: "75px", xl: "70px" }}
         borderRadius="15px"
@@ -194,7 +258,8 @@ function Profile() {
                   </Text>
                 </Flex>
               </Button>
-              {/* <Button p="0px" bg="transparent" _hover={{ bg: "none" }}>
+             { user.email_verified_at==null&&user.id!==null?
+             <Button isLoading={verifyEmailLoader} loadingText="Sending Verification Email..." p="0px" bg="transparent" _hover={{ bg: "none" }} onClick={() => {setverifyEmailLoader(true); verifyEmail()}}>
                 <Flex
                   align="center"
                   w={{ lg: "135px" }}
@@ -203,12 +268,12 @@ function Profile() {
                   py="10px"
                   cursor="pointer"
                 >
-                  <Icon as={FaPenFancy} me="6px" />
-                  <Text fontSize="xs" color={textColor} fontWeight="bold">
-                    PROJECTS
+                  <WarningIcon me="6px" />
+                  <Text  fontSize="xs" color={"teal.300"} fontWeight="bold">
+                   {verifyEmailText}
                   </Text>
                 </Flex>
-              </Button> */}
+              </Button>:""}
             </Flex>
           </Flex>
         </Box>

@@ -12,6 +12,9 @@ import SingleCustomer from "views/Pages/SingleCustomer";
 import Payments from "views/Dashboard/Payments.js";
 import Detail from "views/Dashboard/SinglePayment.js";
 import Users from "views/Dashboard/Users.js";
+import ResetPassword from "views/Pages/ResetPassword";
+import VerifyEmail from "views/Pages/VerifyEmail";
+import BulkPayments from "views/Dashboard/BulkPayments";
 
 import {
   HomeIcon,
@@ -23,7 +26,7 @@ import {
   SupportIcon,
   VisaIcon,
   WalletIcon,
-  SettingsIcon
+  SettingsIcon,
 } from "components/Icons/Icons";
 
 var dashRoutes = [
@@ -78,6 +81,32 @@ var dashRoutes = [
     layout: "/admin",
     hide: true,
   },
+
+  {
+    path: "/bulk-payments",
+    name: "Bulk Payments",
+    rtlName: "لوحة القيادة",
+    icon: <VisaIcon color="inherit" />,
+    secondaryNavbar: true,
+    component: BulkPayments,
+    layout: "/admin",
+    hide: false,
+    role: "superadmin"
+  },
+
+  {
+    path: "/users",
+    name: "Users",
+    rtlName: "لوحة القيادة",
+    icon: <PersonIcon color="inherit" />,
+    secondaryNavbar: true,
+    component: Users,
+    layout: "/admin",
+    hide: true,
+    role: "superadmin"
+  },
+
+  
   // {
   //   path: "/rtl-support-page",
   //   name: "RTL",
@@ -100,16 +129,6 @@ var dashRoutes = [
         secondaryNavbar: true,
         component: Profile,
         layout: "/admin",
-      },
-      {
-        path: "/users",
-        name: "Users",
-        rtlName: "لوحة القيادة",
-        icon: <PersonIcon color="inherit" />,
-        secondaryNavbar: true,
-        component: Users,
-        layout: "/admin",
-        hide: true,
       },
       
       // {
@@ -135,10 +154,31 @@ var dashRoutes = [
 
       {
         path: "/forgot-password",
-        name: "Reset Password",
+        name: "Forgot Password",
         rtlName: "لوحة القيادة",
         icon: <DocumentIcon color="inherit" />,
         component: ForgotPassword,
+        layout: "/auth",
+        hide: true,
+      },
+
+      
+      {
+        path: "/verify-email",
+        name: "Verify Email",
+        rtlName: "لوحة القيادة",
+        icon: <DocumentIcon color="inherit" />,
+        component: VerifyEmail,
+        layout: "/auth",
+        hide: true,
+      },
+
+      {
+        path: "/password-reset",
+        name: "Reset Password",
+        rtlName: "لوحة القيادة",
+        icon: <DocumentIcon color="inherit" />,
+        component: ResetPassword,
         layout: "/auth",
         hide: true,
       },

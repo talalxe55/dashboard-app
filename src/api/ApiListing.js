@@ -100,7 +100,6 @@ const createPayment = async (data) => {
   
     const payload = {}
     Object.entries(data).forEach(([key, value]) => {
-      console.log(key, value)
       payload[key] = value;
       
     });
@@ -122,7 +121,6 @@ const editCustomer = async (data,cusid) => {
   
   const payload = {}
   Object.entries(data).forEach(([key, value]) => {
-    console.log(key, value)
     payload[key] = value;
     
   });
@@ -144,7 +142,6 @@ const refundCharge = async (data) => {
 
     const payload = {}
     Object.entries(data).forEach(([key, value]) => {
-      console.log(key, value)
       payload[key] = value;
       
     });
@@ -165,7 +162,6 @@ const updatePassword = async (data) => {
 
   const payload = {}
   Object.entries(data).forEach(([key, value]) => {
-    console.log(key, value)
     payload[key] = value;
     
   });
@@ -182,6 +178,91 @@ const updatePassword = async (data) => {
 
 };
 
+const forgotPassword = async (data) => {
+
+  const payload = {}
+  Object.entries(data).forEach(([key, value]) => {
+    payload[key] = value;
+    
+  });
+  // ,  {
+  //   headers: {
+  //     Authorization: `${TOKEN_TYPE} ${TOKEN}`,
+  //     Accept: `${ACCEPT_TYPE}`,
+  //     "Content-Type": `${ACCEPT_TYPE}`,
+  //   },
+  // }
+  const res = await axios.post(`${API_SERVER}password/forgot-password`, payload);
+  return res;
+
+
+};
+
+const resetPassword = async (data) => {
+
+  const payload = {}
+  Object.entries(data).forEach(([key, value]) => {
+    payload[key] = value;
+    
+  });
+  // ,  {
+  //   headers: {
+  //     Authorization: `${TOKEN_TYPE} ${TOKEN}`,
+  //     Accept: `${ACCEPT_TYPE}`,
+  //     "Content-Type": `${ACCEPT_TYPE}`,
+  //   },
+  // }
+  const res = await axios.post(`${API_SERVER}password/reset`, payload);
+  return res;
+
+
+};
+
+const sendverifyEmail = async () => {
+
+ 
+
+  
+  const res = await axios.get(`${API_SERVER}email/resend`,    {
+    headers: {
+      Authorization: `${TOKEN_TYPE} ${TOKEN}`,
+      Accept: `${ACCEPT_TYPE}`,
+      "Content-Type": `${ACCEPT_TYPE}`,
+    }});
+  return res;
+
+
+};
+
+const getUser = async () => {
+  
+  const res = await axios.get(`${API_SERVER}users/view-profile`,    {
+    headers: {
+      Authorization: `${TOKEN_TYPE} ${TOKEN}`,
+      Accept: `${ACCEPT_TYPE}`,
+      "Content-Type": `${ACCEPT_TYPE}`,
+    }});
+  return res;
+
+
+};
+
+const verifyEmail = async (url) => {
+
+ 
+  //  {
+  //   headers: {
+  //     Authorization: `${TOKEN_TYPE} ${TOKEN}`,
+  //     Accept: `${ACCEPT_TYPE}`,
+  //     "Content-Type": `${ACCEPT_TYPE}`,
+  //   },
+  
+  const res = await axios.get(url);
+  return res;
+
+
+};
+
 export {
   getCustomersList,
   getAllPayments,
@@ -191,5 +272,10 @@ export {
   createPayment,
   editCustomer,
   refundCharge,
-  updatePassword
+  updatePassword,
+  forgotPassword,
+  resetPassword,
+  verifyEmail,
+  sendverifyEmail,
+  getUser
 };

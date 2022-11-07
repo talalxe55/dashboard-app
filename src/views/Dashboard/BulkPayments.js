@@ -40,7 +40,7 @@ import {
 import { useBlockLayout } from "react-table";
 import { IoLogoFoursquare } from "react-icons/io5";
 
-function Users() {
+function BulkPayments() {
   const { search } = useLocation();
   let query = React.useMemo(() => new URLSearchParams(search), [search]);
   const [customers, setCustomers] = useState([]);
@@ -388,7 +388,7 @@ function Users() {
             fontWeight="bold"
             textAlign={"start"}
           >
-            Users
+            Bulk Payments
           </Text>
         </CardHeader>
         <Box>
@@ -680,4 +680,4 @@ function Users() {
   );
 }
 
-export default Users;
+export default BulkPayments;

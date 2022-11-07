@@ -64,7 +64,7 @@ function SignIn() {
       console.log(err);
       setButtonText("Sign in");
       if (err.response) {
-        return setError(err.response.data.msg);
+        return setError(err.response.data.message);
       }
       return setError("There has been an error.");
     }

@@ -339,7 +339,7 @@ function Tables() {
     } catch (err) {
       console.log(err);
       if (err.response.status === 404) {
-        alert("The requested resource was not found");
+        setNoDataFound(true);
         console.log("Resource could not be found!");
       } else if (err.response.status === 401) {
         setUnauthorizedWarning(true)
