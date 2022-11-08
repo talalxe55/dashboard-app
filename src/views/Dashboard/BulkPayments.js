@@ -30,7 +30,7 @@ import TablesTableRow from "components/Tables/PaymentsTable.js";
 import { API_SERVER, TOKEN_TYPE, TOKEN, ACCEPT_TYPE } from "config/constant";
 import axios from "axios";
 import LoadingGif from "assets/svg/loading-infinite.svg";
-import { NavLink, useHistory, useLocation, } from "react-router-dom";
+import { NavLink, useHistory, useLocation } from "react-router-dom";
 import { AiFillDingtalkSquare } from "react-icons/ai";
 import { SiJquery } from "react-icons/si";
 import {
@@ -39,7 +39,9 @@ import {
 } from "theme/components/AlertDialog";
 import { useBlockLayout } from "react-table";
 import { IoLogoFoursquare } from "react-icons/io5";
-
+import UploadCSVModal from "theme/components/UploadCSVModal";
+import sampleCSVFile from "../../assets/sheets/payments.csv";
+import { getBulkPayments } from "api/ApiListing";
 function BulkPayments() {
   const { search } = useLocation();
   let query = React.useMemo(() => new URLSearchParams(search), [search]);
@@ -62,6 +64,7 @@ function BulkPayments() {
   const [isfilterApplied, setisfilterApplied] = useState(false);
   const [unauthorizedWarning, setUnauthorizedWarning] = useState(false);
   const [noDataFound, setNoDataFound] = useState(false);
+  const [bulkPaymentsData, setBulkPaymentsData] = useState();
   const [filterData, setfilterData] = useState({
     email: null,
     amount: {
@@ -174,7 +177,7 @@ function BulkPayments() {
         "select[name=payment-status]"
       ).value;
     }
-    if(query.get("customer")!==null){
+    if (query.get("customer") !== null) {
       options["customer"] = query.get("customer");
     }
 
@@ -192,7 +195,11 @@ function BulkPayments() {
       //     options['page'] = filterPage;
       // }
       console.log(filterCustomersdataRef);
-      var moreCustomers = filterCustomers(options, null, isMore ? filterPage : null);
+      var moreCustomers = filterCustomers(
+        options,
+        null,
+        isMore ? filterPage : null
+      );
     } else {
       var table = document.querySelector(".customer-listing");
       var lastRow = table.rows[table.rows.length - 1];
@@ -245,7 +252,6 @@ function BulkPayments() {
           data[key] = value;
           console.log(data);
         });
-
       }
 
       const res = await axios.post(
@@ -262,7 +268,7 @@ function BulkPayments() {
 
       setLoading(false);
       let resdata = res.data.data.data;
-      if (page==null) {
+      if (page == null) {
         setCustomers(resdata);
         filterCustomersdataRef = true;
       } else {
@@ -328,8 +334,7 @@ function BulkPayments() {
       setLoading(false);
       let data = res.data.data;
       console.log(data);
-      setCustomers(data);
-
+      // setCustomers(data);
 
       // setisMore(res.data.data.has_more);
       // setoldload(res.data.data.has_more);
@@ -338,13 +343,12 @@ function BulkPayments() {
       if (err.response.status === 404) {
         setNoDataFound(true);
       } else if (err.response.status === 401) {
-        setUnauthorizedWarning(true)
+        setUnauthorizedWarning(true);
       } else {
         console.log(err.message);
       }
     }
   };
-
 
   // Converting date
   const datadate = (created) => {
@@ -355,14 +359,12 @@ function BulkPayments() {
     return formatedDateTime;
   };
 
-
   useEffect(() => {
-
-  
-   
-      getCustomersList(null);
+    getCustomersList(null);
+    getBulkPayments()
+      .then((res) => (res ? setCustomers(res.data) : console.log(res)))
+      .catch((err) => console.log(err));
   }, []);
-
 
   // Filtering Email
   const customerListing = customers.filter((customer) => {
@@ -393,7 +395,12 @@ function BulkPayments() {
         </CardHeader>
         <Box>
           {/* //<FilterCustomers emailTextHadler={emailTextHandler} /> */}
-          <Flex className="filter_customers">
+          <UploadCSVModal />
+          <Flex
+            className="filter_customers"
+            mb={5}
+            justifyContent="space-between"
+          >
             {/* <Menu>
               <MenuButton
                 as={Button}
@@ -466,7 +473,6 @@ function BulkPayments() {
                 color={"gray.500"}
                 bg={"none"}
                 fontSize={15}
-                
               >
                 Users
                 <span
@@ -477,20 +483,23 @@ function BulkPayments() {
               </MenuButton>
               <MenuList>
                 <Box p={3}>
-                  <Button
-                    p={0}
-                    fontSize={15}
-                    borderRadius={50}
-                    onClick={() => {
-                      setfilterAmount("");
-                      document.querySelector(
-                        "input[name=payment-amount]"
-                      ).value = "";
-                      searchPaymentsbyfilter();
-                    }}
-                  >
-                    <CloseIcon />
-                  </Button>
+                  <Flex justifyContent="space-between" alignItems="center">
+                    <Text fontWeight={"bold"}>Delete Users</Text>
+                    <Button
+                      p={0}
+                      fontSize={15}
+                      borderRadius={50}
+                      onClick={() => {
+                        setfilterAmount("");
+                        document.querySelector(
+                          "input[name=payment-amount]"
+                        ).value = "";
+                        searchPaymentsbyfilter();
+                      }}
+                    >
+                      <CloseIcon />
+                    </Button>
+                  </Flex>
                   <Select
                     my={3}
                     name="payment-amount-operator"
@@ -507,6 +516,7 @@ function BulkPayments() {
                     <option value="<">is less than</option> */}
                   </Select>
                   <Input
+                    mb={3}
                     type="number"
                     name="payment-amount"
                     onChange={(e) => {
@@ -537,6 +547,22 @@ function BulkPayments() {
                 </Box>
               </MenuList>
             </Menu>
+            <a
+              href={sampleCSVFile}
+              download="samplefile.csv"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Button
+                borderRadius={2}
+                bg="gray.900"
+                color="#fff"
+                fontWeight={400}
+                _hover={{ bg: "gray" }}
+              >
+                Download Sample File
+              </Button>
+            </a>
           </Flex>
         </Box>
         {!isloading ? (
@@ -549,34 +575,37 @@ function BulkPayments() {
               >
                 <Thead>
                   <Tr my=".8rem" pl="0px" color="gray.400">
-                  <Th pl="0px" color="gray.400">
-                      
-                    </Th>
-                    <Th pl="0px" color="gray.400">
+                    <Th pl="0px" color="gray.400"></Th>
+                    {/* <Th pl="0px" color="gray.400">
                       Name
-                    </Th>
+                    </Th> */}
                     <Th pl="0px" color="gray.400">
                       Email
                     </Th>
-                    <Th color="gray.400">Verified At</Th>
-                    <Th color="gray.400">Role</Th>
+                    <Th color="gray.400">Status</Th>
+                    <Th color="gray.400">Description</Th>
                     <Th color="gray.400">Created at</Th>
-                    <Th></Th>
+                    <Th color="gray.400">Logs</Th>
                   </Tr>
                 </Thead>
                 <Tbody className="customer_body" textTransform={"capitalize"}>
                   {customerListing.map((val, index) => {
                     return (
                       <UsersRow
-                        userid={val.id}
-                        name={val.name}
                         key={index}
-                        email={val.email}
-                        // email={val.email}
-                        status={val.email_verified_at==null?"Not Verfied":datadate(val.email_verified_at)}
-                        role={val.role}
+                        userid={val.id}
+                        // name={val.user_id.name}
+                        email={val.user_id.email}
+                        // role={val.role}
+                        // status={
+                        //   val.user_id.email_verified_at == null
+                        //     ? "Not Verfied"
+                        //     : datadate(val.user_id.email_verified_at)
+                        // }
+                        status={val.status}
+                        desc={val.description}
                         date={datadate(val.created_at)}
-                        // viewprofile={val.id}
+                        viewLog={val.status}
                       />
                     );
                   })}

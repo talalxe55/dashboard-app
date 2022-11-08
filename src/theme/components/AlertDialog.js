@@ -2,9 +2,22 @@ import { useHistory } from "react-router-dom";
 import SweetAlert from "react-bootstrap-sweetalert";
 import { useAuth } from "../../auth-context/auth.context";
 
+const AlertFileUploaded = (props) => {
+  const { setAlert, fileUploadMsg } = props;
+  return (
+    <SweetAlert
+      success
+      title={fileUploadMsg}
+      confirmBtnText="OK!"
+      onCancel={() => setAlert(false)}
+      onConfirm={() => setAlert(false)}
+      customClass="alert_pop"
+    />
+  );
+};
+
 const AlertCustomerCreated = (props) => {
-  const history = useHistory();
-  const {setisSuccess} = props;
+  const { setisSuccess } = props;
   return (
     <SweetAlert
       success
@@ -19,7 +32,7 @@ const AlertCustomerCreated = (props) => {
 
 const AlertCustomerUpdated = (props) => {
   const history = useHistory();
-  const {setisSuccess} = props;
+  const { setisSuccess } = props;
   return (
     <SweetAlert
       success
@@ -34,7 +47,7 @@ const AlertCustomerUpdated = (props) => {
 
 const AlertPaymentCreated = (props) => {
   const history = useHistory();
-  const {setisSuccess} = props;
+  const { setisSuccess } = props;
   return (
     <SweetAlert
       success
@@ -49,7 +62,7 @@ const AlertPaymentCreated = (props) => {
 
 const AlertRefundCreated = (props) => {
   const history = useHistory();
-  const {setisSuccess} = props;
+  const { setisSuccess } = props;
   return (
     <SweetAlert
       success
@@ -64,7 +77,7 @@ const AlertRefundCreated = (props) => {
 
 const AlertChargeSucceeded = (props) => {
   const history = useHistory();
-  const {setisSuccess} = props;
+  const { setisSuccess } = props;
   return (
     <SweetAlert
       success
@@ -79,7 +92,7 @@ const AlertChargeSucceeded = (props) => {
 
 const AlertPasswordUpdated = (props) => {
   const history = useHistory();
-  const {setisSuccess} = props;
+  const { setisSuccess } = props;
   const { setUser } = useAuth();
   return (
     <SweetAlert
@@ -87,9 +100,11 @@ const AlertPasswordUpdated = (props) => {
       title="Password has been updated successfully. Please log in again!"
       confirmBtnText="OKK!"
       //onCancel={() => setisSuccess(false)}
-      onConfirm={() => {setUser(null);
+      onConfirm={() => {
+        setUser(null);
         localStorage.removeItem("user");
-        history.push("/auth/signin"); }}
+        history.push("/auth/signin");
+      }}
       customClass="alert_pop"
     />
   );
@@ -97,7 +112,7 @@ const AlertPasswordUpdated = (props) => {
 
 const AlertPasswordReset = (props) => {
   const history = useHistory();
-  const {setisSuccess} = props;
+  const { setisSuccess } = props;
   const { setUser } = useAuth();
   return (
     <SweetAlert
@@ -106,8 +121,8 @@ const AlertPasswordReset = (props) => {
       confirmBtnText="OKK!"
       //onCancel={() => setisSuccess(false)}
       onConfirm={() => {
-        
-        history.push("/auth/signin"); }}
+        history.push("/auth/signin");
+      }}
       customClass="alert_pop"
     />
   );
@@ -120,7 +135,7 @@ const AlertUnauthorized = () => {
     <SweetAlert
       danger
       title="You are not authorized or Your session has expired!"
-      confirmBtnText="OKK!"
+      confirmBtnText="SignIn"
       onCancel={() => history.push("/auth/signin")}
       onConfirm={() => {
         setUser(null);
@@ -134,7 +149,7 @@ const AlertUnauthorized = () => {
 
 const AlertDataNotFound = (props) => {
   const history = useHistory();
-  const {setisSuccess} = props;
+  const { setisSuccess } = props;
   return (
     <SweetAlert
       warning
@@ -156,5 +171,6 @@ export {
   AlertRefundCreated,
   AlertChargeSucceeded,
   AlertPasswordUpdated,
-  AlertPasswordReset
+  AlertPasswordReset,
+  AlertFileUploaded,
 };

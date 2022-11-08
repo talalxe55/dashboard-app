@@ -66,17 +66,16 @@ const getAllPayments = async () => {
 };
 
 const getAllPaymentsByCustomerID = async (id) => {
-    let cusid = id;
+  let cusid = id;
 
-    const res = await axios.get(`${API_SERVER}payments/${cusid}`, {
-      headers: {
-        Authorization: `${TOKEN_TYPE} ${TOKEN}`,
-        Accept: `${ACCEPT_TYPE}`,
-        "Content-Type": `${ACCEPT_TYPE}`,
-      },
-    });
-    return res;
-
+  const res = await axios.get(`${API_SERVER}payments/${cusid}`, {
+    headers: {
+      Authorization: `${TOKEN_TYPE} ${TOKEN}`,
+      Accept: `${ACCEPT_TYPE}`,
+      "Content-Type": `${ACCEPT_TYPE}`,
+    },
+  });
+  return res;
 };
 
 const getAllRefunds = async () => {
@@ -97,93 +96,93 @@ const getAllRefunds = async () => {
 };
 
 const createPayment = async (data) => {
-  
-    const payload = {}
-    Object.entries(data).forEach(([key, value]) => {
-      payload[key] = value;
-      
-    });
-    const res = await axios.post(`${API_SERVER}payments/create`, JSON.stringify(payload),  {
+  const payload = {};
+  Object.entries(data).forEach(([key, value]) => {
+    payload[key] = value;
+  });
+  const res = await axios.post(
+    `${API_SERVER}payments/create`,
+    JSON.stringify(payload),
+    {
       headers: {
         Authorization: `${TOKEN_TYPE} ${TOKEN}`,
         Accept: `${ACCEPT_TYPE}`,
         "Content-Type": `${ACCEPT_TYPE}`,
       },
-    });
-    return res;
-    // let data = await res.json();
-    // console.log(res.data.data.data);
-    // console.log(res.status);
-   
-};
-
-const editCustomer = async (data,cusid) => {
-  
-  const payload = {}
-  Object.entries(data).forEach(([key, value]) => {
-    payload[key] = value;
-    
-  });
-  const res = await axios.post(`${API_SERVER}customers/edit/${cusid}`, JSON.stringify(payload),  {
-    headers: {
-      Authorization: `${TOKEN_TYPE} ${TOKEN}`,
-      Accept: `${ACCEPT_TYPE}`,
-      "Content-Type": `${ACCEPT_TYPE}`,
-    },
-  });
+    }
+  );
   return res;
   // let data = await res.json();
   // console.log(res.data.data.data);
   // console.log(res.status);
- 
 };
 
-const refundCharge = async (data) => {
-
-    const payload = {}
-    Object.entries(data).forEach(([key, value]) => {
-      payload[key] = value;
-      
-    });
-
-    const res = await axios.post(`${API_SERVER}refunds/create`, JSON.stringify(payload),  {
+const editCustomer = async (data, cusid) => {
+  const payload = {};
+  Object.entries(data).forEach(([key, value]) => {
+    payload[key] = value;
+  });
+  const res = await axios.post(
+    `${API_SERVER}customers/edit/${cusid}`,
+    JSON.stringify(payload),
+    {
       headers: {
         Authorization: `${TOKEN_TYPE} ${TOKEN}`,
         Accept: `${ACCEPT_TYPE}`,
         "Content-Type": `${ACCEPT_TYPE}`,
       },
-    });
-    return res;
+    }
+  );
+  return res;
+  // let data = await res.json();
+  // console.log(res.data.data.data);
+  // console.log(res.status);
+};
 
+const refundCharge = async (data) => {
+  const payload = {};
+  Object.entries(data).forEach(([key, value]) => {
+    payload[key] = value;
+  });
 
+  const res = await axios.post(
+    `${API_SERVER}refunds/create`,
+    JSON.stringify(payload),
+    {
+      headers: {
+        Authorization: `${TOKEN_TYPE} ${TOKEN}`,
+        Accept: `${ACCEPT_TYPE}`,
+        "Content-Type": `${ACCEPT_TYPE}`,
+      },
+    }
+  );
+  return res;
 };
 
 const updatePassword = async (data) => {
-
-  const payload = {}
+  const payload = {};
   Object.entries(data).forEach(([key, value]) => {
     payload[key] = value;
-    
   });
 
-  const res = await axios.post(`${API_SERVER}users/change-password`, JSON.stringify(payload),  {
-    headers: {
-      Authorization: `${TOKEN_TYPE} ${TOKEN}`,
-      Accept: `${ACCEPT_TYPE}`,
-      "Content-Type": `${ACCEPT_TYPE}`,
-    },
-  });
+  const res = await axios.post(
+    `${API_SERVER}users/change-password`,
+    JSON.stringify(payload),
+    {
+      headers: {
+        Authorization: `${TOKEN_TYPE} ${TOKEN}`,
+        Accept: `${ACCEPT_TYPE}`,
+        "Content-Type": `${ACCEPT_TYPE}`,
+      },
+    }
+  );
   return res;
-
-
 };
 
 const forgotPassword = async (data) => {
-
-  const payload = {}
+  const payload = {};
   Object.entries(data).forEach(([key, value]) => {
     payload[key] = value;
-    
   });
   // ,  {
   //   headers: {
@@ -192,18 +191,17 @@ const forgotPassword = async (data) => {
   //     "Content-Type": `${ACCEPT_TYPE}`,
   //   },
   // }
-  const res = await axios.post(`${API_SERVER}password/forgot-password`, payload);
+  const res = await axios.post(
+    `${API_SERVER}password/forgot-password`,
+    payload
+  );
   return res;
-
-
 };
 
 const resetPassword = async (data) => {
-
-  const payload = {}
+  const payload = {};
   Object.entries(data).forEach(([key, value]) => {
     payload[key] = value;
-    
   });
   // ,  {
   //   headers: {
@@ -214,53 +212,62 @@ const resetPassword = async (data) => {
   // }
   const res = await axios.post(`${API_SERVER}password/reset`, payload);
   return res;
-
-
 };
 
 const sendverifyEmail = async () => {
-
- 
-
-  
-  const res = await axios.get(`${API_SERVER}email/resend`,    {
+  const res = await axios.get(`${API_SERVER}email/resend`, {
     headers: {
       Authorization: `${TOKEN_TYPE} ${TOKEN}`,
       Accept: `${ACCEPT_TYPE}`,
       "Content-Type": `${ACCEPT_TYPE}`,
-    }});
+    },
+  });
   return res;
-
-
 };
 
 const getUser = async () => {
-  
-  const res = await axios.get(`${API_SERVER}users/view-profile`,    {
+  const res = await axios.get(`${API_SERVER}users/view-profile`, {
     headers: {
       Authorization: `${TOKEN_TYPE} ${TOKEN}`,
       Accept: `${ACCEPT_TYPE}`,
       "Content-Type": `${ACCEPT_TYPE}`,
-    }});
+    },
+  });
   return res;
-
-
 };
 
 const verifyEmail = async (url) => {
-
- 
   //  {
   //   headers: {
   //     Authorization: `${TOKEN_TYPE} ${TOKEN}`,
   //     Accept: `${ACCEPT_TYPE}`,
   //     "Content-Type": `${ACCEPT_TYPE}`,
   //   },
-  
+
   const res = await axios.get(url);
   return res;
+};
 
-
+const getBulkPayments = async () => {
+  try {
+    const res = await axios.get(`${API_SERVER}bulk-payments/`, {
+      headers: {
+        Authorization: `${TOKEN_TYPE} ${TOKEN}`,
+        Accept: `${ACCEPT_TYPE}`,
+        "Content-Type": `${ACCEPT_TYPE}`,
+      },
+    });
+    console.log(res.data.data)
+    return res.data;
+  } catch (err) {
+    if (err.response.status === 404) {
+      console.log("Payments could not be found!");
+    } else if (err.response.status === 401) {
+      console.log("Unauthorized!");
+    } else {
+      console.log(err.message);
+    }
+  }
 };
 
 export {
@@ -277,5 +284,6 @@ export {
   resetPassword,
   verifyEmail,
   sendverifyEmail,
-  getUser
+  getUser,
+  getBulkPayments,
 };

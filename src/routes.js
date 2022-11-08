@@ -15,7 +15,7 @@ import Users from "views/Dashboard/Users.js";
 import ResetPassword from "views/Pages/ResetPassword";
 import VerifyEmail from "views/Pages/VerifyEmail";
 import BulkPayments from "views/Dashboard/BulkPayments";
-
+import { BsStack } from 'react-icons/bs';
 import {
   HomeIcon,
   StatsIcon,
@@ -74,7 +74,6 @@ var dashRoutes = [
 
   {
     path: "/detail/:id",
-    // exact: true,
     name: "Payment",
     icon: <CreditIcon color="inherit" />,
     component: Detail,
@@ -85,8 +84,7 @@ var dashRoutes = [
   {
     path: "/bulk-payments",
     name: "Bulk Payments",
-    rtlName: "لوحة القيادة",
-    icon: <VisaIcon color="inherit" />,
+    icon: <BsStack color="inherit" />,
     secondaryNavbar: true,
     component: BulkPayments,
     layout: "/admin",
