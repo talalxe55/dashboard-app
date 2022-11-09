@@ -15,7 +15,10 @@ import FixedPlugin from "../components/FixedPlugin/FixedPlugin";
 import MainPanel from "../components/Layout/MainPanel";
 import PanelContainer from "../components/Layout/PanelContainer";
 import PanelContent from "../components/Layout/PanelContent";
+import { useAuth } from "auth-context/auth.context";
 export default function Dashboard(props) {
+
+  const { user } = useAuth();
   useEffect(() => {
     // select the iframe element
     var iframe = document.querySelector("body > iframe");
@@ -89,13 +92,22 @@ export default function Dashboard(props) {
         return getRoutes(prop.views);
       }
       if (prop.layout === "/admin") {
-        return (
-          <Route
-            path={prop.layout + prop.path}
-            component={prop.component}
-            key={key}
-          />
-        );
+        
+        if(user && prop.role){
+          
+          if(prop.role.includes(user.role)){
+            return (
+              <Route
+                path={prop.layout + prop.path}
+                component={prop.component}
+                key={key}
+              />
+            );
+            }
+
+        }
+
+
       } else {
         return null;
       }

@@ -23,12 +23,14 @@ import { SidebarHelp } from "components/Sidebar/SidebarHelp";
 import PropTypes from "prop-types";
 import React from "react";
 import { NavLink, useLocation } from "react-router-dom";
+import { useAuth } from "auth-context/auth.context";
 
 // FUNCTIONS
 
 function Sidebar(props) {
   // to check for active links and opened collapses
   let location = useLocation();
+  const { user } = useAuth();
   // this is for the rest of the collapses
   const [state, setState] = React.useState({});
   const mainPanel = React.useRef();
@@ -85,6 +87,14 @@ function Sidebar(props) {
             {createLinks(prop.views)}
           </React.Fragment>
         );
+      }
+
+      if(prop.layout === "/admin" && user && prop.role){
+          
+        if(!prop.role.includes(user.role)){
+            return null;
+          }
+
       }
       
       
