@@ -32,11 +32,8 @@ const getCustomerID = async (cusID) => {
         "Content-Type": `${ACCEPT_TYPE}`,
       },
     });
-
-    // let data = await res.json();
-    return res;
     // console.log(res.data.data);
-    // console.log(res.status);
+    return res;
   } catch (err) {
     if (err.response.status === 404) {
       console.log("Resource could not be found!");
@@ -257,8 +254,8 @@ const getBulkPayments = async () => {
         "Content-Type": `${ACCEPT_TYPE}`,
       },
     });
-    console.log(res.data.data)
-    return res.data;
+    // console.log(res.data.data);
+    return res;
   } catch (err) {
     if (err.response.status === 404) {
       console.log("Payments could not be found!");
@@ -268,6 +265,28 @@ const getBulkPayments = async () => {
       console.log(err.message);
     }
   }
+};
+
+const runJobPaymentID = async (jobID) => {
+  const res = await axios.get(`${API_SERVER}bulk-payments/run/${jobID}`, {
+    headers: {
+      Authorization: `${TOKEN_TYPE} ${TOKEN}`,
+      Accept: `${ACCEPT_TYPE}`,
+      "Content-Type": `${ACCEPT_TYPE}`,
+    },
+  });
+  return res;
+};
+
+const deleteJobPaymentID = async (jobID) => {
+  const res = await axios.get(`${API_SERVER}bulk-payments/delete/${jobID}`, {
+    headers: {
+      Authorization: `${TOKEN_TYPE} ${TOKEN}`,
+      Accept: `${ACCEPT_TYPE}`,
+      "Content-Type": `${ACCEPT_TYPE}`,
+    },
+  });
+  return res;
 };
 
 export {
@@ -286,4 +305,6 @@ export {
   sendverifyEmail,
   getUser,
   getBulkPayments,
+  runJobPaymentID,
+  deleteJobPaymentID,
 };
