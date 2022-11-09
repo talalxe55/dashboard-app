@@ -1,0 +1,3 @@
+customer,source,description,amount,currency,statement_descriptor
+cus_MU8HXlWwUfskLt,src_1LlA10KXau3ZSAk3SD8SDZKP,Test payment 3,30,usd,NLS99
+cus_MU8HXlWwUfskLt,src_1LlA10KXau3ZSAk3SD8SDZKP,Test payment 4,60,usd,NLS99

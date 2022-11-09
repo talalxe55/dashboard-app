@@ -7,6 +7,7 @@ import {
   ACCEPT_TYPE,
 } from "../../config/constant";
 import {
+  FormLabel,
   Flex,
   Text,
   Button,
@@ -25,25 +26,39 @@ import {
   Progress,
   Badge,
   Heading,
+  useToast,
 } from "@chakra-ui/react";
 import { FileDrop } from "react-file-drop";
 import { useEffect } from "react";
 import { AlertFileUploaded } from "./AlertDialog";
 
-const UploadCSVModal = () => {
+const UploadCSVModal = ({ setReloadHandler }) => {
   const [selectFile, setSelectedFile] = useState();
   const [fileName, setFileName] = useState("");
+  const [fileDesc, setFileDesc] = useState(null);
   const [isLoading, setLoading] = useState(false);
   const [showAlert, setAlert] = useState(false);
   const [uploadingMsg, setUploadedMsg] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
   const fileInputRef = useRef(null);
+  const toast = useToast();
+
   const postCSVFile = async () => {
-    setLoading(true);
     try {
+      if (fileDesc === null || !fileDesc) {
+        return toast({
+          title: "Description is empty!",
+          description:
+            "Please fill the description first before uploading file.",
+          status: "error",
+          duration: 1500,
+          isClosable: true,
+        });
+      }
+      setLoading(true);
       const formData = new FormData();
       formData.append("file", selectFile);
-      formData.append("description", "test payment");
+      formData.append("description", fileDesc);
       //   console.log(formData);
       const res = await axios.post(
         `${API_SERVER}bulk-payments/create`,
@@ -59,24 +74,42 @@ const UploadCSVModal = () => {
       let data = res.data;
       console.log(data);
       setLoading(false);
+      setFileDesc("");
       if (res.status === 200) {
         setUploadedMsg(res.data.message);
         setAlert(true);
+        setReloadHandler(true);
       }
     } catch (err) {
       if (err.response.status === 404) {
         console.log("Resource could not be found!");
+        setLoading(false);
       } else if (err.response.status === 401) {
         console.log("Unauthorized!");
+        setLoading(false);
+      } else if (err.response.status === 400) {
+        toast({
+          title: "Bad file uploaded!",
+          description: "Please upload only CSV file. Download SAMPLE FILE",
+          status: "error",
+          duration: 9000,
+          isClosable: true,
+        });
+        setLoading(false);
       } else {
         console.log(err);
+        toast({
+          title: "Server error!",
+          description: "err",
+          status: "error",
+          duration: 9000,
+          isClosable: true,
+        });
+        setLoading(false);
       }
     }
+    onClose();
   };
-
-  useEffect(() => {
-    // postCSVFile();
-  }, [selectFile]);
 
   const onFileInputChange = (event) => {
     const { files } = event.target;
@@ -106,7 +139,6 @@ const UploadCSVModal = () => {
         mb={3}
         ms="auto"
         display="block"
-        borderRadius={2}
         bg="gray.900"
         color="#fff"
         fontWeight={400}
@@ -159,7 +191,7 @@ const UploadCSVModal = () => {
                       mt="100px"
                       transform="translateY(-20px)"
                     >
-                      <Text as={"h6"} zIndex={1}>
+                      <Text as={"h4"} zIndex={1}>
                         or
                       </Text>
                       <Input
@@ -173,7 +205,6 @@ const UploadCSVModal = () => {
                       />
                       <Button
                         px="30px"
-                        borderRadius={6}
                         bg="transparent"
                         fontWeight={400}
                         border="1px solid"
@@ -191,80 +222,65 @@ const UploadCSVModal = () => {
                 </FormControl>
               </form>
             </Box>
-            <Flex>
-              <Heading as="h4" fontSize="xl">
-                {fileName ? "File Name: " + fileName.slice(0, -4) : ""}
-              </Heading>
-            </Flex>
+            {fileName ? (
+              <Flex direction="column">
+                <FormControl>
+                  <Heading as="h4" fontSize="xl">
+                    {"File name: " + fileName.slice(0, -4)}
+                  </Heading>
+                </FormControl>
+                <FormControl isRequired mt={2}>
+                  <FormLabel>Description</FormLabel>
+                  <Input
+                    type="text"
+                    variant="filled"
+                    onChange={(e) => setFileDesc(e.target.value)}
+                    // focusBorderColor="teal.300"
+                    placeholder="Enter the description of file*"
+                  />
+                </FormControl>
+              </Flex>
+            ) : (
+              ""
+            )}
           </ModalBody>
-          <ModalFooter>
-            <Button
-              isLoading={isLoading}
-              color="#fff"
-              borderRadius={6}
-              bg="teal.300"
-              me={3}
-              onClick={postCSVFile}
-              _hover={{ bg: "#ca243d" }}
-            >
-              Upload
-            </Button>
-            <Button
-              bg="black"
-              _hover={{ bg: "gray.600" }}
-              borderRadius={6}
-              color="white"
-              mr={3}
-              onClick={onClose}
-            >
-              Close
-            </Button>
-          </ModalFooter>
+          {fileName ? (
+            <ModalFooter>
+              <Button
+                isLoading={isLoading}
+                color="#fff"
+                bg="teal.300"
+                me={3}
+                onClick={postCSVFile}
+                _hover={{ bg: "#ca243d" }}
+              >
+                Upload
+              </Button>
+              <Button
+                bg="black"
+                _hover={{ bg: "gray.600" }}
+                color="white"
+                mr={3}
+                onClick={onClose}
+              >
+                Close
+              </Button>
+            </ModalFooter>
+          ) : (
+            <ModalFooter>
+              <Button
+                bg="black"
+                _hover={{ bg: "gray.600" }}
+                color="white"
+                mr={3}
+                onClick={onClose}
+              >
+                Close
+              </Button>
+            </ModalFooter>
+          )}
         </ModalContent>
       </Modal>
-
-      {/* <Flex
-        gap={5}
-        mb={3}
-        justifyContent="start"
-        alignItems="center"
-        color="#000"
-      >
-        <Flex
-          boxShadow="lg"
-          bg="gray.100"
-          rounded="md"
-          p={6}
-          h={100}
-          justifyContent="center"
-          alignItems="center"
-        >
-          <Text>File name</Text>
-        </Flex>
-        <Flex
-          boxShadow="lg"
-          bg="gray.100"
-          rounded="md"
-          p={6}
-          h={100}
-          justifyContent="center"
-          alignItems="center"
-        >
-          <Text>File name</Text>
-        </Flex>
-        <Flex
-          boxShadow="lg"
-          bg="gray.100"
-          rounded="md"
-          p={6}
-          h={100}
-          justifyContent="center"
-          alignItems="center"
-        >
-          <Text>File name</Text>
-        </Flex>
-      </Flex> */}
-      {/* <Button onClick={postCSVFile}>Upload a file</Button> */}
     </>
   );
 };

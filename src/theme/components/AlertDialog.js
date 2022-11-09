@@ -162,6 +162,21 @@ const AlertDataNotFound = (props) => {
   );
 };
 
+const AlertTooManyRequest429 = (props) => {
+  const history = useHistory();
+  const { setisSuccess } = props;
+  return (
+    <SweetAlert
+      warning
+      title="The requested resource was not found!"
+      confirmBtnText="OK!"
+      onCancel={() => setisSuccess(false)}
+      onConfirm={() => setisSuccess(false)}
+      customClass="alert_pop"
+    />
+  );
+};
+
 export {
   AlertCustomerCreated,
   AlertCustomerUpdated,
