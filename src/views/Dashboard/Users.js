@@ -20,7 +20,7 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { AddIcon, CloseIcon } from "@chakra-ui/icons";
-import UsersRow from "components/Tables/UsersRow";
+import UsersTable from "components/Tables/UsersTable";
 // Custom components
 import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
@@ -567,7 +567,7 @@ function Users() {
                 <Tbody className="customer_body" textTransform={"capitalize"}>
                   {customerListing.map((val, index) => {
                     return (
-                      <UsersRow
+                      <UsersTable
                         userid={val.id}
                         name={val.name}
                         key={index}

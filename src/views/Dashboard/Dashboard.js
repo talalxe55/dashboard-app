@@ -93,17 +93,17 @@ export default function Dashboard() {
       });
 
       let data = await res.data.data;
-      console.log(data);
+      
       settotalAmount(data);
 
     } catch (err) {
-        console.log(err);
+        
       if (err.response.status === 404) {
         
       } else if (err.response.status === 401) {
         setisUnauthorized(true);
       } else {
-        console.log(err.message);
+        
       }
     }
   }
@@ -129,13 +129,13 @@ export default function Dashboard() {
       settodayCharges(data)
 
     } catch (err) {
-        console.log(err);
+        
       if (err.response.status === 404) {
         
       } else if (err.response.status === 401) {
         setisUnauthorized(true);
       } else {
-        console.log(err.message);
+        
       }
     }
   }
@@ -156,12 +156,11 @@ export default function Dashboard() {
     totalSalesData(null);
     let options = {created: {gte: new Date().toLocaleDateString()}}
     todaySalesData(options);
-    // console.log(customers.length);
+    
   }, []);
 
   useEffect(() => {
     if(todayCharges !== null){
-      console.log(todayCharges);
       if(todayCharges.data.length > 0){
         let amount = 0;
         todayCharges.data.forEach((item, index) => {
@@ -171,7 +170,7 @@ export default function Dashboard() {
       }
       else {settodayAmount(dataamount(0))}
     }
-    // console.log(customers.length);
+    
   }, [todayCharges]);
 
   return (

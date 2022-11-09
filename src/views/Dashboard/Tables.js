@@ -589,7 +589,7 @@ function Tables() {
               <Table
                 variant="simple"
                 color={textColor}
-                class={"customer-listing"}
+                className={"customer-listing"}
               >
                 <Thead>
                   <Tr my=".8rem" pl="0px" color="gray.400">

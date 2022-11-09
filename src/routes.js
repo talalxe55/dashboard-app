@@ -37,6 +37,7 @@ var dashRoutes = [
     icon: <HomeIcon color="inherit" />,
     component: Dashboard,
     layout: "/admin",
+    key: "dashboard"
   },
   {
     path: "/customers",
@@ -45,6 +46,7 @@ var dashRoutes = [
     icon: <StatsIcon color="inherit" />,
     component: Tables,
     layout: "/admin",
+    key: "customers"
   },
   {
     path: "/billing/:id",
@@ -54,6 +56,7 @@ var dashRoutes = [
     component: Billing,
     layout: "/admin",
     hide: true,
+    key: "customers-detail"
   },
   {
     path: "/listing/",
@@ -62,6 +65,7 @@ var dashRoutes = [
     icon: <CreditIcon color="inherit" />,
     layout: "/admin",
     hide: true,
+    key: "customers-listing"
   },
 
   {
@@ -70,6 +74,7 @@ var dashRoutes = [
     icon: <WalletIcon color="inherit" />,
     component: Payments,
     layout: "/admin",
+    key: "payments"
   },
 
   {
@@ -79,6 +84,7 @@ var dashRoutes = [
     component: Detail,
     layout: "/admin",
     hide: true,
+    key: "payment-detail"
   },
 
   {
@@ -89,7 +95,8 @@ var dashRoutes = [
     component: BulkPayments,
     layout: "/admin",
     hide: false,
-    role: "superadmin"
+    role: "superadmin",
+    key: "bulk-payment-detail"
   },
 
   {
@@ -100,8 +107,9 @@ var dashRoutes = [
     secondaryNavbar: true,
     component: Users,
     layout: "/admin",
-    hide: true,
-    role: "superadmin"
+    hide: false,
+    role: "superadmin",
+    key: "users"
   },
 
   
@@ -127,6 +135,7 @@ var dashRoutes = [
         secondaryNavbar: true,
         component: Profile,
         layout: "/admin",
+        key: "user-profile"
       },
       
       // {
@@ -148,6 +157,7 @@ var dashRoutes = [
         component: SignIn,
         layout: "/auth",
         hide: true,
+        key: "user-siginin"
       },
 
       {
@@ -158,6 +168,7 @@ var dashRoutes = [
         component: ForgotPassword,
         layout: "/auth",
         hide: true,
+        key: "forgot-password"
       },
 
       
@@ -169,6 +180,7 @@ var dashRoutes = [
         component: VerifyEmail,
         layout: "/auth",
         hide: true,
+        key: "verify-email"
       },
 
       {
@@ -179,6 +191,7 @@ var dashRoutes = [
         component: ResetPassword,
         layout: "/auth",
         hide: true,
+        key: "password-reset"
       },
       // {
       //   path: "/signup",
@@ -197,6 +210,7 @@ var dashRoutes = [
         icon: <RocketIcon color="inherit" />,
         component: SignOut,
         layout: "/auth",
+        key: "user-signout"
       },
     ],
   },

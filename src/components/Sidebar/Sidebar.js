@@ -63,9 +63,9 @@ function Sidebar(props) {
         var st = {};
         st[prop["state"]] = !state[prop.state];
         return (
-          <>
+          <React.Fragment key={index}>
             <Text
-              key={index + "f"}
+              key={index+prop.key}
               color={activeColor}
               fontWeight="bold"
               mb={{
@@ -83,13 +83,16 @@ function Sidebar(props) {
                 : prop.name}
             </Text>
             {createLinks(prop.views)}
-          </>
+          </React.Fragment>
         );
       }
+      
+      
       return (
-        <>
+        <React.Fragment key={index}>
+        
           {prop.hide ? null : (
-            <NavLink to={prop.layout + prop.path} key={index}>
+            <NavLink key={index+prop.key} to={prop.layout + prop.path}>
               {activeRoute(prop.layout + prop.path) === "active" ? (
                 <Button
                   boxSize="initial"
@@ -143,6 +146,7 @@ function Sidebar(props) {
                     </Text>
                   </Flex>
                 </Button>
+               
               ) : (
                 <Button
                   boxSize="initial"
@@ -194,10 +198,11 @@ function Sidebar(props) {
                     </Text>
                   </Flex>
                 </Button>
+                
               )}
             </NavLink>
           )}
-        </>
+        </React.Fragment>
       );
     });
   };
@@ -272,10 +277,11 @@ function Sidebar(props) {
 
 export function SidebarResponsive(props) {
   // to check for active links and opened collapses
+  
   let location = useLocation();
   // this is for the rest of the collapses
   const [state, setState] = React.useState({});
-  const mainPanel = React.useRef();
+  const mainPanel = React.createRef();
   // verifies if routeName is the one active (in browser input)
   const activeRoute = (routeName) => {
     return location.pathname === routeName ? "active" : "";
@@ -289,6 +295,7 @@ export function SidebarResponsive(props) {
     const inactiveColor = useColorModeValue("gray.400", "gray.400");
 
     return routes.map((prop, index) => {
+      
       if (prop.redirect) {
         return null;
       }
@@ -296,9 +303,9 @@ export function SidebarResponsive(props) {
         var st = {};
         st[prop["state"]] = !state[prop.state];
         return (
-          <>
+          <React.Fragment key={index}>
             <Text
-              key={index}
+              
               color={activeColor}
               fontWeight="bold"
               mb={{
@@ -316,11 +323,12 @@ export function SidebarResponsive(props) {
                 : prop.name}
             </Text>
             {createLinks(prop.views)}
-          </>
+          </React.Fragment>
         );
       }
       return (
-        <NavLink to={prop.layout + prop.path}>
+        <React.Fragment key={index}>
+        <NavLink key={prop.key} to={prop.layout + prop.path}>
           {activeRoute(prop.layout + prop.path) === "active" ? (
             <Button
               boxSize="initial"
@@ -423,7 +431,8 @@ export function SidebarResponsive(props) {
             </Button>
           )}
         </NavLink>
-      );
+        
+        </React.Fragment> );
     });
   };
   const { logoText, routes, ...rest } = props;
@@ -460,7 +469,7 @@ export function SidebarResponsive(props) {
 
   // SIDEBAR
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const btnRef = React.useRef();
+  const btnRef = React.createRef();
   // Color variables
   return (
     <Flex
