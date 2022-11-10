@@ -208,8 +208,8 @@ const UploadCSVModal = ({ setReloadHandler }) => {
                         bg="transparent"
                         fontWeight={400}
                         border="1px solid"
-                        borderColor="teal.300"
-                        _hover={{ bg: "teal.300", color: "#fff" }}
+                        borderColor="primaryColor"
+                        _hover={{ bg: "primaryColor", color: "#fff" }}
                         onClick={() =>
                           document.getElementById("theFile").click()
                         }
@@ -235,7 +235,7 @@ const UploadCSVModal = ({ setReloadHandler }) => {
                     type="text"
                     variant="filled"
                     onChange={(e) => setFileDesc(e.target.value)}
-                    // focusBorderColor="teal.300"
+                    // focusBorderColor="primaryColor"
                     placeholder="Enter the description of file*"
                   />
                 </FormControl>
@@ -249,7 +249,7 @@ const UploadCSVModal = ({ setReloadHandler }) => {
               <Button
                 isLoading={isLoading}
                 color="#fff"
-                bg="teal.300"
+                bg="primaryColor"
                 me={3}
                 onClick={postCSVFile}
                 _hover={{ bg: "#ca243d" }}

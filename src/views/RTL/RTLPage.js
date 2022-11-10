@@ -54,7 +54,7 @@ export default function Dashboard() {
   const value = "$100.000";
   // Chakra Color Mode
   const { colorMode, toggleColorMode } = useColorMode();
-  const iconTeal = useColorModeValue("teal.300", "teal.300");
+  const iconTeal = useColorModeValue("primaryColor", "primaryColor");
   const iconBoxInside = useColorModeValue("white", "white");
   const textColor = useColorModeValue("gray.700", "white");
   const [series, setSeries] = useState([
@@ -289,7 +289,7 @@ export default function Dashboard() {
               </Flex>
               <Spacer />
               <Flex
-                bg="teal.300"
+                bg="primaryColor"
                 align="center"
                 justify="center"
                 borderRadius="15px"
@@ -577,7 +577,7 @@ export default function Dashboard() {
               <Flex align="center">
                 <Icon
                   as={IoCheckmarkDoneCircleSharp}
-                  color="teal.300"
+                  color="primaryColor"
                   w={4}
                   h={4}
                   pe="3px"
@@ -603,15 +603,16 @@ export default function Dashboard() {
               </Tr>
             </Thead>
             <Tbody key="rtl-table-body">
-              {rtlDashboardTableData.map((row,index) => {
+              {rtlDashboardTableData.map((row, index) => {
                 return (
-                  <DashboardTableRow key={index}
+                  <DashboardTableRow
+                    key={index}
                     name={row.name}
                     logo={row.logo}
                     members={row.members}
                     budget={row.budget}
                     progression={row.progression}
-                    id={row.name.replace(/\s+/g, '-').toLowerCase()}
+                    id={row.name.replace(/\s+/g, "-").toLowerCase()}
                   />
                 );
               })}
@@ -630,7 +631,7 @@ export default function Dashboard() {
                 نظرة عامة على الطلبات
               </Text>
               <Text fontSize="sm" color="gray.400" fontWeight="normal">
-                <Text fontWeight="bold" as="span" color="teal.300">
+                <Text fontWeight="bold" as="span" color="primaryColor">
                   +30%
                 </Text>{" "}
                 هذا الشهر.
@@ -641,7 +642,8 @@ export default function Dashboard() {
             <Flex direction="column">
               {rtlTimelineData.map((row, index, arr) => {
                 return (
-                  <TimelineRow key={index}
+                  <TimelineRow
+                    key={index}
                     logo={row.logo}
                     title={row.title}
                     date={row.date}

@@ -14,11 +14,11 @@ import PropTypes from "prop-types";
 
 function DashboardTableRow(props) {
   const { logo, name, members, budget, progression, id, index } = props;
-  
+
   const textColor = useColorModeValue("gray.700", "white");
   return (
-    <Tr key={index+id} class={"asdas"}>
-      <Td minWidth={{ sm: "250px" }} pl="0px" key={index+id+logo}>
+    <Tr key={index + id} class={"asdas"}>
+      <Td minWidth={{ sm: "250px" }} pl="0px" key={index + id + logo}>
         <Flex align="center" py=".8rem" minWidth="100%" flexWrap="nowrap">
           <Icon as={logo} h={"24px"} w={"24px"} pe="5px" />
           <Text
@@ -32,7 +32,7 @@ function DashboardTableRow(props) {
         </Flex>
       </Td>
 
-      <Td key={index+id+members[0]}>
+      <Td key={index + id + members[0]}>
         <AvatarGroup size="sm">
           {members.map((member) => {
             return (
@@ -45,16 +45,16 @@ function DashboardTableRow(props) {
           })}
         </AvatarGroup>
       </Td>
-      <Td key={index+id+budget}>
+      <Td key={index + id + budget}>
         <Text fontSize="md" color={textColor} fontWeight="bold" pb=".5rem">
           {budget}
         </Text>
       </Td>
-      <Td key={index+id+progression}>
+      <Td key={index + id + progression}>
         <Flex direction="column">
           <Text
             fontSize="md"
-            color="teal.300"
+            color="primaryColor"
             fontWeight="bold"
             pb=".2rem"
           >{`${progression}%`}</Text>

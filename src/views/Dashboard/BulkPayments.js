@@ -8,24 +8,17 @@ import {
   Thead,
   Tr,
   useColorModeValue,
-  Menu,
-  MenuButton,
-  MenuList,
   Button,
   Box,
-  Input,
   Heading,
-  Select,
   Image,
-  VStack,
 } from "@chakra-ui/react";
-import UsersRow from "components/Tables/UsersRow";
 // Custom components
 import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
 import LoadingGif from "assets/svg/loading-infinite.svg";
-import { NavLink, useHistory, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import {
   AlertUnauthorized,
   AlertDataNotFound,
@@ -33,6 +26,7 @@ import {
 import UploadCSVModal from "theme/components/UploadCSVModal";
 import sampleCSVFile from "../../assets/sheets/samplefile.csv";
 import { getBulkPayments } from "api/ApiListing";
+import JobRow from "components/Tables/JobRow";
 function BulkPayments() {
   const { search } = useLocation();
   let query = React.useMemo(() => new URLSearchParams(search), [search]);
@@ -152,8 +146,9 @@ function BulkPayments() {
                   {customers !== null
                     ? customerListing.map((val, index) => {
                         return (
-                          <UsersRow
+                          <JobRow
                             key={index}
+                            srno={index + 1}
                             userid={val.id}
                             email={val.user_id.email}
                             status={val.status}

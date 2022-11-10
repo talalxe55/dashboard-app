@@ -14,8 +14,6 @@ import {
   Tr,
   Text,
   useColorModeValue,
-  Checkbox,
-  CheckboxGroup,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -48,8 +46,8 @@ import {
 } from "../../config/constant";
 import { runJobPaymentID, deleteJobPaymentID } from "api/ApiListing";
 
-const UsersRow = (props) => {
-  const { status, email, desc, date, userid, setReloadHandler } = props;
+const JobRow = (props) => {
+  const { srno, status, email, desc, date, userid, setReloadHandler } = props;
   const toast = useToast();
   const textColor = useColorModeValue("gray.700", "white");
   const bgStatus = useColorModeValue("gray.200", "#1a202c");
@@ -102,7 +100,7 @@ const UsersRow = (props) => {
       <Td>
         <Flex align="center" py=".8rem" minWidth="100%" flexWrap="nowrap">
           {/* <Checkbox outline="1px solid #ccc"></Checkbox> */}
-          <Text>{userid}</Text>
+          <Text>{srno}</Text>
         </Flex>
       </Td>
 
@@ -160,7 +158,7 @@ const UsersRow = (props) => {
         {status === "uploaded" ? (
           <Button
             p="0 20px"
-            bg={"teal.300"}
+            bg={"primaryColor"}
             _hover={{ opacity: "0.9" }}
             w="100%"
             fontSize="md"
@@ -205,7 +203,7 @@ const UsersRow = (props) => {
   );
 };
 
-export default UsersRow;
+export default JobRow;
 
 const LogModal = (jobObj) => {
   const { isOpen, onOpen, onClose } = useDisclosure();

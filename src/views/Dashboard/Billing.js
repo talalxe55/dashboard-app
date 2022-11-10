@@ -163,7 +163,6 @@ function Billing() {
     }
   };
 
-
   useEffect(() => {
     // custData.then((value) => {
     //   // console.log(value.data.data);
@@ -172,27 +171,7 @@ function Billing() {
     // });
     // console.log(getCustomerID(id));
     // setSingleCustomer(getCustomerID(id));
-    if(isReload){
-      
-    const response = getAllPaymentsByCustomerID(id);
-    response
-      .then((res) => {
-        // console.log(res.data.data);
-        setSingleCustomerPayments(res.data.data);
-      })
-      .catch((err) => {
-        if (err.response.status == 400) {
-          console.log(err);
-        }
-        if (err.response.status == 401) {
-          setUnauthorizedWarning(true);
-        }
-      });
-    getCustomerID();
-    }
-  }, [isReload]);
- const setReloadState = (value) =>{
-    if(value==true){
+    if (isReload) {
       const response = getAllPaymentsByCustomerID(id);
       response
         .then((res) => {
@@ -209,10 +188,28 @@ function Billing() {
         });
       getCustomerID();
     }
-    
-  } 
+  }, [isReload]);
+  const setReloadState = (value) => {
+    if (value == true) {
+      const response = getAllPaymentsByCustomerID(id);
+      response
+        .then((res) => {
+          // console.log(res.data.data);
+          setSingleCustomerPayments(res.data.data);
+        })
+        .catch((err) => {
+          if (err.response.status == 400) {
+            console.log(err);
+          }
+          if (err.response.status == 401) {
+            setUnauthorizedWarning(true);
+          }
+        });
+      getCustomerID();
+    }
+  };
   useEffect(() => {
-    console.log('reload state'+ isReload)
+    console.log("reload state" + isReload);
     // custData.then((value) => {
     //   // console.log(value.data.data);
     //   setSingleCustomer(value.data.data);
@@ -263,7 +260,7 @@ function Billing() {
   }, [singleCustomerPayments]);
 
   // Chakra color mode
-  const iconTeal = useColorModeValue("teal.300", "teal.300");
+  const iconTeal = useColorModeValue("primaryColor", "primaryColor");
   const textColor = useColorModeValue("gray.700", "white");
   const borderColor = useColorModeValue("#dee2e6", "gray.500");
   const bgButton = useColorModeValue(
@@ -333,8 +330,6 @@ function Billing() {
     }
   };
 
-
-
   return (
     <Flex direction="column" pt={{ base: "120px", md: "75px" }}>
       {unauthorizedWarning ? <AlertUnauthorized /> : null}
@@ -342,30 +337,30 @@ function Billing() {
 
       <Grid templateColumns={{ sm: "1fr", lg: "2fr 1.2fr" }} templateRows="1fr">
         <Box>
-        <Flex
-                justify="space-between"
-                align="center"
-                minHeight="60px"
-                w="100%"
-              >
-                <Text fontSize="lg" color={textColor} fontWeight="bold">
-                {singleCustomer ? singleCustomer.name : "Customer Name"}
-                </Text>
-                {/* Edit Customer Modal */}
-                {singleCustomer? (
-                  <EditCustomer
-                    customer={singleCustomer}
-                    defaultsource={singleCustomerDefaultSource}
-                    sources={singleCustomerSources}
-                    email={customerMetaEmail}
-                    bg={"teal.300"}
-                    setisReload={setisReload}
-                    setReloadState={setReloadState}
-                  />
-                ) : (
-                  ""
-                )}
-              </Flex>
+          <Flex
+            justify="space-between"
+            align="center"
+            minHeight="60px"
+            w="100%"
+          >
+            <Text fontSize="lg" color={textColor} fontWeight="bold">
+              {singleCustomer ? singleCustomer.name : "Customer Name"}
+            </Text>
+            {/* Edit Customer Modal */}
+            {singleCustomer ? (
+              <EditCustomer
+                customer={singleCustomer}
+                defaultsource={singleCustomerDefaultSource}
+                sources={singleCustomerSources}
+                email={customerMetaEmail}
+                bg={"primaryColor"}
+                setisReload={setisReload}
+                setReloadState={setReloadState}
+              />
+            ) : (
+              ""
+            )}
+          </Flex>
           <Grid
             templateColumns={{
               sm: "1fr",
@@ -550,12 +545,7 @@ function Billing() {
                     <Separator />
                   </Flex>
 
-                  <Text
-                    fontSize="sm"
-                    color={textColor}
-                    fontWeight="bold"
-                    
-                  >
+                  <Text fontSize="sm" color={textColor} fontWeight="bold">
                     {singleCustomer ? singleCustomer.email : "Email Address"}
                   </Text>
                 </Flex>
@@ -563,15 +553,15 @@ function Billing() {
             </Card>
           </Grid>
           <Card my={{ lg: "24px" }} me={{ lg: "24px" }}>
-        <CardHeader py="12px">
-        <Flex
+            <CardHeader py="12px">
+              <Flex
                 justify="space-between"
                 align="center"
                 minHeight="60px"
                 w="100%"
               >
                 <Text fontSize="lg" color={textColor} fontWeight="bold">
-                Billing Sources
+                  Billing Sources
                 </Text>
                 {/* Create Payment Modal */}
                 {singleCustomer &&
@@ -591,137 +581,144 @@ function Billing() {
                   ""
                 )}
               </Flex>
-          {/* <Text color={textColor} fontSize="lg" fontWeight="bold">
+              {/* <Text color={textColor} fontSize="lg" fontWeight="bold">
             Billing Sources
           </Text> */}
-        </CardHeader>
-        <Grid gap={5} templateColumns={{ sm: "1fr", lg: "repeat(2, 1fr)" }}>
-          
-          {billingSourceOwner !== null
-            ? billingSourceOwner.map((val, index) => {
-                return (
-                  <CardBody>
-                    <Flex direction="column" w="100%">
-                      <BillingRowSourcesAccordion
-                        key={index}
-                        last4= {val.type!=="ach_credit_transfer" && val.card.last4 !==null ? val.card.last4 : "N/A"}
-                        brand= {val.type!=="ach_credit_transfer" && val.card.brand!==null ? val.card.brand : "N/A"}
-                        name={val.owner.name !== null ? val.owner.name : "N/A"}
-                        email={
-                          val.owner.email !== null ? val.owner.email : "N/A"
-                        }
-                        phone={
-                          val.owner.phone !== null ? val.owner.phone : "N/A"
-                        }
-                        country={
-                          val.owner.address !== null &&
-                          val.owner.address.country !== null
-                            ? val.owner.address.country
-                            : "N/A"
-                        }
-                        state={
-                          val.owner.address !== null &&
-                          val.owner.address.state !== null
-                            ? val.owner.address.state
-                            : "N/A"
-                        }
-                        city={
-                          val.owner.address !== null &&
-                          val.owner.address.city !== null
-                            ? val.owner.address.city
-                            : "N/A"
-                        }
-                        line1={
-                          val.owner.address !== null &&
-                          val.owner.address.line1 !== null
-                            ? val.owner.address.line1
-                            : "N/A"
-                        }
-                        line2={
-                          val.owner.address !== null &&
-                          val.owner.address.line2 !== null
-                            ? val.owner.address.line2
-                            : "N/A"
-                        }
-                        postal_code={
-                          val.owner.address !== null &&
-                          val.owner.address.postal_code !== null
-                            ? val.owner.address.postal_code
-                            : "N/A"
-                        }
-                        type={val.type}
-                        value = {val}
-                      />
-                    </Flex>
-                  </CardBody>
-                );
-              })
-            : ""}
-        </Grid>
-      </Card>
+            </CardHeader>
+            <Grid gap={5} templateColumns={{ sm: "1fr", lg: "repeat(2, 1fr)" }}>
+              {billingSourceOwner !== null
+                ? billingSourceOwner.map((val, index) => {
+                    return (
+                      <CardBody>
+                        <Flex direction="column" w="100%">
+                          <BillingRowSourcesAccordion
+                            key={index}
+                            last4={
+                              val.type !== "ach_credit_transfer" &&
+                              val.card.last4 !== null
+                                ? val.card.last4
+                                : "N/A"
+                            }
+                            brand={
+                              val.type !== "ach_credit_transfer" &&
+                              val.card.brand !== null
+                                ? val.card.brand
+                                : "N/A"
+                            }
+                            name={
+                              val.owner.name !== null ? val.owner.name : "N/A"
+                            }
+                            email={
+                              val.owner.email !== null ? val.owner.email : "N/A"
+                            }
+                            phone={
+                              val.owner.phone !== null ? val.owner.phone : "N/A"
+                            }
+                            country={
+                              val.owner.address !== null &&
+                              val.owner.address.country !== null
+                                ? val.owner.address.country
+                                : "N/A"
+                            }
+                            state={
+                              val.owner.address !== null &&
+                              val.owner.address.state !== null
+                                ? val.owner.address.state
+                                : "N/A"
+                            }
+                            city={
+                              val.owner.address !== null &&
+                              val.owner.address.city !== null
+                                ? val.owner.address.city
+                                : "N/A"
+                            }
+                            line1={
+                              val.owner.address !== null &&
+                              val.owner.address.line1 !== null
+                                ? val.owner.address.line1
+                                : "N/A"
+                            }
+                            line2={
+                              val.owner.address !== null &&
+                              val.owner.address.line2 !== null
+                                ? val.owner.address.line2
+                                : "N/A"
+                            }
+                            postal_code={
+                              val.owner.address !== null &&
+                              val.owner.address.postal_code !== null
+                                ? val.owner.address.postal_code
+                                : "N/A"
+                            }
+                            type={val.type}
+                            value={val}
+                          />
+                        </Flex>
+                      </CardBody>
+                    );
+                  })
+                : ""}
+            </Grid>
+          </Card>
 
-
-      <Card my={{ lg: "24px" }} me={{ lg: "24px" }}>
-        <CardHeader py="12px">
-        <Flex
+          <Card my={{ lg: "24px" }} me={{ lg: "24px" }}>
+            <CardHeader py="12px">
+              <Flex
                 justify="space-between"
                 align="center"
                 minHeight="60px"
                 w="100%"
               >
                 <Text fontSize="lg" color={textColor} fontWeight="bold">
-                Customer Information
+                  Customer Information
                 </Text>
                 {/* Create Payment Modal */}
               </Flex>
-
-        </CardHeader>
-        <Grid gap={5} templateColumns={{ sm: "1fr", lg: "repeat(2, 1fr)" }}>
-        {singleCustomer!==null?<Accordion allowToggle>
-        <AccordionItem>
-          <h2>
-            <AccordionButton>
-              <Box flex="1" textAlign="left">
-                <Flex
+            </CardHeader>
+            <Grid gap={5} templateColumns={{ sm: "1fr", lg: "repeat(2, 1fr)" }}>
+              {singleCustomer !== null ? (
+                <Accordion allowToggle>
+                  <AccordionItem>
+                    <h2>
+                      <AccordionButton>
+                        <Box flex="1" textAlign="left">
+                          <Flex
                             direction={{ sm: "column", md: "row" }}
                             align="center"
                             w="100%"
                             justify="center"
                             py="1rem"
                           >
-
-                              <IconBox me="10px" w="25px" h="22px">
+                            <IconBox me="10px" w="25px" h="22px">
                               <PersonIcon w="100%" h="100%" />
-                              </IconBox>
-                              <Text
-                                color="gray.400"
-                                fontSize="md"
-                                fontWeight="semibold"
-                              >
-                               {singleCustomer.name!==null?singleCustomer.name:Details}
-                              </Text>
-                              <Spacer />
-                              <Button
-                                p="0px"
-                                bg="transparent"
-                                w="16px"
-                                h="16px"
-                                variant="no-hover"
-                              >
-                            
-                              </Button>
-                            
+                            </IconBox>
+                            <Text
+                              color="gray.400"
+                              fontSize="md"
+                              fontWeight="semibold"
+                            >
+                              {singleCustomer.name !== null
+                                ? singleCustomer.name
+                                : "No customer name"}
+                            </Text>
+                            <Spacer />
+                            <Button
+                              p="0px"
+                              bg="transparent"
+                              w="16px"
+                              h="16px"
+                              variant="no-hover"
+                            ></Button>
                           </Flex>
-                          
-      </Box>
-      <AccordionIcon />
-    </AccordionButton>
-  </h2>
-  <AccordionPanel pb={4}>
-  <Box p="24px" bg={bgColor} my="" borderRadius="12px">
-        <Flex justify="space-between" w="100%">
-          <Flex direction="column" maxWidth="70%">
-            {/* <Text
+                        </Box>
+                        <AccordionIcon />
+                      </AccordionButton>
+                    </h2>
+                    <AccordionPanel pb={4}>
+                      <Box p="24px" bg={bgColor} my="" borderRadius="12px">
+                        <Flex justify="space-between" w="100%">
+                          <Flex direction="column" maxWidth="70%">
+                            {/* <Text
               color={nameColor}
               fontSize="md"
               fontWeight="bold"
@@ -730,62 +727,119 @@ function Billing() {
             >
               {singleCustomer.name!==null?singleCustomer.name:"N/A"}
             </Text> */}
-            <Text color="gray.400" fontSize="sm" fontWeight="semibold">
-              Email Address:{" "}
-              <Text as="span" color="gray.500">
-                {singleCustomer.email!==null?singleCustomer.email:"N/A"}
-              </Text>
-            </Text>
-            <Text color="gray.400" fontSize="sm" fontWeight="semibold">
-              Phone Number:{" "}
-              <Text as="span" color="gray.500">
-                {singleCustomer.phone!==null?singleCustomer.phone:"N/A"}
-              </Text>
-            </Text>
-            <Text color="gray.400" fontSize="sm" fontWeight="semibold">
-              Country:{" "}
-              <Text as="span" color="gray.500">
-              {singleCustomer.address!==null&&singleCustomer.address.country!==null?singleCustomer.address.country:"N/A"}
-              </Text>
-            </Text>
-            <Text color="gray.400" fontSize="sm" fontWeight="semibold">
-              State:{" "}
-              <Text as="span" color="gray.500">
-              {singleCustomer.address!==null&&singleCustomer.address.state!==null?singleCustomer.address.state:"N/A"}
-              </Text>
-            </Text>
-            <Text color="gray.400" fontSize="sm" fontWeight="semibold">
-              City:{" "}
-              <Text as="span" color="gray.500">
-              {singleCustomer.address!==null&&singleCustomer.address.city!==null?singleCustomer.address.city:"N/A"}
-              </Text>
-            </Text>
-            <Text color="gray.400" fontSize="sm" fontWeight="semibold">
-              Address 1:{" "}
-              <Text as="span" color="gray.500">
-              {singleCustomer.address!==null&&singleCustomer.address.line1!==null?singleCustomer.address.line1:"N/A"}
-              </Text>
-            </Text>
-            <Text color="gray.400" fontSize="sm" fontWeight="semibold">
-              Address 2:{" "}
-              <Text as="span" color="gray.500">
-              {singleCustomer.address!==null&&singleCustomer.address.line2!==null?singleCustomer.address.line2:"N/A"}
-              </Text>
-            </Text>
-            <Text color="gray.400" fontSize="sm" fontWeight="semibold">
-              Postal Code:{" "}
-              <Text as="span" color="gray.500">
-              {singleCustomer.address!==null&&singleCustomer.address.postal_code!==null?singleCustomer.address.postal_code:"N/A"}
-              </Text>
-            </Text>
-          </Flex>
-        </Flex>
-      </Box>
-  </AccordionPanel>
-</AccordionItem>
-</Accordion>: ""}
-        </Grid>
-      </Card>
+                            <Text
+                              color="gray.400"
+                              fontSize="sm"
+                              fontWeight="semibold"
+                            >
+                              Email Address:{" "}
+                              <Text as="span" color="gray.500">
+                                {singleCustomer.email !== null
+                                  ? singleCustomer.email
+                                  : "N/A"}
+                              </Text>
+                            </Text>
+                            <Text
+                              color="gray.400"
+                              fontSize="sm"
+                              fontWeight="semibold"
+                            >
+                              Phone Number:{" "}
+                              <Text as="span" color="gray.500">
+                                {singleCustomer.phone !== null
+                                  ? singleCustomer.phone
+                                  : "N/A"}
+                              </Text>
+                            </Text>
+                            <Text
+                              color="gray.400"
+                              fontSize="sm"
+                              fontWeight="semibold"
+                            >
+                              Country:{" "}
+                              <Text as="span" color="gray.500">
+                                {singleCustomer.address !== null &&
+                                singleCustomer.address.country !== null
+                                  ? singleCustomer.address.country
+                                  : "N/A"}
+                              </Text>
+                            </Text>
+                            <Text
+                              color="gray.400"
+                              fontSize="sm"
+                              fontWeight="semibold"
+                            >
+                              State:{" "}
+                              <Text as="span" color="gray.500">
+                                {singleCustomer.address !== null &&
+                                singleCustomer.address.state !== null
+                                  ? singleCustomer.address.state
+                                  : "N/A"}
+                              </Text>
+                            </Text>
+                            <Text
+                              color="gray.400"
+                              fontSize="sm"
+                              fontWeight="semibold"
+                            >
+                              City:{" "}
+                              <Text as="span" color="gray.500">
+                                {singleCustomer.address !== null &&
+                                singleCustomer.address.city !== null
+                                  ? singleCustomer.address.city
+                                  : "N/A"}
+                              </Text>
+                            </Text>
+                            <Text
+                              color="gray.400"
+                              fontSize="sm"
+                              fontWeight="semibold"
+                            >
+                              Address 1:{" "}
+                              <Text as="span" color="gray.500">
+                                {singleCustomer.address !== null &&
+                                singleCustomer.address.line1 !== null
+                                  ? singleCustomer.address.line1
+                                  : "N/A"}
+                              </Text>
+                            </Text>
+                            <Text
+                              color="gray.400"
+                              fontSize="sm"
+                              fontWeight="semibold"
+                            >
+                              Address 2:{" "}
+                              <Text as="span" color="gray.500">
+                                {singleCustomer.address !== null &&
+                                singleCustomer.address.line2 !== null
+                                  ? singleCustomer.address.line2
+                                  : "N/A"}
+                              </Text>
+                            </Text>
+                            <Text
+                              color="gray.400"
+                              fontSize="sm"
+                              fontWeight="semibold"
+                            >
+                              Postal Code:{" "}
+                              <Text as="span" color="gray.500">
+                                {singleCustomer.address !== null &&
+                                singleCustomer.address.postal_code !== null
+                                  ? singleCustomer.address.postal_code
+                                  : "N/A"}
+                              </Text>
+                            </Text>
+                          </Flex>
+                        </Flex>
+                      </Box>
+                    </AccordionPanel>
+                  </AccordionItem>
+                </Accordion>
+              ) : (
+                ""
+              )}
+            </Grid>
+          </Card>
         </Box>
         {singleCustomerPayments ? (
           <Card my="24px" ms={{ lg: "24px" }}>
@@ -877,10 +931,11 @@ function Billing() {
               </Flex>
               <Box textAlign="center">
                 {singleCustomerPayments &&
-                singleCustomerPayments.data.length > 0 && singleCustomerPayments.has_more==true? (
+                singleCustomerPayments.data.length > 0 &&
+                singleCustomerPayments.has_more == true ? (
                   <NavLink to={`/admin/payments/?customer=${id}`}>
                     <Button
-                      bg="teal.300"
+                      bg="primaryColor"
                       w={200}
                       color="#fff"
                       borderRadius={6}
@@ -914,8 +969,8 @@ function Billing() {
               </Text>
               <Button
                 colorScheme="teal"
-                borderColor="teal.300"
-                color="teal.300"
+                borderColor="primaryColor"
+                color="primaryColor"
                 variant="outline"
                 fontSize="xs"
                 p="8px 32px"

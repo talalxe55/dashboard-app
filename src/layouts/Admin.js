@@ -17,7 +17,6 @@ import PanelContainer from "../components/Layout/PanelContainer";
 import PanelContent from "../components/Layout/PanelContent";
 import { useAuth } from "auth-context/auth.context";
 export default function Dashboard(props) {
-
   const { user } = useAuth();
   useEffect(() => {
     // select the iframe element
@@ -92,10 +91,8 @@ export default function Dashboard(props) {
         return getRoutes(prop.views);
       }
       if (prop.layout === "/admin") {
-        
-        if(user && prop.role){
-          
-          if(prop.role.includes(user.role)){
+        if (user && prop.role) {
+          if (prop.role.includes(user.role)) {
             return (
               <Route
                 path={prop.layout + prop.path}
@@ -103,11 +100,8 @@ export default function Dashboard(props) {
                 key={key}
               />
             );
-            }
-
+          }
         }
-
-
       } else {
         return null;
       }

@@ -17,21 +17,16 @@ import {
   Heading,
   Select,
   Image,
-  VStack,
 } from "@chakra-ui/react";
 import { AddIcon, CloseIcon } from "@chakra-ui/icons";
-// Custom components
+import UsersTable from "components/Tables/UsersTable";
 import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
-import TablesProjectRow from "components/Tables/TablesProjectRow";
-import TablesTableRow from "components/Tables/PaymentsTable.js";
 import { API_SERVER, TOKEN_TYPE, TOKEN, ACCEPT_TYPE } from "config/constant";
 import axios from "axios";
 import LoadingGif from "assets/svg/loading-infinite.svg";
-import { NavLink, useHistory, useLocation } from "react-router-dom";
-import { AiFillDingtalkSquare } from "react-icons/ai";
-import { SiJquery } from "react-icons/si";
+import { useHistory, useLocation } from "react-router-dom";
 import {
   AlertUnauthorized,
   AlertDataNotFound,
@@ -39,7 +34,7 @@ import {
 import { useBlockLayout } from "react-table";
 import { IoLogoFoursquare } from "react-icons/io5";
 
-function Tables() {
+function Users() {
   const { search } = useLocation();
   let query = React.useMemo(() => new URLSearchParams(search), [search]);
   const [customers, setCustomers] = useState([]);
@@ -201,7 +196,7 @@ function Tables() {
       var lastRow = table.rows[table.rows.length - 1];
 
       options["starting_after"] = lastRow.getAttribute("payment-data");
-      var moreCustomers = getCustomersList(options);
+      var moreCustomers = getCustomersList();
     }
   }
 
@@ -215,7 +210,7 @@ function Tables() {
       setfilterApplied(false);
       setisMore(oldload);
       setCustomers([]);
-      var moreCustomers = getCustomersList(null);
+      var moreCustomers = getCustomersList();
     } else {
       var moreCustomers = filterCustomers(options);
     }
@@ -290,7 +285,7 @@ function Tables() {
     }
   };
 
-  const getCustomersList = async (options) => {
+  const getCustomersList = async () => {
     try {
       setLoading(true);
       // if(options){
@@ -300,27 +295,27 @@ function Tables() {
       // }
       var params = "";
 
-      if (options !== null && options !== undefined) {
-        if (options.limit !== undefined) {
-          !params
-            ? (params = "?limit=" + options.limit)
-            : (params += "&limit=" + options.limit);
-        }
+      // if (options !== null && options !== undefined) {
+      //   if (options.limit !== undefined) {
+      //     !params
+      //       ? (params = "?limit=" + options.limit)
+      //       : (params += "&limit=" + options.limit);
+      //   }
 
-        if (options.starting_after !== undefined) {
-          !params
-            ? (params = "?starting_after=" + options.starting_after)
-            : (params += "&starting_after=" + options.starting_after);
-        }
+      //   if (options.starting_after !== undefined) {
+      //     !params
+      //       ? (params = "?starting_after=" + options.starting_after)
+      //       : (params += "&starting_after=" + options.starting_after);
+      //   }
 
-        if (options.ending_before !== undefined) {
-          !params
-            ? (params = "?ending_before=" + options.ending_before)
-            : (params += "&ending_before=" + options.ending_before);
-        }
-      }
+      //   if (options.ending_before !== undefined) {
+      //     !params
+      //       ? (params = "?ending_before=" + options.ending_before)
+      //       : (params += "&ending_before=" + options.ending_before);
+      //   }
+      // }
 
-      const res = await axios.get(`${API_SERVER}payments/` + params, {
+      const res = await axios.get(`${API_SERVER}users/`, {
         headers: {
           Authorization: `${TOKEN_TYPE} ${TOKEN}`,
           Accept: `${ACCEPT_TYPE}`,
@@ -328,22 +323,16 @@ function Tables() {
         },
       });
       setLoading(false);
-      let data = res.data.data.data;
-      if (!customers) {
-        setCustomers(data);
-        setoldCustomers(data);
-      } else {
-        setCustomers((customers) => [...customers, ...data]);
-        setoldCustomers((customers) => [...customers, ...data]);
-      }
+      let data = res.data.data;
+      console.log(data);
+      setCustomers(data);
 
-      setisMore(res.data.data.has_more);
-      setoldload(res.data.data.has_more);
+      // setisMore(res.data.data.has_more);
+      // setoldload(res.data.data.has_more);
     } catch (err) {
       console.log(err);
       if (err.response.status === 404) {
         setNoDataFound(true);
-        console.log("Resource could not be found!");
       } else if (err.response.status === 401) {
         setUnauthorizedWarning(true);
       } else {
@@ -352,73 +341,18 @@ function Tables() {
     }
   };
 
-  function toStatus(val) {
-    var str = "";
-
-    if (val.status === "succeeded") {
-      if (val.charges.data.length !== null) {
-        var data = val.charges.data[val.charges.data.length - 1];
-        if (data.refunded == true && data.refunds.data.length > 0) {
-          str = "refunded";
-        } else if (data.amount_refunded > 0) {
-          str = "partial_refunded";
-        } else {
-          str = val.status;
-        }
-      } else {
-        str = val.status;
-      }
-    } else {
-      str = val.status;
-    }
-
-    const arr = str.split("_");
-
-    const result = [];
-
-    for (const word of arr) {
-      result.push(word.charAt(0).toUpperCase() + word.slice(1));
-    }
-
-    return result.join(" ");
-  }
-
   // Converting date
   const datadate = (created) => {
     let epochDate = created;
-    var formatedDateTime = new Date(epochDate * 1000);
+    var formatedDateTime = new Date(created);
 
     formatedDateTime = formatedDateTime.toLocaleString();
     return formatedDateTime;
   };
 
-  const dataamount = (amount) => {
-    let cents = amount;
-    var formatedDollars = (cents / 100).toLocaleString("en-US", {
-      style: "currency",
-      currency: "USD",
-    });
-    //formatedDateTime = formatedDateTime.toLocaleString();
-    return formatedDollars;
-  };
-
   useEffect(() => {
-    if (query.get("customer") !== null) {
-      searchPaymentsbyfilter();
-    } else {
-      getCustomersList(null);
-    }
-    // const queryParams = new URLSearchParams(window.location.search)
-    // const term = queryParams.get("customer")
-    // console.log(term)
+    getCustomersList(null);
   }, []);
-
-  useEffect(() => {
-    //filterCustomers(null);
-    // console.log(filterData);
-    // console.log(isfilterApplied)
-    // console.log(filterEmail)
-  }, [isfilterApplied, filterData, filterEmail]);
 
   // Filtering Email
   const customerListing = customers.filter((customer) => {
@@ -444,13 +378,13 @@ function Tables() {
             fontWeight="bold"
             textAlign={"start"}
           >
-            Payments
+            Users
           </Text>
         </CardHeader>
         <Box>
           {/* //<FilterCustomers emailTextHadler={emailTextHandler} /> */}
           <Flex className="filter_customers">
-            <Menu>
+            {/* <Menu>
               <MenuButton
                 as={Button}
                 leftIcon={<AddIcon />}
@@ -511,7 +445,7 @@ function Tables() {
                   </Button>
                 </Box>
               </MenuList>
-            </Menu>
+            </Menu> */}
             <Menu>
               <MenuButton
                 as={Button}
@@ -523,7 +457,7 @@ function Tables() {
                 bg={"none"}
                 fontSize={15}
               >
-                Amount
+                Users
                 <span
                   style={{ color: "var(--chakra-colors-primaryColor-700)" }}
                 >
@@ -532,7 +466,6 @@ function Tables() {
               </MenuButton>
               <MenuList>
                 <Box p={3}>
-                  <Text fontWeight={"bold"}>Filter By Amount</Text>
                   <Button
                     p={0}
                     fontSize={15}
@@ -558,9 +491,9 @@ function Tables() {
                     <option defaultValue disabled value="default">
                       Please select an option
                     </option>
-                    <option value="=">is equal to</option>
-                    <option value=">">is greater than</option>
-                    <option value="<">is less than</option>
+                    <option value="=">Delete Users</option>
+                    {/* <option value=">">is greater than</option>
+                    <option value="<">is less than</option> */}
                   </Select>
                   <Input
                     type="number"
@@ -593,214 +526,6 @@ function Tables() {
                 </Box>
               </MenuList>
             </Menu>
-            <Menu>
-              <MenuButton
-                as={Button}
-                leftIcon={<AddIcon />}
-                border="1px"
-                borderStyle={"dashed"}
-                borderColor={"gray.400"}
-                color={"gray.500"}
-                bg={"none"}
-                fontSize={15}
-              >
-                Created date
-                <span
-                  style={{ color: "var(--chakra-colors-primaryColor-700)" }}
-                >
-                  {filterDate}
-                </span>
-              </MenuButton>
-              <MenuList>
-                <Box p={3}>
-                  <Text fontWeight={"bold"}>Filter By Date</Text>
-                  <Button
-                    p={0}
-                    fontSize={15}
-                    borderRadius={50}
-                    onClick={() => {
-                      setfilterDate("");
-                      document.querySelector("input[name=payment-date]").value =
-                        "";
-                      searchPaymentsbyfilter();
-                    }}
-                  >
-                    <CloseIcon />
-                  </Button>
-                  <Select my={3} name="payment-date-operator">
-                    <option defaultValue disabled value="default">
-                      Please select an option
-                    </option>
-                    <option value="=">is equal to</option>
-                    <option value=">">is after</option>
-                    <option value="<">is before</option>
-                  </Select>
-                  <Input type="date" name="payment-date" />
-                  <Button
-                    onClick={() => {
-                      setfilterDate(
-                        " " +
-                          document.querySelector(
-                            "select[name=payment-date-operator]"
-                          ).value +
-                          document.querySelector("input[name=payment-date]")
-                            .value
-                      );
-                      searchPaymentsbyfilter();
-                    }}
-                    w={"100%"}
-                    bg="primaryColor"
-                    color="white"
-                    _hover={{ color: "black", bg: "gray.300" }}
-                    mt={3}
-                  >
-                    Apply
-                  </Button>
-                </Box>
-              </MenuList>
-            </Menu>
-            <Menu>
-              <MenuButton
-                as={Button}
-                leftIcon={<AddIcon />}
-                border="1px"
-                borderStyle={"dashed"}
-                borderColor={"gray.400"}
-                color={"gray.500"}
-                bg={"none"}
-                fontSize={15}
-              >
-                {"Customer Type"} |{" "}
-                <span
-                  style={{ color: "var(--chakra-colors-primaryColor-700)" }}
-                >
-                  {customerType}
-                </span>
-              </MenuButton>
-              <MenuList>
-                <Box p={3}>
-                  <Button
-                    p={0}
-                    fontSize={15}
-                    borderRadius={50}
-                    onClick={() => {
-                      setCustomerType("");
-                      document.querySelector(
-                        'select[name="payment-metadata"]'
-                      ).selectedIndex = 0;
-                      searchPaymentsbyfilter();
-                    }}
-                  >
-                    <CloseIcon />
-                  </Button>
-                  <Select my={3} name="payment-metadata">
-                    <option defaultValue value="default">
-                      Please select an option
-                    </option>
-                    <option value="NLS">NLS</option>
-                  </Select>
-                  <Button
-                    w={"100%"}
-                    bg="primaryColor"
-                    color="white"
-                    _hover={{ color: "black", bg: "gray.300" }}
-                    // onClick={() => setCustomerType("NLS")}
-                    onClick={() => {
-                      setCustomerType("NLS");
-                      searchPaymentsbyfilter();
-                    }}
-                    mt={3}
-                  >
-                    Apply
-                  </Button>
-                  {/* <Button
-                w={"100%"}
-                bg="primaryColor"
-                color="white"
-                _hover={{ color: "black", bg: "gray.300" }}
-                onClick={() => setCustomerType("SpiritMagnet")}
-                mt={3}
-              >
-                SpiritMagnet
-              </Button>  */}
-                </Box>
-              </MenuList>
-            </Menu>
-
-            <Menu>
-              <MenuButton
-                as={Button}
-                leftIcon={<AddIcon />}
-                border="1px"
-                borderStyle={"dashed"}
-                borderColor={"gray.400"}
-                color={"gray.500"}
-                bg={"none"}
-                fontSize={15}
-              >
-                {"Status"} |{" "}
-                <span
-                  style={{ color: "var(--chakra-colors-primaryColor-700)" }}
-                >
-                  {filterStatus}
-                </span>
-              </MenuButton>
-              <MenuList>
-                <Box p={3}>
-                  <Button
-                    p={0}
-                    fontSize={15}
-                    borderRadius={50}
-                    onClick={() => {
-                      setfilterStatus("");
-                      document.querySelector(
-                        'select[name="payment-status"]'
-                      ).selectedIndex = 0;
-                      searchPaymentsbyfilter();
-                    }}
-                  >
-                    <CloseIcon />
-                  </Button>
-                  <Select my={3} name="payment-status">
-                    <option defaultValue value="default">
-                      Please select an option
-                    </option>
-                    <option value="succeeded">Succeeded</option>
-                    <option value="requires_capture">Requires Capture</option>
-                    <option value="requires_confirmation">Incomplete</option>
-                    <option value="canceled">Canceled</option>
-                    <option value="requires_payment_method">
-                      Requires Payment Method
-                    </option>
-                    <option value="processing">Processing</option>
-                  </Select>
-                  <Button
-                    w={"100%"}
-                    bg="primaryColor"
-                    color="white"
-                    _hover={{ color: "black", bg: "gray.300" }}
-                    // onClick={() => setCustomerType("NLS")}
-                    onClick={() => {
-                      setStatus();
-                      searchPaymentsbyfilter();
-                    }}
-                    mt={3}
-                  >
-                    Apply
-                  </Button>
-                  {/* <Button
-                w={"100%"}
-                bg="primaryColor"
-                color="white"
-                _hover={{ color: "black", bg: "gray.300" }}
-                onClick={() => setCustomerType("SpiritMagnet")}
-                mt={3}
-              >
-                SpiritMagnet
-              </Button>  */}
-                </Box>
-              </MenuList>
-            </Menu>
           </Flex>
         </Box>
         {!isloading ? (
@@ -813,40 +538,36 @@ function Tables() {
               >
                 <Thead>
                   <Tr my=".8rem" pl="0px" color="gray.400">
+                    <Th pl="0px" color="gray.400"></Th>
                     <Th pl="0px" color="gray.400">
-                      Amount
+                      Name
                     </Th>
                     <Th pl="0px" color="gray.400">
-                      Status
+                      Email
                     </Th>
-                    <Th color="gray.400">Description</Th>
-                    <Th color="gray.400">
-                      Customer Meta Email / Receipt Email
-                    </Th>
-                    <Th color="gray.400">Date</Th>
+                    <Th color="gray.400">Verified At</Th>
+                    <Th color="gray.400">Role</Th>
+                    <Th color="gray.400">Created at</Th>
                     <Th></Th>
                   </Tr>
                 </Thead>
                 <Tbody className="customer_body" textTransform={"capitalize"}>
                   {customerListing.map((val, index) => {
                     return (
-                      <TablesTableRow
-                        cusid={val.id}
-                        amount={dataamount(val.amount)}
+                      <UsersTable
+                        userid={val.id}
+                        name={val.name}
                         key={index}
-                        status={toStatus(val)}
+                        email={val.email}
                         // email={val.email}
-                        desc={val.description}
-                        customer={
-                          val.metadata.customer_email
-                            ? val.metadata.customer_email
-                            : val.receipt_email
+                        status={
+                          val.email_verified_at == null
+                            ? "Not Verfied"
+                            : datadate(val.email_verified_at)
                         }
-                        // status={
-                        //   val.invoice_settings.default_payment_method || "VISA"
-                        // }
-                        date={datadate(val.created)}
-                        viewprofile={val.id}
+                        role={val.role}
+                        date={datadate(val.created_at)}
+                        // viewprofile={val.id}
                       />
                     );
                   })}
@@ -875,7 +596,7 @@ function Tables() {
               alignItems="center"
               direction={"column"}
             >
-              <Heading>Listing Payments...</Heading>
+              <Heading>Listing Users...</Heading>
               <Image src={LoadingGif} w={100} />
             </Flex>
           </Box>
@@ -950,4 +671,4 @@ function Tables() {
   );
 }
 
-export default Tables;
+export default Users;

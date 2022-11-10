@@ -37,18 +37,16 @@ import {
   CloseButton,
   Icon,
   useColorModeValue,
-  useToast
+  useToast,
 } from "@chakra-ui/react";
-import {
-    FaCube,
-  } from "react-icons/fa";
+import { FaCube } from "react-icons/fa";
 import {
   TriangleDownIcon,
   InfoIcon,
   EditIcon,
   CheckIcon,
   CloseIcon,
-  UnlockIcon
+  UnlockIcon,
 } from "@chakra-ui/icons";
 import ReactSelect from "react-select";
 import Currency from "../../api/CountriesCurrency";
@@ -58,14 +56,14 @@ import {
   getAllPayments,
   getAllRefunds,
   refundCharge,
-  updatePassword
+  updatePassword,
 } from "api/ApiListing";
 import { isReturnStatement } from "typescript";
 import {
   AlertUnauthorized,
   AlertDataNotFound,
   AlertRefundCreated,
-  AlertPasswordUpdated
+  AlertPasswordUpdated,
 } from "theme/components/AlertDialog";
 import { useHistory } from "react-router-dom";
 const PasswordForm = (props) => {
@@ -80,7 +78,7 @@ const PasswordForm = (props) => {
     { value: "Josh 2", label: "Josh 2" },
     { value: "Josh 3", label: "Josh 3" },
   ];
-  const toast = useToast()
+  const toast = useToast();
   const textColor = useColorModeValue("gray.700", "white");
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [currency, setCurrency] = useState("USD$");
@@ -90,11 +88,21 @@ const PasswordForm = (props) => {
   const [isSuccess, setisSuccess] = useState(false);
   const [paymentbtnLoader, setpaymentbtnLoader] = useState(false);
   const [confirmRefund, setconfirmRefund] = useState(false);
-  const [CreatepaymentBtnText, setCreatepaymentBtnText] = useState("Update Password");
-  const [show, setShow] = useState(false)
-  const [newshow, setnewShow] = useState(false)
-  const [confirmshow, setconfirmShow] = useState(false)
-  const { bg, payment, customer, setisReload, setReloadState, isSuccessHandler, isUnauthorizedHandler } = props;
+  const [CreatepaymentBtnText, setCreatepaymentBtnText] = useState(
+    "Update Password"
+  );
+  const [show, setShow] = useState(false);
+  const [newshow, setnewShow] = useState(false);
+  const [confirmshow, setconfirmShow] = useState(false);
+  const {
+    bg,
+    payment,
+    customer,
+    setisReload,
+    setReloadState,
+    isSuccessHandler,
+    isUnauthorizedHandler,
+  } = props;
   const initialRef = React.useRef(null);
   const finalRef = React.useRef(null);
 
@@ -133,9 +141,9 @@ const PasswordForm = (props) => {
     Object.entries(vals).forEach(([key, value]) => {
       if (value === null || value === "" || value < 1) {
         checked = false;
-        setpaymentbtnLoader(false)
+        setpaymentbtnLoader(false);
         setCreatepaymentBtnText("Update Password");
-        errvals[key] = "Please provide " + key.replaceAll('_'," ");
+        errvals[key] = "Please provide " + key.replaceAll("_", " ");
         seterrVals({ ...errvals });
       } else {
         payload[key] = value;
@@ -164,15 +172,15 @@ const PasswordForm = (props) => {
         //   })
         setisSuccess(true);
         onClose;
-        setpaymentbtnLoader(false)
+        setpaymentbtnLoader(false);
         setCreatepaymentBtnText("Password Updated!");
       })
       .catch((err) => {
         console.log(err);
-        setpaymentbtnLoader(false)
+        setpaymentbtnLoader(false);
         setCreatepaymentBtnText("Update Password");
         if (err.response.status == 400) {
-            console.log(err.response)
+          console.log(err.response);
           if (err.response.data.success == false) {
             if (err.response.data.error.password) {
               errvals["password"] = err.response.data.error.password;
@@ -183,16 +191,16 @@ const PasswordForm = (props) => {
               seterrVals({ ...errvals });
             }
             if (err.response.data.error.confirm_password) {
-                errvals["confirm_password"] = err.response.data.error.confirm_password;
-                seterrVals({ ...errvals });
-              }
+              errvals["confirm_password"] =
+                err.response.data.error.confirm_password;
+              seterrVals({ ...errvals });
+            }
           } else {
             seterrorData({
               message: err.response.data.error.message,
               status: "error",
               title: "Password Update Unsuccessfull!",
             });
-
           }
         }
         if (err.response.status == 501) {
@@ -204,8 +212,8 @@ const PasswordForm = (props) => {
         }
 
         if (err.response.status == 401) {
-            isUnauthorizedHandler(true);
-            setisUnauthorized(true);
+          isUnauthorizedHandler(true);
+          setisUnauthorized(true);
         }
       });
   };
@@ -214,7 +222,6 @@ const PasswordForm = (props) => {
     // console.log("Data comming from CreditCard", data);
     setVals({ ...vals, data });
   };
-
 
   const AlertBox = () => {
     const { isOpen: isVisible, onClose, onOpen } = useDisclosure({
@@ -233,7 +240,10 @@ const PasswordForm = (props) => {
           position="relative"
           right={-1}
           top={-1}
-          onClick={() => {setCreatepaymentBtnText("Update Password"); seterrorData(null);}}
+          onClick={() => {
+            setCreatepaymentBtnText("Update Password");
+            seterrorData(null);
+          }}
         />
       </Alert>
     ) : (
@@ -241,36 +251,29 @@ const PasswordForm = (props) => {
     );
   };
 
-//   const SuccessToast = () => {
-//     const toast = useToast()
-//     return isSuccess? (
-    
-       
-//           toast({
-//             title: 'Sucess',
-//             description: "Your password has been updated",
-//             status: 'success',
-//             duration: 9000,
-//             isClosable: true,
-//           })
-        
-      
-        
-      
-//     ):null
-//   }
-    //<AlertPasswordUpdated setisSuccess={setisSuccess}/>
-  const handleClick = () => setShow(!show)
-  const handlenewClick = () => setnewShow(!newshow)
-  const handleconfirmClick = () => setconfirmShow(!confirmshow)
+  //   const SuccessToast = () => {
+  //     const toast = useToast()
+  //     return isSuccess? (
 
+  //           toast({
+  //             title: 'Sucess',
+  //             description: "Your password has been updated",
+  //             status: 'success',
+  //             duration: 9000,
+  //             isClosable: true,
+  //           })
+
+  //     ):null
+  //   }
+  //<AlertPasswordUpdated setisSuccess={setisSuccess}/>
+  const handleClick = () => setShow(!show);
+  const handlenewClick = () => setnewShow(!newshow);
+  const handleconfirmClick = () => setconfirmShow(!confirmshow);
 
   return (
     <>
-            {/* {isUnauthorized ? <AlertUnauthorized /> : null}
+      {/* {isUnauthorized ? <AlertUnauthorized /> : null}
             {isSuccess? <AlertPasswordUpdated setisSuccess={setisSuccess}/>: null} */}
-      
-      
 
       {/* <Button
         bg={props.bg}
@@ -280,30 +283,29 @@ const PasswordForm = (props) => {
         width={{ sm: "200px" }}
         borderRadius={{ sm: 10 }}
         borderColor={"red"}
-        _hover={{bg: "transparent", color: "teal.300"}}
+        _hover={{bg: "transparent", color: "primaryColor"}}
       >
         Create Refund
       </Button> */}
-    <Button p="0px" bg="transparent" _hover={{ bg: "none" }} onClick={onOpen}>
+      <Button p="0px" bg="transparent" _hover={{ bg: "none" }} onClick={onOpen}>
         <Flex
-            align="center"
-            w={{ sm: "100%", lg: "185px" }}
-            bg="hsla(0,0%,100%,.3)"
-            borderRadius="15px"
-            justifyContent="center"
-            py="10px"
-            boxShadow="inset 0 0 1px 1px hsl(0deg 0% 100% / 90%), 0 20px 27px 0 rgb(0 0 0 / 5%)"
-            border="1px solid gray.200"
-            cursor="pointer"
+          align="center"
+          w={{ sm: "100%", lg: "185px" }}
+          bg="hsla(0,0%,100%,.3)"
+          borderRadius="15px"
+          justifyContent="center"
+          py="10px"
+          boxShadow="inset 0 0 1px 1px hsl(0deg 0% 100% / 90%), 0 20px 27px 0 rgb(0 0 0 / 5%)"
+          border="1px solid gray.200"
+          cursor="pointer"
         >
-            <UnlockIcon me="6px"/>
-            {/* <Icon as={FaCube} me="6px" /> */}
-            <Text fontSize="xs" color={textColor} fontWeight="bold">
+          <UnlockIcon me="6px" />
+          {/* <Icon as={FaCube} me="6px" /> */}
+          <Text fontSize="xs" color={textColor} fontWeight="bold">
             CHANGE PASSWORD
-            </Text>
+          </Text>
         </Flex>
-        </Button>
-
+      </Button>
 
       <Modal
         initialFocusRef={initialRef}
@@ -320,15 +322,17 @@ const PasswordForm = (props) => {
             <form>
               <FormControl mt={4} isRequired>
                 <Box>
-                <Flex alignItems={"center"}>
-                  <FormLabel m={0} pe={4}>Current Password</FormLabel>
-                  <Tooltip
-                    hasArrow
-                    label="Enter your current password."
-                    color="white"
-                  >
-                    <InfoIcon />
-                  </Tooltip>
+                  <Flex alignItems={"center"}>
+                    <FormLabel m={0} pe={4}>
+                      Current Password
+                    </FormLabel>
+                    <Tooltip
+                      hasArrow
+                      label="Enter your current password."
+                      color="white"
+                    >
+                      <InfoIcon />
+                    </Tooltip>
                   </Flex>
                   <Flex gap={3}>
                     {/* <Input
@@ -343,37 +347,38 @@ const PasswordForm = (props) => {
                       value={vals.password}
                     /> */}
                     {/* {<PasswordInput name={"password"} label="Enter your current password" />} */}
-                    <InputGroup size='md'>
-        <Input
-          pr='4.5rem'
-          type={show ? 'text' : 'password'}
-          placeholder="Enter your current password"
-          name="password"
-          onChange={handleValues}
-          value={vals.password}
-        />
-        <InputRightElement width='4.5rem'>
-            
-          <Button h='1.75rem' size='sm' onClick={handleClick}>
-            {show ? 'Hide' : 'Show'}
-          </Button>
-        </InputRightElement>
-      </InputGroup>
+                    <InputGroup size="md">
+                      <Input
+                        pr="4.5rem"
+                        type={show ? "text" : "password"}
+                        placeholder="Enter your current password"
+                        name="password"
+                        onChange={handleValues}
+                        value={vals.password}
+                      />
+                      <InputRightElement width="4.5rem">
+                        <Button h="1.75rem" size="sm" onClick={handleClick}>
+                          {show ? "Hide" : "Show"}
+                        </Button>
+                      </InputRightElement>
+                    </InputGroup>
                   </Flex>
                   <Text color={"red.500"}>{errvals.password}</Text>
                 </Box>
               </FormControl>
               <FormControl mt={4} isRequired>
                 <Box>
-                <Flex alignItems={"center"}>
-                  <FormLabel m={0} pe={4}>New Password</FormLabel>
-                  <Tooltip
-                    hasArrow
-                    label="Enter your new password."
-                    color="white"
-                  >
-                    <InfoIcon />
-                  </Tooltip>
+                  <Flex alignItems={"center"}>
+                    <FormLabel m={0} pe={4}>
+                      New Password
+                    </FormLabel>
+                    <Tooltip
+                      hasArrow
+                      label="Enter your new password."
+                      color="white"
+                    >
+                      <InfoIcon />
+                    </Tooltip>
                   </Flex>
                   <Flex gap={3}>
                     {/* <Input
@@ -388,37 +393,38 @@ const PasswordForm = (props) => {
                       value={vals.password}
                     /> */}
                     {/* {<NewPasswordInput name={"new_password"} label="Enter your new password" />} */}
-                    <InputGroup size='md'>
-        <Input
-          pr='4.5rem'
-          type={newshow ? 'text' : 'password'}
-          placeholder="Enter your new password"
-          name="new_password"
-          onChange={handleValues}
-          value={vals.new_password}
-        />
-        <InputRightElement width='4.5rem'>
-          <Button h='1.75rem' size='sm' onClick={handlenewClick}>
-            {newshow ? 'Hide' : 'Show'}
-          </Button>
-        </InputRightElement>
-      </InputGroup>
-    
+                    <InputGroup size="md">
+                      <Input
+                        pr="4.5rem"
+                        type={newshow ? "text" : "password"}
+                        placeholder="Enter your new password"
+                        name="new_password"
+                        onChange={handleValues}
+                        value={vals.new_password}
+                      />
+                      <InputRightElement width="4.5rem">
+                        <Button h="1.75rem" size="sm" onClick={handlenewClick}>
+                          {newshow ? "Hide" : "Show"}
+                        </Button>
+                      </InputRightElement>
+                    </InputGroup>
                   </Flex>
                   <Text color={"red.500"}>{errvals.new_password}</Text>
                 </Box>
               </FormControl>
               <FormControl mt={4} isRequired>
                 <Box>
-                <Flex alignItems={"center"}>
-                  <FormLabel m={0} pe={4}>Confirm Password</FormLabel>
-                  <Tooltip
-                    hasArrow
-                    label="Re=enter your new password."
-                    color="white"
-                  >
-                    <InfoIcon />
-                  </Tooltip>
+                  <Flex alignItems={"center"}>
+                    <FormLabel m={0} pe={4}>
+                      Confirm Password
+                    </FormLabel>
+                    <Tooltip
+                      hasArrow
+                      label="Re=enter your new password."
+                      color="white"
+                    >
+                      <InfoIcon />
+                    </Tooltip>
                   </Flex>
                   <Flex gap={3}>
                     {/* <Input
@@ -432,22 +438,28 @@ const PasswordForm = (props) => {
                       onChange={handleValues}
                       value={vals.password}
                     /> */}
-                    {/* {<ConfirmPasswordInput name={"confirm_password"} label="Confirm your password" />} */
-                          <InputGroup size='md'>
-                          <Input
-                            pr='4.5rem'
-                            type={confirmshow ? 'text' : 'password'}
-                            placeholder="Re-enter your new password"
-                            name="confirm_password"
-                            onChange={handleValues}
-                            value={vals.confirm_password}
-                          />
-                          <InputRightElement width='4.5rem'>
-                            <Button h='1.75rem' size='sm' onClick={handleconfirmClick}>
-                              {confirmshow ? 'Hide' : 'Show'}
-                            </Button>
-                          </InputRightElement>
-                        </InputGroup>}
+                    {
+                      /* {<ConfirmPasswordInput name={"confirm_password"} label="Confirm your password" />} */
+                      <InputGroup size="md">
+                        <Input
+                          pr="4.5rem"
+                          type={confirmshow ? "text" : "password"}
+                          placeholder="Re-enter your new password"
+                          name="confirm_password"
+                          onChange={handleValues}
+                          value={vals.confirm_password}
+                        />
+                        <InputRightElement width="4.5rem">
+                          <Button
+                            h="1.75rem"
+                            size="sm"
+                            onClick={handleconfirmClick}
+                          >
+                            {confirmshow ? "Hide" : "Show"}
+                          </Button>
+                        </InputRightElement>
+                      </InputGroup>
+                    }
                   </Flex>
                   <Text color={"red.500"}>{errvals.confirm_password}</Text>
                 </Box>
@@ -455,8 +467,21 @@ const PasswordForm = (props) => {
             </form>
           </ModalBody>
           <ModalFooter>
-            <Button _hover={{bg: "transparent", color: "teal.300"}} bg={props.bg} color="white" isLoading={paymentbtnLoader} loadingText='Updating Password!' colorScheme="blue" mr={3} onClick={() => {setpaymentbtnLoader(true); setCreatepaymentBtnText('Updating Password!'); getAllValues();}}>
-             {CreatepaymentBtnText}
+            <Button
+              _hover={{ bg: "transparent", color: "primaryColor" }}
+              bg={props.bg}
+              color="white"
+              isLoading={paymentbtnLoader}
+              loadingText="Updating Password!"
+              colorScheme="blue"
+              mr={3}
+              onClick={() => {
+                setpaymentbtnLoader(true);
+                setCreatepaymentBtnText("Updating Password!");
+                getAllValues();
+              }}
+            >
+              {CreatepaymentBtnText}
             </Button>
             <Button onClick={onClose}>Cancel</Button>
           </ModalFooter>
@@ -465,8 +490,5 @@ const PasswordForm = (props) => {
     </>
   );
 };
-
-
-
 
 export default PasswordForm;

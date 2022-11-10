@@ -12,7 +12,7 @@ export function SidebarHelp(props) {
       borderRadius="15px"
       flexDirection="column"
       // bgImage={SidebarHelpImage}
-      bg={"teal.300"}
+      bg={"primaryColor"}
       justifyContent="flex-start"
       alignItems="start"
       boxSize="border-box"
@@ -21,19 +21,15 @@ export function SidebarHelp(props) {
       w="100%"
     >
       <IconBox width="35px" h="35px" bg="white" mb="auto">
-        <QuestionIcon color="teal.300" h="18px" w="18px" />
+        <QuestionIcon color="primaryColor" h="18px" w="18px" />
       </IconBox>
       <Text fontSize="sm" color="white" fontWeight="bold">
         Need help?
       </Text>
       <Text fontSize="xs" color="white" mb="10px">
-      Access Product Page
+        Access Product Page
       </Text>
-      <Link
-        target="_blank"
-        w="100%"
-        href="https://nolimitsocial99.com/"
-      >
+      <Link target="_blank" w="100%" href="https://nolimitsocial99.com/">
         <Button
           fontSize="10px"
           fontWeight="bold"
@@ -50,7 +46,7 @@ export function SidebarHelp(props) {
           }}
           color="black"
         >
-         Visit NLS
+          Visit NLS
         </Button>
       </Link>
     </Flex>

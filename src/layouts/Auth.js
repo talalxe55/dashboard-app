@@ -96,7 +96,7 @@ export default function Pages(props) {
           <Box ref={wrapper} w="100%">
             <Switch>
               {getRoutes(routes)}
-              <Redirect from="/auth" to="/auth/sigin" />
+              <Redirect from="/auth" to="/auth/signin" />
             </Switch>
           </Box>
         </Box>

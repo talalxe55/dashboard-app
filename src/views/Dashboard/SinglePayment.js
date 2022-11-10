@@ -42,7 +42,7 @@ import {
   ModalCloseButton,
   FormControl,
   FormLabel,
-  Spinner
+  Spinner,
 } from "@chakra-ui/react";
 import SweetAlert from "react-bootstrap-sweetalert";
 // Assets
@@ -63,7 +63,7 @@ import { RiMastercardFill } from "react-icons/ri";
 import {
   AlertUnauthorized,
   AlertDataNotFound,
-  AlertChargeSucceeded
+  AlertChargeSucceeded,
 } from "theme/components/AlertDialog";
 import {
   billingData,
@@ -321,12 +321,9 @@ function Detail() {
         var data = val.charges.data[val.charges.data.length - 1];
         if (data.refunded == true && data.refunds.data.length > 0) {
           str = "refunded";
-        }
-        else if (data.amount_refunded > 0){
-          str = "partial_refunded"
-        }
-        
-        else {
+        } else if (data.amount_refunded > 0) {
+          str = "partial_refunded";
+        } else {
           str = val.status;
         }
       } else {
@@ -359,20 +356,18 @@ function Detail() {
           {status}
         </Text>
       );
-    } 
-    else if (status==="Refunded" || status ==="Partial Refunded") {
+    } else if (status === "Refunded" || status === "Partial Refunded") {
       return (
         <Text
           fontSize="xl"
           fontWeight="bold"
           textTransform="capitalize"
-          color={"teal.300"}
+          color={"primaryColor"}
         >
           {status}
         </Text>
       );
-    }
-    else {
+    } else {
       return (
         <Text
           fontSize="xl"
@@ -384,7 +379,6 @@ function Detail() {
         </Text>
       );
     }
-
   }
   useEffect(() => {
     getCustomerID();
@@ -398,18 +392,17 @@ function Detail() {
     // });
     // console.log(getCustomerID(id));
     // setSingleCustomer(getCustomerID(id));
-    if(isReload){
-    getCustomerID();
-    }
-  }, [isReload]);
- const setReloadState = (value) =>{
-    if(value==true){
+    if (isReload) {
       getCustomerID();
     }
-    
-  } 
+  }, [isReload]);
+  const setReloadState = (value) => {
+    if (value == true) {
+      getCustomerID();
+    }
+  };
   // Chakra color mode
-  const iconTeal = useColorModeValue("teal.300", "teal.300");
+  const iconTeal = useColorModeValue("primaryColor", "primaryColor");
   const textColor = useColorModeValue("gray.700", "white");
   const borderColor = useColorModeValue("#dee2e6", "gray.500");
   const bgButton = useColorModeValue(
@@ -538,68 +531,73 @@ function Detail() {
   }
 
   return (
-    
     <Flex direction="column" pt={{ base: "120px", md: "75px" }}>
       <AlertBox />
-      {chargeSuccess ? <AlertChargeSucceeded setisSuccess={setchargeSuccess}/>:null}
-      {isUnauthorized ? <AlertUnauthorized />:null}
-      {datanotFound ? <AlertDataNotFound setisSuccess={setdatanotFound}/>:null}
+      {chargeSuccess ? (
+        <AlertChargeSucceeded setisSuccess={setchargeSuccess} />
+      ) : null}
+      {isUnauthorized ? <AlertUnauthorized /> : null}
+      {datanotFound ? (
+        <AlertDataNotFound setisSuccess={setdatanotFound} />
+      ) : null}
       <Flex direction={"column"} width={"100%"}>
         <Box>
-        <Flex
-                justify="space-between"
-                align="center"
-                minHeight="60px"
-                w="100%"
-              >
-          {singlePayment ? (
-            <Text fontSize="md" fontWeight="bold" textTransform="capitalize">
-              {dataamount(singlePayment.amount) +
-                " " +
-                singlePayment.currency.toUpperCase() +
-                " " +
-                datadate(singlePayment.created)}
-              {setStatus()}{" "}
-              {singlePayment.status == "requires_confirmation" ? (
-                <Button
-                  colorScheme="teal"
-                  borderColor="teal.300"
-                  color="teal.300"
-                  variant="outline"
-                  fontSize="xs"
-                  p="8px 32px"
-                  onClick={ () => {setpaymentbtnLoader(true); attemptCharge();}}
-                  isLoading={paymentbtnLoader}
-                  loadingText='Attempting Charge!'
-                >
-                  Charge Payment
-                </Button>
-              ) : (
-                ""
-              )}
-              {singlePayment && singleCharge.data.length > 0 ? (
-                singlePayment.status == "succeeded" &&
-                singleCharge.data[0].refunded !== true ? (
-                  <RefundForm
-                  bg={"teal.300"}
-                  payment={singlePayment}  
-                  setisReload={setisReload}
-                  setReloadState={setReloadState} />
+          <Flex
+            justify="space-between"
+            align="center"
+            minHeight="60px"
+            w="100%"
+          >
+            {singlePayment ? (
+              <Text fontSize="md" fontWeight="bold" textTransform="capitalize">
+                {dataamount(singlePayment.amount) +
+                  " " +
+                  singlePayment.currency.toUpperCase() +
+                  " " +
+                  datadate(singlePayment.created)}
+                {setStatus()}{" "}
+                {singlePayment.status == "requires_confirmation" ? (
+                  <Button
+                    colorScheme="teal"
+                    borderColor="primaryColor"
+                    color="primaryColor"
+                    variant="outline"
+                    fontSize="xs"
+                    p="8px 32px"
+                    onClick={() => {
+                      setpaymentbtnLoader(true);
+                      attemptCharge();
+                    }}
+                    isLoading={paymentbtnLoader}
+                    loadingText="Attempting Charge!"
+                  >
+                    Charge Payment
+                  </Button>
                 ) : (
                   ""
-                )
-              ) : (
-                ""
-              )}
-            </Text>
-          ) : (
-            <SkeletonText mt="4" noOfLines={3} spacing="4" />
-          )}
+                )}
+                {singlePayment && singleCharge.data.length > 0 ? (
+                  singlePayment.status == "succeeded" &&
+                  singleCharge.data[0].refunded !== true ? (
+                    <RefundForm
+                      bg={"primaryColor"}
+                      payment={singlePayment}
+                      setisReload={setisReload}
+                      setReloadState={setReloadState}
+                    />
+                  ) : (
+                    ""
+                  )
+                ) : (
+                  ""
+                )}
+              </Text>
+            ) : (
+              <SkeletonText mt="4" noOfLines={3} spacing="4" />
+            )}
           </Flex>
         </Box>
       </Flex>
-
-      
 
       <Grid templateColumns={{ sm: "1fr", lg: "2fr 1.2fr" }} templateRows="1fr">
         <Box>
@@ -700,7 +698,7 @@ function Detail() {
                         {SingleCustomerEmail}
                       </NavLink>
                     ) : (
-                      <Spinner color='red.500' />
+                      <Spinner color="red.500" />
                     )}
                   </Text>
                 </Flex>
@@ -970,8 +968,8 @@ function Detail() {
               </Text>
               {/* <Button
                 colorScheme="teal"
-                borderColor="teal.300"
-                color="teal.300"
+                borderColor="primaryColor"
+                color="primaryColor"
                 variant="outline"
                 fontSize="xs"
                 p="8px 32px"

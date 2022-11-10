@@ -25,8 +25,8 @@ function SignIn() {
   // Chakra color mode
   const titleColor = useColorModeValue("red.450", "red.500");
   const textColor = useColorModeValue("gray.400", "white");
-  const primaryColor = useColorModeValue("primaryColor.700");
-  const primaryColorHover = useColorModeValue("primaryColorHover.700");
+  const primaryColor = useColorModeValue("primaryColor");
+  const primaryColorHover = useColorModeValue("primaryColorHover");
   const history = useHistory();
   const { setUser } = useAuth();
   const { user } = useAuth();
@@ -109,17 +109,17 @@ function SignIn() {
               <Button
                 fontSize="15px"
                 type="submit"
-                bg="teal.300"
+                bg="primaryColor"
                 w="100%"
                 h="45"
                 mb="20px"
                 color="white"
                 mt="20px"
                 _hover={{
-                  bg: "teal.200",
+                  bg: "primaryColorHover",
                 }}
                 _active={{
-                  bg: "teal.400",
+                  bg: "primaryColorHover",
                 }}
                 onClick={login}
               >
@@ -206,32 +206,39 @@ function SignIn() {
                 <Button
                   fontSize="18px"
                   type="submit"
-                  bg={primaryColor}
+                  bg="primaryColor"
                   w="100%"
                   h="45"
                   mb="20px"
                   color="white"
                   mt="20px"
                   _hover={{
-                    bg: { primaryColorHover },
+                    bg: "primaryColorHover",
                   }}
                   _active={{
-                    bg: "teal.400",
+                    bg: "black",
                   }}
                   onClick={login}
                 >
                   {buttonText}
                 </Button>
-                <NavLink color="teal.300" _hover={{color: "teal.300"}} to={"/auth/forgot-password"}>               <Text
-                mb="36px"
-                ms="4px"
-                color={textColor}
-                fontWeight="bold"
-                fontSize="14px"
-                _hover={{color: "teal.300"}}
-              >
-                Forgot Password?
-              </Text></NavLink>
+                <NavLink
+                  color="primaryColor"
+                  _hover={{ color: "primaryColor" }}
+                  to={"/auth/forgot-password"}
+                >
+                  {" "}
+                  <Text
+                    mb="36px"
+                    ms="4px"
+                    color={textColor}
+                    fontWeight="bold"
+                    fontSize="14px"
+                    _hover={{ color: "primaryColor" }}
+                  >
+                    Forgot Password?
+                  </Text>
+                </NavLink>
               </FormControl>
               <Flex
                 flexDirection="column"

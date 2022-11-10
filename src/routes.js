@@ -15,7 +15,7 @@ import Users from "views/Dashboard/Users.js";
 import ResetPassword from "views/Pages/ResetPassword";
 import VerifyEmail from "views/Pages/VerifyEmail";
 import BulkPayments from "views/Dashboard/BulkPayments";
-import { BsStack } from 'react-icons/bs';
+import { BsStack } from "react-icons/bs";
 import {
   HomeIcon,
   StatsIcon,
@@ -38,7 +38,7 @@ var dashRoutes = [
     component: Dashboard,
     layout: "/admin",
     key: "dashboard",
-    role: ['user','admin','superadmin']
+    role: ["user", "admin", "superadmin"],
   },
   {
     path: "/customers",
@@ -48,7 +48,7 @@ var dashRoutes = [
     component: Tables,
     layout: "/admin",
     key: "customers",
-    role: ['admin','superadmin']
+    role: ["admin", "superadmin"],
   },
   {
     path: "/billing/:id",
@@ -59,7 +59,7 @@ var dashRoutes = [
     layout: "/admin",
     hide: true,
     key: "customers-detail",
-    role: ['admin','superadmin']
+    role: ["admin", "superadmin"],
   },
   {
     path: "/listing/",
@@ -69,7 +69,7 @@ var dashRoutes = [
     layout: "/admin",
     hide: true,
     key: "customers-listing",
-    role: ['admin','superadmin']
+    role: ["admin", "superadmin"],
   },
 
   {
@@ -79,7 +79,7 @@ var dashRoutes = [
     component: Payments,
     layout: "/admin",
     key: "payments",
-    role: ['admin','superadmin']
+    role: ["admin", "superadmin"],
   },
 
   {
@@ -90,7 +90,7 @@ var dashRoutes = [
     layout: "/admin",
     hide: true,
     key: "payment-detail",
-    role: ['admin','superadmin']
+    role: ["admin", "superadmin"],
   },
 
   {
@@ -102,7 +102,7 @@ var dashRoutes = [
     layout: "/admin",
     hide: false,
     key: "bulk-payment-detail",
-    role: ['admin','superadmin']
+    role: ["admin", "superadmin"],
   },
 
   {
@@ -114,12 +114,23 @@ var dashRoutes = [
     component: Users,
     layout: "/admin",
     hide: false,
-    role: "superadmin",
     key: "users",
-    role: ['superadmin']
+    role: ["superadmin", "admin"],
   },
 
-  
+  {
+    path: "/register",
+    name: "Register New User",
+    rtlName: "لوحة القيادة",
+    icon: <RocketIcon color="inherit" />,
+    secondaryNavbar: true,
+    component: SignUp,
+    layout: "/admin",
+    hide: false,
+    key: "users",
+    role: ["superadmin", "admin"],
+  },
+
   // {
   //   path: "/rtl-support-page",
   //   name: "RTL",
@@ -143,9 +154,9 @@ var dashRoutes = [
         component: Profile,
         layout: "/admin",
         key: "user-profile",
-        role: ['user','admin','superadmin']
+        role: ["user", "admin", "superadmin"],
       },
-      
+
       // {
       //   path: "/setting",
       //   name: "Settings",
@@ -165,7 +176,7 @@ var dashRoutes = [
         component: SignIn,
         layout: "/auth",
         hide: true,
-        key: "user-siginin"
+        key: "user-siginin",
       },
 
       {
@@ -176,10 +187,9 @@ var dashRoutes = [
         component: ForgotPassword,
         layout: "/auth",
         hide: true,
-        key: "forgot-password"
+        key: "forgot-password",
       },
 
-      
       {
         path: "/verify-email",
         name: "Verify Email",
@@ -188,7 +198,7 @@ var dashRoutes = [
         component: VerifyEmail,
         layout: "/auth",
         hide: true,
-        key: "verify-email"
+        key: "verify-email",
       },
 
       {
@@ -199,18 +209,18 @@ var dashRoutes = [
         component: ResetPassword,
         layout: "/auth",
         hide: true,
-        key: "password-reset"
+        key: "password-reset",
       },
-      {
-        path: "/signup",
-        name: "Sign Up",
-        rtlName: "لوحة القيادة",
-        icon: <RocketIcon color="inherit" />,
-        secondaryNavbar: true,
-        component: SignUp,
-        layout: "/auth",
-        hide: true,
-      },
+      // {
+      //   path: "/signup",
+      //   name: "Sign Up",
+      //   rtlName: "لوحة القيادة",
+      //   icon: <RocketIcon color="inherit" />,
+      //   secondaryNavbar: true,
+      //   component: SignUp,
+      //   layout: "/auth",
+      //   hide: true,
+      // },
       {
         path: "/signout",
         name: "Logout",
@@ -218,7 +228,7 @@ var dashRoutes = [
         icon: <RocketIcon color="inherit" />,
         component: SignOut,
         layout: "/auth",
-        key: "user-signout"
+        key: "user-signout",
       },
     ],
   },

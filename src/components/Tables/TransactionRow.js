@@ -12,7 +12,7 @@ import {
 
 function TransactionRow(props) {
   const textColor = useColorModeValue("gray.700", "white");
-  const iconTeal = useColorModeValue("teal.300", "teal.300");
+  const iconTeal = useColorModeValue("primaryColor", "primaryColor");
   const { name, date, logo, price, refund } = props;
   const datadate = (created) => {
     let epochDate = created;
@@ -23,125 +23,136 @@ function TransactionRow(props) {
   };
   const dataamount = (amount) => {
     let cents = amount;
-    var formatedDollars = (cents / 100).toLocaleString("en-US", {style:"currency", currency:"USD"});
+    var formatedDollars = (cents / 100).toLocaleString("en-US", {
+      style: "currency",
+      currency: "USD",
+    });
     //formatedDateTime = formatedDateTime.toLocaleString();
     return formatedDollars;
   };
   return (
     <>
-    <Flex my="1rem" justifyContent="space-between">
-      <Flex alignItems="center">
+      <Flex my="1rem" justifyContent="space-between">
+        <Flex alignItems="center">
+          <Box
+            me="12px"
+            borderRadius="50%"
+            color={
+              price[0] === "+"
+                ? "green.400"
+                : price[0] === "-"
+                ? "red.400"
+                : "gray.400"
+            }
+            border="1px solid"
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            w="35px"
+            h="35px"
+          >
+            <Icon as={FaArrowUp} />
+          </Box>
+          <Flex direction="column">
+            <Text
+              fontSize={{ sm: "md", md: "lg", lg: "md" }}
+              color={"green.300"}
+              fontWeight="bold"
+            >
+              {name}
+            </Text>
+            <Text
+              fontSize={{ sm: "xs", md: "sm", lg: "xs" }}
+              color="gray.400"
+              fontWeight="semibold"
+            >
+              {date}
+            </Text>
+          </Flex>
+        </Flex>
         <Box
-          me="12px"
-          borderRadius="50%"
           color={
             price[0] === "+"
               ? "green.400"
               : price[0] === "-"
               ? "red.400"
-              : "gray.400"
+              : { textColor }
           }
-          border="1px solid"
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-          w="35px"
-          h="35px"
         >
-          <Icon as={FaArrowUp} />
+          <Text fontSize={{ sm: "md", md: "lg", lg: "md" }} fontWeight="bold">
+            {price}
+          </Text>
         </Box>
-        <Flex direction="column">
-          <Text
-            fontSize={{ sm: "md", md: "lg", lg: "md" }}
-            color={"green.300"}
-            fontWeight="bold"
-          >
-            {name}
-          </Text>
-          <Text
-            fontSize={{ sm: "xs", md: "sm", lg: "xs" }}
-            color="gray.400"
-            fontWeight="semibold"
-          >
-            {date}
-          </Text>
-        </Flex>
       </Flex>
-      <Box
-        color={
-          price[0] === "+"
-            ? "green.400"
-            : price[0] === "-"
-            ? "red.400"
-            : { textColor }
-        }
-      >
-        <Text fontSize={{ sm: "md", md: "lg", lg: "md" }} fontWeight="bold">
-          {price}
-        </Text>
-      </Box>
-    </Flex>
 
-    {refund.data.length>0?refund.data.map((row, index) => {
-                return (
-                  <Flex my="1rem" justifyContent="space-between" style={{transform: "scale(0.9)"}}>
-                  <Flex alignItems="center">
-                    <Box
-                      me="12px"
-                      borderRadius="50%"
-                      color={
-                        price[0] === "+"
-                          ? "green.400"
-                          : price[0] === "-"
-                          ? "red.400"
-                          : "gray.400"
-                      }
-                      border="1px solid"
-                      display="flex"
-                      alignItems="center"
-                      justifyContent="center"
-                      w="35px"
-                      h="35px"
-                    >
-                      <Icon as={FaArrowDown} />
-                    </Box>
-                    <Flex direction="column">
-                      <Text
-                        fontSize={{ sm: "md", md: "sm", lg: "sm" }}
-                        color={iconTeal}
-                        fontWeight="bold"
-                        textTransform={"capitalize"}
-                      >
-                        Refund {row.status}
-                      </Text>
-                      <Text
-                        fontSize={{ sm: "xs", md: "xs", lg: "xs" }}
-                        color="gray.400"
-                        fontWeight="semibold"
-                      >
-                        {datadate(row.created)}
-                      </Text>
-                    </Flex>
-                  </Flex>
+      {refund.data.length > 0
+        ? refund.data.map((row, index) => {
+            return (
+              <Flex
+                my="1rem"
+                justifyContent="space-between"
+                style={{ transform: "scale(0.9)" }}
+              >
+                <Flex alignItems="center">
                   <Box
+                    me="12px"
+                    borderRadius="50%"
                     color={
                       price[0] === "+"
                         ? "green.400"
                         : price[0] === "-"
                         ? "red.400"
-                        : { textColor }
+                        : "gray.400"
                     }
+                    border="1px solid"
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                    w="35px"
+                    h="35px"
                   >
-                    <Text fontSize={{ sm: "md", md: "lg", lg: "md" }} fontWeight="bold">
-                      {dataamount(row.amount)}
-                    </Text>
+                    <Icon as={FaArrowDown} />
                   </Box>
+                  <Flex direction="column">
+                    <Text
+                      fontSize={{ sm: "md", md: "sm", lg: "sm" }}
+                      color={iconTeal}
+                      fontWeight="bold"
+                      textTransform={"capitalize"}
+                    >
+                      Refund {row.status}
+                    </Text>
+                    <Text
+                      fontSize={{ sm: "xs", md: "xs", lg: "xs" }}
+                      color="gray.400"
+                      fontWeight="semibold"
+                    >
+                      {datadate(row.created)}
+                    </Text>
+                  </Flex>
                 </Flex>
-                );
-              }):""}
+                <Box
+                  color={
+                    price[0] === "+"
+                      ? "green.400"
+                      : price[0] === "-"
+                      ? "red.400"
+                      : { textColor }
+                  }
+                >
+                  <Text
+                    fontSize={{ sm: "md", md: "lg", lg: "md" }}
+                    fontWeight="bold"
+                  >
+                    {dataamount(row.amount)}
+                  </Text>
+                </Box>
+              </Flex>
+            );
+          })
+        : ""}
 
-    {/* Small one */}
-
+      {/* Small one */}
     </>
   );
 }

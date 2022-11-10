@@ -128,7 +128,7 @@ const PaymentCreateModal = () => {
               </FormControl>
             </ModalBody>
             <ModalFooter>
-              <Button bg={"teal.300"} color="white" _hover={"none"} mr={3}>
+              <Button bg={"primaryColor"} color="white" _hover={"none"} mr={3}>
                 Create Payment
               </Button>
               <Button onClick={onClose}>Close</Button>

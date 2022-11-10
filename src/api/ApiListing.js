@@ -289,6 +289,43 @@ const deleteJobPaymentID = async (jobID) => {
   return res;
 };
 
+const getUsers = async () => {
+  const res = await axios.get(`${API_SERVER}users/`, {
+    headers: {
+      Authorization: `${TOKEN_TYPE} ${TOKEN}`,
+      Accept: `${ACCEPT_TYPE}`,
+      "Content-Type": `${ACCEPT_TYPE}`,
+    },
+  });
+  return res;
+};
+
+const editUsersRole = async (userEmail, role) => {
+  // console.log(userEmail, role);
+  const jsonData = JSON.stringify({ email: userEmail, role });
+  const res = await axios.post(`${API_SERVER}users/edit-role`, jsonData, {
+    headers: {
+      Authorization: `${TOKEN_TYPE} ${TOKEN}`,
+      Accept: `${ACCEPT_TYPE}`,
+      "Content-Type": `${ACCEPT_TYPE}`,
+    },
+  });
+  return res;
+};
+
+const deleteUsers = async (email, id) => {
+  // console.log(email, id);
+  const payload = JSON.stringify({ email, id });
+  const res = await axios.post(`${API_SERVER}users/delete/`, payload, {
+    headers: {
+      Authorization: `${TOKEN_TYPE} ${TOKEN}`,
+      Accept: `${ACCEPT_TYPE}`,
+      "Content-Type": `${ACCEPT_TYPE}`,
+    },
+  });
+  return res;
+};
+
 export {
   getCustomersList,
   getAllPayments,
@@ -307,4 +344,7 @@ export {
   getBulkPayments,
   runJobPaymentID,
   deleteJobPaymentID,
+  getUsers,
+  editUsersRole,
+  deleteUsers,
 };

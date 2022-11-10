@@ -28,8 +28,8 @@ function ForgotPassword() {
   const toast = useToast();
   const titleColor = useColorModeValue("red.450", "red.500");
   const textColor = useColorModeValue("gray.400", "white");
-  const primaryColor = useColorModeValue("primaryColor.700");
-  const primaryColorHover = useColorModeValue("primaryColorHover.700");
+  const primaryColor = useColorModeValue("primaryColor");
+  const primaryColorHover = useColorModeValue("primaryColorHover");
   const history = useHistory();
   const { setUser } = useAuth();
   const { user } = useAuth();
@@ -50,45 +50,44 @@ function ForgotPassword() {
     }
 
     //setButtonText("Signing in");
-   
-    let payload ={};
-    payload['email'] = email;
-    const response = forgotPassword(payload)
-            response.then((res) => {
-            setisloading(false);
-            console.log(res);
-            console.log(res.data);
-            console.log(res.data.status);
-            if(res.data.status=="passwords.sent"){
-                setButtonText("Email sent!");
-                          toast({
-                title: 'Email Sent Successfully!',
-                description: res.data.message,
-                status: 'success',
-                duration: 9000,
-                isClosable: true,
-              })
-            }
-        }).catch((err) => {
-            setisloading(false);
-            setButtonText("Resend Email!");
-            if (err.response) {
-              if(err.response.data.message.email){
-                return setError(err.response.data.message.email);
-              }
-              else{
-                return setError(err.response.data.message);
-              }
-              
-            }
-            else{
-                return setError("Email could not be sent. Please try again!");
-            }
-        })
+
+    let payload = {};
+    payload["email"] = email;
+    const response = forgotPassword(payload);
+    response
+      .then((res) => {
+        setisloading(false);
+        console.log(res);
+        console.log(res.data);
+        console.log(res.data.status);
+        if (res.data.status == "passwords.sent") {
+          setButtonText("Email sent!");
+          toast({
+            title: "Email Sent Successfully!",
+            description: res.data.message,
+            status: "success",
+            duration: 9000,
+            isClosable: true,
+          });
+        }
+      })
+      .catch((err) => {
+        setisloading(false);
+        setButtonText("Resend Email!");
+        if (err.response) {
+          if (err.response.data.message.email) {
+            return setError(err.response.data.message.email);
+          } else {
+            return setError(err.response.data.message);
+          }
+        } else {
+          return setError("Email could not be sent. Please try again!");
+        }
+      });
     //   try{
     //     let response = await AuthApi.ForgotPassword({
     //         "email": email,
-            
+
     //       });
     //     console.log(response);
     //     setisloading(false);
@@ -133,14 +132,14 @@ function ForgotPassword() {
     //     setisloading(false);
     //     setButtonText("Resend Email!");
     //     if (err.response) {
-          
+
     //       return setError(err.response.data.message);
     //     }
     //     else{
     //         return setError("Email could not be sent. Please try again!");
     //     }
     //   }
-      
+
     //   response.then( res => {
     //     setisloading(false);
     //     if(res.data.status=="passwords.sent"){
@@ -157,20 +156,19 @@ function ForgotPassword() {
     //     setisloading(false);
     //     setButtonText("Resend Email!");
     //     if (err.response) {
-          
+
     //       return setError(err.response.data.message);
     //     }
     //     else{
     //         return setError("Email could not be sent. Please try again!");
     //     }
-        
+
     //   })
     //   if (response.data && response.data.success === false) {
     //     setButtonText("Sign in");
     //     return setError(response.data.message);
     //   }
-      //return setProfile(response);
-    
+    //return setProfile(response);
   };
 
   const setProfile = async (response) => {
@@ -201,7 +199,7 @@ function ForgotPassword() {
           style={{ userSelect: "none" }}
           w={{ base: "100%", md: "50%", lg: "42%" }}
         >
-{/*           
+          {/*           
             <div>
               <Heading color={titleColor} fontSize="32px" mt="10px" mb="10px">
                 Welcome Back
@@ -212,7 +210,7 @@ function ForgotPassword() {
               <Button
                 fontSize="15px"
                 type="submit"
-                bg="teal.300"
+                bg="primaryColor"
                 w="100%"
                 h="45"
                 mb="20px"
@@ -229,45 +227,45 @@ function ForgotPassword() {
                 {`Let's go`}
               </Button>
             </div> */}
-          
-            <Flex
-              direction="column"
-              w="100%"
-              background="transparent"
-              p="48px"
-              mt={{ md: "150px", lg: "80px" }}
+
+          <Flex
+            direction="column"
+            w="100%"
+            background="transparent"
+            p="48px"
+            mt={{ md: "150px", lg: "80px" }}
+          >
+            <Heading color={titleColor} fontSize="32px" mt="10px" mb="10px">
+              Reset Password
+            </Heading>
+            <Text
+              mb="36px"
+              ms="4px"
+              color={textColor}
+              fontWeight="bold"
+              fontSize="14px"
             >
-              <Heading color={titleColor} fontSize="32px" mt="10px" mb="10px">
-                Reset Password
-              </Heading>
-              <Text
-                mb="36px"
-                ms="4px"
-                color={textColor}
-                fontWeight="bold"
-                fontSize="14px"
-              >
-                Enter your account email address.
-              </Text>
-              <FormControl>
-                <FormLabel ms="4px" fontSize="sm" fontWeight="normal">
-                  Email
-                </FormLabel>
-                <Input
-                  borderRadius="15px"
-                  mb="24px"
-                  fontSize="sm"
-                  type="text"
-                  placeholder="Your email adress"
-                  size="lg"
-                  id="email"
-                  defaultValue={email}
-                  onChange={(event) => {
-                    setEmail(event.target.value);
-                    setError(undefined);
-                  }}
-                />
-                {/* <FormLabel ms="4px" fontSize="sm" fontWeight="normal">
+              Enter your account email address.
+            </Text>
+            <FormControl>
+              <FormLabel ms="4px" fontSize="sm" fontWeight="normal">
+                Email
+              </FormLabel>
+              <Input
+                borderRadius="15px"
+                mb="24px"
+                fontSize="sm"
+                type="text"
+                placeholder="Your email adress"
+                size="lg"
+                id="email"
+                defaultValue={email}
+                onChange={(event) => {
+                  setEmail(event.target.value);
+                  setError(undefined);
+                }}
+              />
+              {/* <FormLabel ms="4px" fontSize="sm" fontWeight="normal">
                   Password
                 </FormLabel>
                 <Input
@@ -284,7 +282,7 @@ function ForgotPassword() {
                     setError(undefined);
                   }}
                 /> */}
-                {/* <FormControl display="flex" alignItems="center">
+              {/* <FormControl display="flex" alignItems="center">
                   <Switch id="remember-login" colorscheme="teal" me="10px" />
                   <FormLabel
                     htmlFor="remember-login"
@@ -295,58 +293,60 @@ function ForgotPassword() {
                     Remember me
                   </FormLabel>
                 </FormControl> */}
-                <h4
-                  style={{
-                    fontSize: ".9em",
-                    color: "red",
-                    textAlign: "center",
-                    fontWeight: 400,
-                    transition: ".2s all",
-                  }}
-                >
-                  {error}
-                </h4>
-                <Button
-                  fontSize="18px"
-                  isLoading={isloading}
-                  loadingText={"Sending Email.."}
-                  type="submit"
-                  bg={primaryColor}
-                  w="100%"
-                  h="45"
-                  mb="20px"
-                  color="white"
-                  mt="20px"
-                  _hover={{
-                    bg: { primaryColorHover },
-                  }}
-                  _active={{
-                    bg: "teal.400",
-                  }}
-                  onClick={() => {setisloading(true); login()}}
-                >
-                  {buttonText}
-                </Button>
-                {/* <NavLink color="teal.300" _hover={{color: "teal.300"}} to={"/auth/forgot-password"}>               <Text
+              <h4
+                style={{
+                  fontSize: ".9em",
+                  color: "red",
+                  textAlign: "center",
+                  fontWeight: 400,
+                  transition: ".2s all",
+                }}
+              >
+                {error}
+              </h4>
+              <Button
+                fontSize="18px"
+                isLoading={isloading}
+                loadingText={"Sending Email.."}
+                type="submit"
+                bg={primaryColor}
+                w="100%"
+                h="45"
+                mb="20px"
+                color="white"
+                mt="20px"
+                _hover={{
+                  bg: { primaryColorHover },
+                }}
+                _active={{
+                  bg: "teal.400",
+                }}
+                onClick={() => {
+                  setisloading(true);
+                  login();
+                }}
+              >
+                {buttonText}
+              </Button>
+              {/* <NavLink color="primaryColor" _hover={{color: "primaryColor"}} to={"/auth/forgot-password"}>               <Text
                 mb="36px"
                 ms="4px"
                 color={textColor}
                 fontWeight="bold"
                 fontSize="14px"
-                _hover={{color: "teal.300"}}
+                _hover={{color: "primaryColor"}}
               >
                 Forgot Password?
               </Text></NavLink> */}
-              </FormControl>
-              <Flex
-                flexDirection="column"
-                justifyContent="center"
-                alignItems="center"
-                maxW="100%"
-                mt="0px"
-              ></Flex>
-            </Flex>
-          
+            </FormControl>
+            <Flex
+              flexDirection="column"
+              justifyContent="center"
+              alignItems="center"
+              maxW="100%"
+              mt="0px"
+            ></Flex>
+          </Flex>
         </Flex>
         {/* <Box
           display={{ base: "none", md: "block" }}

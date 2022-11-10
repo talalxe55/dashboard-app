@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 // Chakra imports
 import {
   Avatar,
@@ -14,7 +14,7 @@ import {
   Text,
   useColorModeValue,
 } from "@chakra-ui/react";
-import {EditIcon, UnlockIcon, WarningIcon} from "@chakra-ui/icons"
+import { EditIcon, UnlockIcon, WarningIcon } from "@chakra-ui/icons";
 // Custom components
 import Card from "components/Card/Card";
 import CardBody from "components/Card/CardBody";
@@ -44,7 +44,7 @@ import {
   AlertUnauthorized,
   AlertDataNotFound,
   AlertRefundCreated,
-  AlertPasswordUpdated
+  AlertPasswordUpdated,
 } from "theme/components/AlertDialog";
 import { sendverifyEmail, getUser } from "api/ApiListing";
 
@@ -69,8 +69,8 @@ function Profile() {
     status: "N/A",
     created_at: "N/A",
     updated_at: "N/A",
-    role : "N/A"
-  }
+    role: "N/A",
+  };
   const [user, setNewUser] = useState(userSet);
   const [isSuccess, setisSuccess] = useState(false);
   const [isUnauthorized, setisUnauthorized] = useState(false);
@@ -79,71 +79,62 @@ function Profile() {
   const [verifyEmailLoader, setverifyEmailLoader] = useState(false);
 
   const isSuccessHandler = (value) => {
-    if(value==true){
+    if (value == true) {
       setisSuccess(true);
     }
-  }
+  };
 
   const isUnauthorizedHandler = (value) => {
-    if(value==true){
+    if (value == true) {
       setisUnauthorized(true);
     }
-  }
+  };
 
   const verifyEmail = () => {
     const response = sendverifyEmail();
-    response.then((res) => {
-      if(res.data.success==true){
+    response
+      .then((res) => {
+        if (res.data.success == true) {
+          setverifyEmailLoader(false);
+          setverifyEmailText("Verification Link Sent!");
+        }
+      })
+      .catch((err) => {
         setverifyEmailLoader(false);
-        setverifyEmailText('Verification Link Sent!');
-      }
-
-    }).catch((err) => {
-      setverifyEmailLoader(false);
-      if(err.response.data.message=="Email already verified."){
-        setUser(user);
-      }
-      setverifyEmailText(err.response.data.message);
-
-    })
-
-  }
+        if (err.response.data.message == "Email already verified.") {
+          setUser(user);
+        }
+        setverifyEmailText(err.response.data.message);
+      });
+  };
 
   useEffect(() => {
-    
-    
-        
-        const response = getUser();
+    const response = getUser();
 
-        response.then((res) => {
-        
-        if(res.data.success==true){
-          setNewUser(res.data.data)
-            
-        //               toast({
-        //     title: 'Password Reset Successfully!',
-        //     description: res.data.message,
-        //     status: 'success',
-        //     duration: 9000,
-        //     isClosable: true,
-        //   })
-        
+    response
+      .then((res) => {
+        if (res.data.success == true) {
+          setNewUser(res.data.data);
+
+          //               toast({
+          //     title: 'Password Reset Successfully!',
+          //     description: res.data.message,
+          //     status: 'success',
+          //     duration: 9000,
+          //     isClosable: true,
+          //   })
         }
-    }).catch((err) => {
+      })
+      .catch((err) => {
         setdatanotFound(true);
         return;
-    })
-      
-    
-
-
+      });
   }, []);
   return (
-    
     <Flex direction="column">
-      {isSuccess?<AlertPasswordUpdated />:null}
-      {isUnauthorized?<AlertUnauthorized />:null}
-      {datanotFound?<AlertDataNotFound />:null}
+      {isSuccess ? <AlertPasswordUpdated /> : null}
+      {isUnauthorized ? <AlertUnauthorized /> : null}
+      {datanotFound ? <AlertDataNotFound /> : null}
       <Box
         mb={{ sm: "205px", md: "75px", xl: "70px" }}
         borderRadius="15px"
@@ -154,7 +145,8 @@ function Profile() {
         align="center"
       >
         <Box
-          bgImage={ProfileBgImage}
+          // bgImage={ProfileBgImage}
+          bg="primaryColor"
           w="100%"
           h="300px"
           borderRadius="25px"
@@ -194,7 +186,6 @@ function Profile() {
             >
               <Avatar
                 me={{ md: "22px" }}
-                
                 w="80px"
                 h="80px"
                 borderRadius="15px"
@@ -239,7 +230,13 @@ function Profile() {
                   </Text>
                 </Flex>
               </Button> */}
-              {<PasswordForm bg={"teal.300"} isSuccessHandler={isSuccessHandler} isUnauthorizedHandler={isUnauthorizedHandler} />}
+              {
+                <PasswordForm
+                  bg={"primaryColor"}
+                  isSuccessHandler={isSuccessHandler}
+                  isUnauthorizedHandler={isUnauthorizedHandler}
+                />
+              }
               <Button p="0px" bg="transparent" _hover={{ bg: "none" }}>
                 <Flex
                   align="center"
@@ -249,7 +246,6 @@ function Profile() {
                   py="10px"
                   mx={{ lg: "1rem" }}
                   cursor="pointer"
-                  
                 >
                   {/* <Icon as={IoDocumentsSharp} me="6px" /> */}
                   <EditIcon me="6px" />
@@ -258,22 +254,39 @@ function Profile() {
                   </Text>
                 </Flex>
               </Button>
-             { user.email_verified_at==null&&user.id!==null?
-             <Button isLoading={verifyEmailLoader} loadingText="Sending Verification Email..." p="0px" bg="transparent" _hover={{ bg: "none" }} onClick={() => {setverifyEmailLoader(true); verifyEmail()}}>
-                <Flex
-                  align="center"
-                  w={{ lg: "135px" }}
-                  borderRadius="15px"
-                  justifyContent="center"
-                  py="10px"
-                  cursor="pointer"
+              {user.email_verified_at == null && user.id !== null ? (
+                <Button
+                  isLoading={verifyEmailLoader}
+                  loadingText="Sending Verification Email..."
+                  p="0px"
+                  bg="transparent"
+                  _hover={{ bg: "none" }}
+                  onClick={() => {
+                    setverifyEmailLoader(true);
+                    verifyEmail();
+                  }}
                 >
-                  <WarningIcon me="6px" />
-                  <Text  fontSize="xs" color={"teal.300"} fontWeight="bold">
-                   {verifyEmailText}
-                  </Text>
-                </Flex>
-              </Button>:""}
+                  <Flex
+                    align="center"
+                    w={{ lg: "135px" }}
+                    borderRadius="15px"
+                    justifyContent="center"
+                    py="10px"
+                    cursor="pointer"
+                  >
+                    <WarningIcon me="6px" />
+                    <Text
+                      fontSize="xs"
+                      color={"primaryColor"}
+                      fontWeight="bold"
+                    >
+                      {verifyEmailText}
+                    </Text>
+                  </Flex>
+                </Button>
+              ) : (
+                ""
+              )}
             </Flex>
           </Flex>
         </Box>
@@ -432,8 +445,8 @@ function Profile() {
                 <Text fontSize="md" color="gray.500" fontWeight="400">
                   United States
                 </Text>
-              </Flex> */}
-              {/* <Flex align="center" mb="18px">
+              </Flex>
+              <Flex align="center" mb="18px">
                 <Text
                   fontSize="md"
                   color={textColor}
@@ -445,28 +458,28 @@ function Profile() {
                 <Flex>
                   <Link
                     href="#"
-                    color="teal.300"
+                    color="primaryColor"
                     fontSize="lg"
                     me="10px"
-                    _hover={{ color: "teal.300" }}
+                    _hover={{ color: "primaryColor" }}
                   >
                     <Icon as={FaFacebook} />
                   </Link>
                   <Link
                     href="#"
-                    color="teal.300"
+                    color="primaryColor"
                     fontSize="lg"
                     me="10px"
-                    _hover={{ color: "teal.300" }}
+                    _hover={{ color: "primaryColor" }}
                   >
                     <Icon as={FaInstagram} />
                   </Link>
                   <Link
                     href="#"
-                    color="teal.300"
+                    color="primaryColor"
                     fontSize="lg"
                     me="10px"
-                    _hover={{ color: "teal.300" }}
+                    _hover={{ color: "primaryColor" }}
                   >
                     <Icon as={FaTwitter} />
                   </Link>
@@ -505,7 +518,7 @@ function Profile() {
                   <Text
                     fontSize="sm"
                     fontWeight="600"
-                    color="teal.300"
+                    color="primaryColor"
                     alignSelf="center"
                   >
                     REPLY
@@ -534,7 +547,7 @@ function Profile() {
                   <Text
                     fontSize="sm"
                     fontWeight="600"
-                    color="teal.300"
+                    color="primaryColor"
                     alignSelf="center"
                   >
                     REPLY
@@ -563,7 +576,7 @@ function Profile() {
                   <Text
                     fontSize="sm"
                     fontWeight="600"
-                    color="teal.300"
+                    color="primaryColor"
                     alignSelf="center"
                   >
                     REPLY
@@ -592,7 +605,7 @@ function Profile() {
                   <Text
                     fontSize="sm"
                     fontWeight="600"
-                    color="teal.300"
+                    color="primaryColor"
                     alignSelf="center"
                   >
                     REPLY
@@ -621,7 +634,7 @@ function Profile() {
                   <Text
                     fontSize="sm"
                     fontWeight="600"
-                    color="teal.300"
+                    color="primaryColor"
                     alignSelf="center"
                   >
                     REPLY
@@ -632,7 +645,7 @@ function Profile() {
           </CardBody>
         </Card> */}
       </Grid>
-      <Card p="16px" my="24px">
+      {/* <Card p="16px" my="24px">
         <CardHeader p="12px 5px" mb="12px">
           <Flex direction="column">
             <Text fontSize="lg" color={textColor} fontWeight="bold">
@@ -801,11 +814,7 @@ function Profile() {
               borderRadius="15px"
               minHeight={{ sm: "200px", md: "100%" }}
             >
-              <Flex
-                direction="column"
-                justifyContent="center"
-                align="center"
-              >
+              <Flex direction="column" justifyContent="center" align="center">
                 <Icon as={FaPlus} fontSize="lg" mb="12px" />
                 <Text fontSize="lg" fontWeight="bold">
                   Create a New Project
@@ -814,7 +823,7 @@ function Profile() {
             </Button>
           </Grid>
         </CardBody>
-      </Card>
+      </Card> */}
     </Flex>
   );
 }

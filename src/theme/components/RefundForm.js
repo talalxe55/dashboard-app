@@ -61,7 +61,7 @@ import { isReturnStatement } from "typescript";
 import {
   AlertUnauthorized,
   AlertDataNotFound,
-  AlertRefundCreated
+  AlertRefundCreated,
 } from "theme/components/AlertDialog";
 import { useHistory } from "react-router-dom";
 const RefundForm = (props) => {
@@ -84,7 +84,9 @@ const RefundForm = (props) => {
   const [isSuccess, setisSuccess] = useState(false);
   const [paymentbtnLoader, setpaymentbtnLoader] = useState(false);
   const [confirmRefund, setconfirmRefund] = useState(false);
-  const [CreatepaymentBtnText, setCreatepaymentBtnText] = useState("Create Refund");
+  const [CreatepaymentBtnText, setCreatepaymentBtnText] = useState(
+    "Create Refund"
+  );
   const { bg, payment, customer, setisReload, setReloadState } = props;
   const initialRef = React.useRef(null);
   const finalRef = React.useRef(null);
@@ -92,7 +94,7 @@ const RefundForm = (props) => {
   const [vals, setVals] = useState({
     amount: 1,
     payment_intent: payment.id,
-    reason: 'duplicate',
+    reason: "duplicate",
     metadata: {
       site_url: "https://nolimitsocial99.com",
     },
@@ -126,7 +128,7 @@ const RefundForm = (props) => {
     Object.entries(vals).forEach(([key, value]) => {
       if (value === null || value === "" || value < 1) {
         checked = false;
-        setpaymentbtnLoader(false)
+        setpaymentbtnLoader(false);
         setCreatepaymentBtnText("Create Refund");
         errvals[key] = "Please provide " + key;
         seterrVals({ ...errvals });
@@ -145,14 +147,14 @@ const RefundForm = (props) => {
     response
       .then((res) => {
         console.log(res);
-        setisReload(true)
-        setReloadState(true)
+        setisReload(true);
+        setReloadState(true);
         setisSuccess(true);
-        setpaymentbtnLoader(false)
+        setpaymentbtnLoader(false);
         setCreatepaymentBtnText("Refund Created!");
       })
       .catch((err) => {
-        setpaymentbtnLoader(false)
+        setpaymentbtnLoader(false);
         setCreatepaymentBtnText("Refund Failed!");
         if (err.response.status == 400) {
           if (err.response.data.success == false) {
@@ -194,7 +196,6 @@ const RefundForm = (props) => {
     setVals({ ...vals, data });
   };
 
-
   const AlertBox = () => {
     const { isOpen: isVisible, onClose, onOpen } = useDisclosure({
       defaultIsOpen: true,
@@ -212,7 +213,10 @@ const RefundForm = (props) => {
           position="relative"
           right={-1}
           top={-1}
-          onClick={() => {setCreatepaymentBtnText("Create Refund"); seterrorData(null);}}
+          onClick={() => {
+            setCreatepaymentBtnText("Create Refund");
+            seterrorData(null);
+          }}
         />
       </Alert>
     ) : (
@@ -222,7 +226,7 @@ const RefundForm = (props) => {
   return (
     <>
       {isUnauthorized ? <AlertUnauthorized /> : null}
-      {isSuccess ? <AlertRefundCreated setisSuccess={setisSuccess}/>: null}
+      {isSuccess ? <AlertRefundCreated setisSuccess={setisSuccess} /> : null}
 
       <Button
         bg={props.bg}
@@ -232,7 +236,7 @@ const RefundForm = (props) => {
         width={{ sm: "200px" }}
         borderRadius={{ sm: 10 }}
         borderColor={"red"}
-        _hover={{bg: "transparent", color: "teal.300"}}
+        _hover={{ bg: "transparent", color: "primaryColor" }}
       >
         Create Refund
       </Button>
@@ -252,15 +256,17 @@ const RefundForm = (props) => {
             <form>
               <FormControl mt={4} isRequired>
                 <Box>
-                <Flex alignItems={"center"}>
-                  <FormLabel m={0} pe={4}>Amount</FormLabel>
-                  <Tooltip
-                    hasArrow
-                    label="Amount in dollars. Minimum amount is $1."
-                    color="white"
-                  >
-                    <InfoIcon />
-                  </Tooltip>
+                  <Flex alignItems={"center"}>
+                    <FormLabel m={0} pe={4}>
+                      Amount
+                    </FormLabel>
+                    <Tooltip
+                      hasArrow
+                      label="Amount in dollars. Minimum amount is $1."
+                      color="white"
+                    >
+                      <InfoIcon />
+                    </Tooltip>
                   </Flex>
                   <Text
                     mb={"-31px"}
@@ -283,7 +289,6 @@ const RefundForm = (props) => {
                       onChange={(handleAmount, handleValues)}
                       value={vals.amount}
                     />
-
                   </Flex>
                   <Text color={"red.500"}>{errvals.amount}</Text>
                 </Box>
@@ -303,19 +308,18 @@ const RefundForm = (props) => {
                 <Text color={"red.500"}>{errvals.customer}</Text>
               </FormControl> */}
               <FormControl mt={4}>
-              <Flex alignItems={"center"}>
-              <FormLabel m={0} pe={4}>
-                <Heading fontSize="xl">Refund Reason</Heading>
-                    </FormLabel>
-                    <Tooltip
+                <Flex alignItems={"center"}>
+                  <FormLabel m={0} pe={4}>
+                    <Heading fontSize="xl">Refund Reason</Heading>
+                  </FormLabel>
+                  <Tooltip
                     hasArrow
                     label="Provide Reason to refund carefully. Fraudulent may lead to blocking of the card!"
                     color="white"
                   >
                     <InfoIcon />
-                    </Tooltip>
-                  </Flex>
-
+                  </Tooltip>
+                </Flex>
 
                 <Divider my={4} />
                 <Stack width={400}>
@@ -325,7 +329,9 @@ const RefundForm = (props) => {
                     name="source"
                     onChange={(e) => handleValues(e)}
                   >
-                    <option value="requested_by_customer">Requested By Customer</option>
+                    <option value="requested_by_customer">
+                      Requested By Customer
+                    </option>
                     <option value="duplicate">Duplicate</option>
                     <option value="fraudulent">Fraudulent</option>
                   </Select>
@@ -336,8 +342,21 @@ const RefundForm = (props) => {
             </form>
           </ModalBody>
           <ModalFooter>
-            <Button _hover={{bg: "transparent", color: "teal.300"}} bg={props.bg} color="white" isLoading={paymentbtnLoader} loadingText='Creating Refund!' colorScheme="blue" mr={3} onClick={() => {setpaymentbtnLoader(true); setCreatepaymentBtnText('Creating Refund!'); getAllValues();}}>
-             {CreatepaymentBtnText}
+            <Button
+              _hover={{ bg: "transparent", color: "primaryColor" }}
+              bg={props.bg}
+              color="white"
+              isLoading={paymentbtnLoader}
+              loadingText="Creating Refund!"
+              colorScheme="blue"
+              mr={3}
+              onClick={() => {
+                setpaymentbtnLoader(true);
+                setCreatepaymentBtnText("Creating Refund!");
+                getAllValues();
+              }}
+            >
+              {CreatepaymentBtnText}
             </Button>
             <Button onClick={onClose}>Cancel</Button>
           </ModalFooter>
@@ -346,8 +365,5 @@ const RefundForm = (props) => {
     </>
   );
 };
-
-
-
 
 export default RefundForm;

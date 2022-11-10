@@ -67,7 +67,7 @@ function Sidebar(props) {
         return (
           <React.Fragment key={index}>
             <Text
-              key={index+prop.key}
+              key={index + prop.key}
               color={activeColor}
               fontWeight="bold"
               mb={{
@@ -89,20 +89,16 @@ function Sidebar(props) {
         );
       }
 
-      if(prop.layout === "/admin" && user && prop.role){
-          
-        if(!prop.role.includes(user.role)){
-            return null;
-          }
-
+      if (prop.layout === "/admin" && user && prop.role) {
+        if (!prop.role.includes(user.role)) {
+          return null;
+        }
       }
-      
-      
+
       return (
         <React.Fragment key={index}>
-        
           {prop.hide ? null : (
-            <NavLink key={index+prop.key} to={prop.layout + prop.path}>
+            <NavLink key={index + prop.key} to={prop.layout + prop.path}>
               {activeRoute(prop.layout + prop.path) === "active" ? (
                 <Button
                   boxSize="initial"
@@ -139,7 +135,7 @@ function Sidebar(props) {
                       <Icon>{prop.icon}</Icon>
                     ) : (
                       <IconBox
-                        bg="teal.300"
+                        bg="primaryColor"
                         color="white"
                         h="30px"
                         w="30px"
@@ -156,7 +152,6 @@ function Sidebar(props) {
                     </Text>
                   </Flex>
                 </Button>
-               
               ) : (
                 <Button
                   boxSize="initial"
@@ -192,7 +187,7 @@ function Sidebar(props) {
                     ) : (
                       <IconBox
                         bg={inactiveBg}
-                        color="teal.300"
+                        color="primaryColor"
                         h="30px"
                         w="30px"
                         me="12px"
@@ -208,7 +203,6 @@ function Sidebar(props) {
                     </Text>
                   </Flex>
                 </Button>
-                
               )}
             </NavLink>
           )}
@@ -254,7 +248,7 @@ function Sidebar(props) {
   // SIDEBAR
   return (
     <Box ref={mainPanel}>
-      <Box display={{ sm: "none", xl: "block" }} position="fixed">
+      <Box display={{ sm: "none", xl: "block" }} position="fixed" overflowY="auto">
         <Box
           bg={sidebarBg}
           transition={variantChange}
@@ -287,7 +281,7 @@ function Sidebar(props) {
 
 export function SidebarResponsive(props) {
   // to check for active links and opened collapses
-  
+
   let location = useLocation();
   // this is for the rest of the collapses
   const [state, setState] = React.useState({});
@@ -305,7 +299,6 @@ export function SidebarResponsive(props) {
     const inactiveColor = useColorModeValue("gray.400", "gray.400");
 
     return routes.map((prop, index) => {
-      
       if (prop.redirect) {
         return null;
       }
@@ -315,7 +308,6 @@ export function SidebarResponsive(props) {
         return (
           <React.Fragment key={index}>
             <Text
-              
               color={activeColor}
               fontWeight="bold"
               mb={{
@@ -338,111 +330,111 @@ export function SidebarResponsive(props) {
       }
       return (
         <React.Fragment key={index}>
-        <NavLink key={prop.key} to={prop.layout + prop.path}>
-          {activeRoute(prop.layout + prop.path) === "active" ? (
-            <Button
-              boxSize="initial"
-              justifyContent="flex-start"
-              alignItems="center"
-              bg={activeBg}
-              mb={{
-                xl: "12px",
-              }}
-              mx={{
-                xl: "auto",
-              }}
-              ps={{
-                sm: "10px",
-                xl: "16px",
-              }}
-              py="12px"
-              borderRadius="15px"
-              _hover="none"
-              w="100%"
-              _active={{
-                bg: "inherit",
-                transform: "none",
-                borderColor: "transparent",
-              }}
-              _focus={{
-                boxShadow: "none",
-              }}
-            >
-              <Flex>
-                {typeof prop.icon === "string" ? (
-                  <Icon>{prop.icon}</Icon>
-                ) : (
-                  <IconBox
-                    bg="teal.300"
-                    color="white"
-                    h="30px"
-                    w="30px"
-                    me="12px"
-                  >
-                    {prop.icon}
-                  </IconBox>
-                )}
-                <Text color={activeColor} my="auto" fontSize="sm">
-                  {document.documentElement.dir === "rtl"
-                    ? prop.rtlName
-                    : prop.name}
-                </Text>
-              </Flex>
-            </Button>
-          ) : (
-            <Button
-              boxSize="initial"
-              justifyContent="flex-start"
-              alignItems="center"
-              bg="transparent"
-              mb={{
-                xl: "12px",
-              }}
-              mx={{
-                xl: "auto",
-              }}
-              py="12px"
-              ps={{
-                sm: "10px",
-                xl: "16px",
-              }}
-              borderRadius="15px"
-              _hover="none"
-              w="100%"
-              _active={{
-                bg: "inherit",
-                transform: "none",
-                borderColor: "transparent",
-              }}
-              _focus={{
-                boxShadow: "none",
-              }}
-            >
-              <Flex>
-                {typeof prop.icon === "string" ? (
-                  <Icon>{prop.icon}</Icon>
-                ) : (
-                  <IconBox
-                    bg={inactiveBg}
-                    color="teal.300"
-                    h="30px"
-                    w="30px"
-                    me="12px"
-                  >
-                    {prop.icon}
-                  </IconBox>
-                )}
-                <Text color={inactiveColor} my="auto" fontSize="sm">
-                  {document.documentElement.dir === "rtl"
-                    ? prop.rtlName
-                    : prop.name}
-                </Text>
-              </Flex>
-            </Button>
-          )}
-        </NavLink>
-        
-        </React.Fragment> );
+          <NavLink key={prop.key} to={prop.layout + prop.path}>
+            {activeRoute(prop.layout + prop.path) === "active" ? (
+              <Button
+                boxSize="initial"
+                justifyContent="flex-start"
+                alignItems="center"
+                bg={activeBg}
+                mb={{
+                  xl: "12px",
+                }}
+                mx={{
+                  xl: "auto",
+                }}
+                ps={{
+                  sm: "10px",
+                  xl: "16px",
+                }}
+                py="12px"
+                borderRadius="15px"
+                _hover="none"
+                w="100%"
+                _active={{
+                  bg: "inherit",
+                  transform: "none",
+                  borderColor: "transparent",
+                }}
+                _focus={{
+                  boxShadow: "none",
+                }}
+              >
+                <Flex>
+                  {typeof prop.icon === "string" ? (
+                    <Icon>{prop.icon}</Icon>
+                  ) : (
+                    <IconBox
+                      bg="primaryColor"
+                      color="white"
+                      h="30px"
+                      w="30px"
+                      me="12px"
+                    >
+                      {prop.icon}
+                    </IconBox>
+                  )}
+                  <Text color={activeColor} my="auto" fontSize="sm">
+                    {document.documentElement.dir === "rtl"
+                      ? prop.rtlName
+                      : prop.name}
+                  </Text>
+                </Flex>
+              </Button>
+            ) : (
+              <Button
+                boxSize="initial"
+                justifyContent="flex-start"
+                alignItems="center"
+                bg="transparent"
+                mb={{
+                  xl: "12px",
+                }}
+                mx={{
+                  xl: "auto",
+                }}
+                py="12px"
+                ps={{
+                  sm: "10px",
+                  xl: "16px",
+                }}
+                borderRadius="15px"
+                _hover="none"
+                w="100%"
+                _active={{
+                  bg: "inherit",
+                  transform: "none",
+                  borderColor: "transparent",
+                }}
+                _focus={{
+                  boxShadow: "none",
+                }}
+              >
+                <Flex>
+                  {typeof prop.icon === "string" ? (
+                    <Icon>{prop.icon}</Icon>
+                  ) : (
+                    <IconBox
+                      bg={inactiveBg}
+                      color="primaryColor"
+                      h="30px"
+                      w="30px"
+                      me="12px"
+                    >
+                      {prop.icon}
+                    </IconBox>
+                  )}
+                  <Text color={inactiveColor} my="auto" fontSize="sm">
+                    {document.documentElement.dir === "rtl"
+                      ? prop.rtlName
+                      : prop.name}
+                  </Text>
+                </Flex>
+              </Button>
+            )}
+          </NavLink>
+        </React.Fragment>
+      );
     });
   };
   const { logoText, routes, ...rest } = props;

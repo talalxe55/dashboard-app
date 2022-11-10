@@ -46,7 +46,7 @@ import {
 } from "components/Icons/Icons.js";
 import DashboardTableRow from "components/Tables/DashboardTableRow";
 import TimelineRow from "components/Tables/TimelineRow";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 // react icons
 import { BsArrowRight } from "react-icons/bs";
 import { IoCheckmarkDoneCircleSharp } from "react-icons/io5";
@@ -60,13 +60,13 @@ export default function Dashboard() {
   const value = "$100.000";
   // Chakra Color Mode
   const { colorMode, toggleColorMode } = useColorMode();
-  const iconTeal = useColorModeValue("teal.300", "teal.300");
+  const iconTeal = useColorModeValue("primaryColor", "primaryColor");
   const iconBoxInside = useColorModeValue("white", "white");
   const textColor = useColorModeValue("gray.700", "white");
   const [isUnauthorized, setisUnauthorized] = useState(false);
-  const [totalAmount , settotalAmount] = useState();
-  const [todayAmount , settodayAmount] = useState();
-  const [todayCharges , settodayCharges] = useState(null);
+  const [totalAmount, settotalAmount] = useState();
+  const [todayAmount, settodayAmount] = useState();
+  const [todayCharges, settodayCharges] = useState(null);
   const history = useHistory();
   const [series, setSeries] = useState([
     {
@@ -80,9 +80,8 @@ export default function Dashboard() {
       data: [400, 291, 121, 117, 25, 133, 121, 211, 147, 25, 201, 203],
     },
   ]);
-  const overlayRef = React.useRef();
+  const overlayRef = useRef();
   const totalSalesData = async (options) => {
-
     try {
       const res = await axios.get(`${API_SERVER}account/total`, {
         headers: {
@@ -93,55 +92,53 @@ export default function Dashboard() {
       });
 
       let data = await res.data.data;
-      
-      settotalAmount(data);
 
+      settotalAmount(data);
     } catch (err) {
-        
       if (err.response.status === 404) {
-        
       } else if (err.response.status === 401) {
         setisUnauthorized(true);
       } else {
-        
       }
     }
-  }
+  };
 
   const todaySalesData = async (options) => {
-    
     try {
       let payload = {};
-      if(options!==null){
-        Object.entries(options).forEach(([key,value]) => {
+      if (options !== null) {
+        Object.entries(options).forEach(([key, value]) => {
           payload[key] = value;
-        })
+        });
       }
-      const res = await axios.post(`${API_SERVER}account/transactions?limit=100&type=charge`, JSON.stringify(payload),{
-        headers: {
-          Authorization: `${TOKEN_TYPE} ${TOKEN}`,
-          Accept: `${ACCEPT_TYPE}`,
-          "Content-Type": `${ACCEPT_TYPE}`,
-        },
-      });
+      const res = await axios.post(
+        `${API_SERVER}account/transactions?limit=100&type=charge`,
+        JSON.stringify(payload),
+        {
+          headers: {
+            Authorization: `${TOKEN_TYPE} ${TOKEN}`,
+            Accept: `${ACCEPT_TYPE}`,
+            "Content-Type": `${ACCEPT_TYPE}`,
+          },
+        }
+      );
 
       let data = await res.data.data;
-      settodayCharges(data)
-
+      settodayCharges(data);
     } catch (err) {
-        
       if (err.response.status === 404) {
-        
       } else if (err.response.status === 401) {
         setisUnauthorized(true);
       } else {
-        
       }
     }
-  }
+  };
   const dataamount = (amount) => {
     let cents = amount;
-    var formatedDollars = (cents / 100).toLocaleString("en-US", {style:"currency", currency:"USD"});
+    var formatedDollars = (cents / 100).toLocaleString("en-US", {
+      style: "currency",
+      currency: "USD",
+    });
     //formatedDateTime = formatedDateTime.toLocaleString();
     return formatedDollars;
   };
@@ -154,28 +151,27 @@ export default function Dashboard() {
   };
   useEffect(() => {
     totalSalesData(null);
-    let options = {created: {gte: new Date().toLocaleDateString()}}
+    let options = { created: { gte: new Date().toLocaleDateString() } };
     todaySalesData(options);
-    
   }, []);
 
   useEffect(() => {
-    if(todayCharges !== null){
-      if(todayCharges.data.length > 0){
+    if (todayCharges !== null) {
+      if (todayCharges.data.length > 0) {
         let amount = 0;
         todayCharges.data.forEach((item, index) => {
-          amount+= item.amount
-        })
-        settodayAmount(dataamount(amount))
+          amount += item.amount;
+        });
+        settodayAmount(dataamount(amount));
+      } else {
+        settodayAmount(dataamount(0));
       }
-      else {settodayAmount(dataamount(0))}
     }
-    
   }, [todayCharges]);
 
   return (
     <Flex flexDirection="column" pt={{ base: "120px", md: "75px" }}>
-      {isUnauthorized?<AlertUnauthorized />:null}
+      {isUnauthorized ? <AlertUnauthorized /> : null}
       <SimpleGrid columns={{ sm: 1, md: 2, xl: 4 }} spacing="24px">
         <Card minH="83px">
           <CardBody>
@@ -191,7 +187,7 @@ export default function Dashboard() {
                 </StatLabel>
                 <Flex>
                   <StatNumber fontSize="lg" color={textColor}>
-                    {todayAmount?todayAmount:<Spinner color='red.500' />}
+                    {todayAmount ? todayAmount : <Spinner color="red.500" />}
                   </StatNumber>
                   {/* <StatHelpText
                     alignSelf="flex-end"
@@ -297,7 +293,11 @@ export default function Dashboard() {
                 </StatLabel>
                 <Flex>
                   <StatNumber fontSize="lg" color={textColor} fontWeight="bold">
-                  {totalAmount?dataamount(totalAmount.available[0].amount):<Spinner color='red.500' />}
+                    {totalAmount ? (
+                      dataamount(totalAmount.available[0].amount)
+                    ) : (
+                      <Spinner color="red.500" />
+                    )}
                   </StatNumber>
                   {/* <StatHelpText
                     alignSelf="flex-end"
@@ -384,7 +384,7 @@ export default function Dashboard() {
               </Flex>
               <Spacer />
               <Flex
-                bg="teal.300"
+                bg="primaryColor"
                 align="center"
                 justify="center"
                 borderRadius="15px"
@@ -500,13 +500,7 @@ export default function Dashboard() {
               <SimpleGrid gap={{ sm: "12px" }} columns={4}>
                 <Flex direction="column">
                   <Flex alignItems="center">
-                    <IconBox
-                      
-                      h={"30px"}
-                      w={"30px"}
-                      bg={iconTeal}
-                      me="6px"
-                    >
+                    <IconBox h={"30px"} w={"30px"} bg={iconTeal} me="6px">
                       <WalletIcon h={"15px"} w={"15px"} color={iconBoxInside} />
                     </IconBox>
                     <Text fontSize="sm" color="gray.400" fontWeight="semibold">
@@ -531,13 +525,7 @@ export default function Dashboard() {
                 </Flex>
                 <Flex direction="column">
                   <Flex alignItems="center">
-                    <IconBox
-                      
-                      h={"30px"}
-                      w={"30px"}
-                      bg={iconTeal}
-                      me="6px"
-                    >
+                    <IconBox h={"30px"} w={"30px"} bg={iconTeal} me="6px">
                       <RocketIcon h={"15px"} w={"15px"} color={iconBoxInside} />
                     </IconBox>
                     <Text fontSize="sm" color="gray.400" fontWeight="semibold">
@@ -562,13 +550,7 @@ export default function Dashboard() {
                 </Flex>
                 <Flex direction="column">
                   <Flex alignItems="center">
-                    <IconBox
-                      
-                      h={"30px"}
-                      w={"30px"}
-                      bg={iconTeal}
-                      me="6px"
-                    >
+                    <IconBox h={"30px"} w={"30px"} bg={iconTeal} me="6px">
                       <CartIcon h={"15px"} w={"15px"} color={iconBoxInside} />
                     </IconBox>
                     <Text fontSize="sm" color="gray.400" fontWeight="semibold">
@@ -593,13 +575,7 @@ export default function Dashboard() {
                 </Flex>
                 <Flex direction="column">
                   <Flex alignItems="center">
-                    <IconBox
-                      
-                      h={"30px"}
-                      w={"30px"}
-                      bg={iconTeal}
-                      me="6px"
-                    >
+                    <IconBox h={"30px"} w={"30px"} bg={iconTeal} me="6px">
                       <StatsIcon h={"15px"} w={"15px"} color={iconBoxInside} />
                     </IconBox>
                     <Text fontSize="sm" color="gray.400" fontWeight="semibold">
@@ -664,7 +640,7 @@ export default function Dashboard() {
               <Flex align="center">
                 <Icon
                   as={IoCheckmarkDoneCircleSharp}
-                  color="teal.300"
+                  color="primaryColor"
                   w={4}
                   h={4}
                   pe="3px"
@@ -718,7 +694,7 @@ export default function Dashboard() {
                 Orders overview
               </Text>
               <Text fontSize="sm" color="gray.400" fontWeight="normal">
-                <Text fontWeight="bold" as="span" color="teal.300">
+                <Text fontWeight="bold" as="span" color="primaryColor">
                   +30%
                 </Text>{" "}
                 this month.
@@ -728,16 +704,16 @@ export default function Dashboard() {
           <CardBody ps="20px" pe="0px" mb="31px" position="relative">
             <Flex direction="column">
               {timelineData.map((row, index, arr) => {
-                
                 return (
-                  <TimelineRow key={index}
+                  <TimelineRow
+                    key={index}
                     logo={row.logo}
                     title={row.title}
                     date={row.date}
                     color={row.color}
                     index={index}
                     arrLength={arr.length}
-                    id={row.title.replace(/\s+/g, '-').toLowerCase()+index}
+                    id={row.title.replace(/\s+/g, "-").toLowerCase() + index}
                   />
                 );
               })}

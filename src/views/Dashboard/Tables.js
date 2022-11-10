@@ -158,7 +158,7 @@ function Tables() {
       setLoading(false);
       let resdata = res.data.data.data;
       console.log(resdata);
-      if (page==null) {
+      if (page == null) {
         setCustomers(resdata);
         filterCustomersdataRef = true;
       } else {
@@ -193,7 +193,11 @@ function Tables() {
       //     options['page'] = filterPage;
       // }
       console.log(filterCustomersdataRef);
-      var moreCustomers = filterCustomers(options, null, isMore ? filterPage : null);
+      var moreCustomers = filterCustomers(
+        options,
+        null,
+        isMore ? filterPage : null
+      );
     } else {
       var table = document.querySelector(".customer-listing");
       var lastRow = table.rows[table.rows.length - 1];
@@ -259,10 +263,13 @@ function Tables() {
     //                         'operator': document.querySelector('select[name=payment-amount-operator]').value};
 
     // }
-    if(document.querySelector('input[name=customer-name]').value!==null && document.querySelector('input[name=customer-name]').value!==""){
-
-        options['name'] = document.querySelector('input[name=customer-name]').value;
-
+    if (
+      document.querySelector("input[name=customer-name]").value !== null &&
+      document.querySelector("input[name=customer-name]").value !== ""
+    ) {
+      options["name"] = document.querySelector(
+        "input[name=customer-name]"
+      ).value;
     }
     // if(document.querySelector('select[name=payment-currency]')!==undefined){
 
@@ -370,7 +377,7 @@ function Tables() {
                   </Flex>
                   <Button
                     w={"100%"}
-                    bg="teal.300"
+                    bg="primaryColor"
                     color="white"
                     _hover={{ color: "black", bg: "gray.300" }}
                     onClick={() => {
@@ -383,10 +390,6 @@ function Tables() {
                 </Box>
               </MenuList>
             </Menu>
-
-
-
-
 
             <Menu>
               <MenuButton
@@ -434,7 +437,7 @@ function Tables() {
                   </Flex>
                   <Button
                     w={"100%"}
-                    bg="teal.300"
+                    bg="primaryColor"
                     color="white"
                     _hover={{ color: "black", bg: "gray.300" }}
                     onClick={() => {
@@ -468,7 +471,7 @@ function Tables() {
           </Select>
           <Button
             w={"100%"}
-            bg="teal.300"
+            bg="primaryColor"
             color="white"
             _hover={{ color: "black", bg: "gray.300" }}
           >
@@ -530,7 +533,7 @@ function Tables() {
                       searchPaymentsbyfilter();
                     }}
                     w={"100%"}
-                    bg="teal.300"
+                    bg="primaryColor"
                     color="white"
                     _hover={{ color: "black", bg: "gray.300" }}
                     mt={3}
@@ -560,7 +563,7 @@ function Tables() {
         <Box p={3}>
           <Button
             w={"100%"}
-            bg="teal.300"
+            bg="primaryColor"
             color="white"
             _hover={{ color: "black", bg: "gray.300" }}
             onClick={() => setCustomerType("NLS")}
@@ -570,7 +573,7 @@ function Tables() {
           </Button>
           <Button
             w={"100%"}
-            bg="teal.300"
+            bg="primaryColor"
             color="white"
             _hover={{ color: "black", bg: "gray.300" }}
             onClick={() => setCustomerType("SpiritMagnet")}
@@ -664,7 +667,7 @@ function Tables() {
         {isMore ? (
           <Button
             onClick={getMoreCustomers}
-            bg="teal.300"
+            bg="primaryColor"
             w={200}
             color="white"
             m={"20px auto"}

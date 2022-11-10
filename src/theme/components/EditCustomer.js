@@ -68,7 +68,7 @@ import {
   AlertUnauthorized,
   AlertDataNotFound,
   AlertPaymentCreated,
-  AlertCustomerUpdated
+  AlertCustomerUpdated,
 } from "theme/components/AlertDialog";
 import { useHistory } from "react-router-dom";
 const EditCustomer = (props) => {
@@ -84,7 +84,13 @@ const EditCustomer = (props) => {
     { value: "Josh 3", label: "Josh 3" },
   ];
 
-  const { customer, defaultsource, sources, setisReload, setReloadState} = props;
+  const {
+    customer,
+    defaultsource,
+    sources,
+    setisReload,
+    setReloadState,
+  } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [paymentbtnLoader, setpaymentbtnLoader] = useState(false);
   const [currency, setCurrency] = useState("USD$");
@@ -102,21 +108,24 @@ const EditCustomer = (props) => {
     email: customer.email,
     phone: customer.phone,
     description: "",
-    address: customer.address!==null?{
-        city: customer.address.city,
-        country: customer.address.country,
-        line1: customer.address.line_1,
-        line2: customer.address.line_2,
-        postal_code: customer.address.postal_code,
-        state: customer.address.state,
-    }:{
-        city: "",
-        country: "",
-        line1: "",
-        line2: "",
-        postal_code: "",
-        state: "",
-    }
+    address:
+      customer.address !== null
+        ? {
+            city: customer.address.city,
+            country: customer.address.country,
+            line1: customer.address.line_1,
+            line2: customer.address.line_2,
+            postal_code: customer.address.postal_code,
+            state: customer.address.state,
+          }
+        : {
+            city: "",
+            country: "",
+            line1: "",
+            line2: "",
+            postal_code: "",
+            state: "",
+          },
   });
 
   const errSet = {
@@ -127,15 +136,13 @@ const EditCustomer = (props) => {
     default_source: "",
     phone: "",
     address: {
-        
-        city: "",
-        country: "",
-        line_1: "",
-        line_2: "",
-        postal_code: "",
-        state: "",
-        
-    }
+      city: "",
+      country: "",
+      line_1: "",
+      line_2: "",
+      postal_code: "",
+      state: "",
+    },
   };
   const [errvals, seterrVals] = useState(errSet);
 
@@ -174,30 +181,28 @@ const EditCustomer = (props) => {
     if (!checked) {
       return;
     }
-    
-    const response = editCustomer(vals,cusid);
+
+    const response = editCustomer(vals, cusid);
     response
       .then((res) => {
-        setisReload(true)
-        setReloadState(true)
+        setisReload(true);
+        setReloadState(true);
         setpaymentbtnLoader(false);
         setupdateCusBtnText("Customer Updated!");
         setisSuccess(true);
-        
       })
       .catch((err) => {
         setpaymentbtnLoader(false);
         setupdateCusBtnText("Request Failed!");
         if (err.response.status == 400) {
-            seterrorData({
-              message: err.response.data.error.message,
-              status: "error",
-              title: "Your request was not submitted successfully.",
-            });
-            errvals[err.response.data.error.param] =
-              err.response.data.error.message;
-            seterrVals({ ...errvals });
-            
+          seterrorData({
+            message: err.response.data.error.message,
+            status: "error",
+            title: "Your request was not submitted successfully.",
+          });
+          errvals[err.response.data.error.param] =
+            err.response.data.error.message;
+          seterrVals({ ...errvals });
         }
         if (err.response.status == 501) {
           seterrorData({
@@ -218,8 +223,6 @@ const EditCustomer = (props) => {
     setVals({ ...vals, data });
   };
 
-
-
   const AlertBox = () => {
     const { isOpen: isVisible, onClose, onOpen } = useDisclosure({
       defaultIsOpen: true,
@@ -237,7 +240,10 @@ const EditCustomer = (props) => {
           position="relative"
           right={-1}
           top={-1}
-          onClick={() => {setupdateCusBtnText('Update Customer'); seterrorData(null)}}
+          onClick={() => {
+            setupdateCusBtnText("Update Customer");
+            seterrorData(null);
+          }}
         />
       </Alert>
     ) : (
@@ -248,7 +254,7 @@ const EditCustomer = (props) => {
     <>
       {isUnauthorized ? <AlertUnauthorized /> : null}
       {isUnauthorized ? <AlertUnauthorized /> : null}
-      {isSuccess ? <AlertCustomerUpdated setisSuccess={setisSuccess}/>: null}
+      {isSuccess ? <AlertCustomerUpdated setisSuccess={setisSuccess} /> : null}
       <Button
         bg={props.bg}
         color="white"
@@ -257,7 +263,7 @@ const EditCustomer = (props) => {
         width={{ sm: "200px" }}
         borderRadius={{ sm: 10 }}
         borderColor={"red"}
-        _hover={{bg: "transparent", color: "teal.300"}}
+        _hover={{ bg: "transparent", color: "primaryColor" }}
       >
         Edit Information
       </Button>
@@ -278,15 +284,15 @@ const EditCustomer = (props) => {
               <FormControl isRequired>
                 <Box>
                   <FormLabel>Name</FormLabel>
-                    <Input
-                      ref={initialRef}
-                      type="text"
-                      name="name"
-                      placeholder=""
-                      autoComplete="off"
-                      onChange={handleValues}
-                      value={vals.name}
-                    />                 
+                  <Input
+                    ref={initialRef}
+                    type="text"
+                    name="name"
+                    placeholder=""
+                    autoComplete="off"
+                    onChange={handleValues}
+                    value={vals.name}
+                  />
                   <Text color={"red.500"}>{errvals.name}</Text>
                 </Box>
               </FormControl>
@@ -331,153 +337,168 @@ const EditCustomer = (props) => {
                   placeholder="Source/Referrence of Customer"
                   name="description"
                   onChange={handleValues}
-                  value= {vals.description}
+                  value={vals.description}
                 />
                 <Text color={"red.500"}>{errvals.description}</Text>
               </FormControl>
               <Accordion allowToggle>
                 <FormControl mt={4}>
-                <AccordionItem>
-               
+                  <AccordionItem>
                     <AccordionButton>
-                    <FormLabel fontWeight={"bold"}>
-                    Billing Information
-                  </FormLabel>
-                    <AccordionIcon />
+                      <FormLabel fontWeight={"bold"}>
+                        Billing Information
+                      </FormLabel>
+                      <AccordionIcon />
                     </AccordionButton>
-                
-                <AccordionPanel pb={4}>
-                <FormLabel m={0} pe={4} fontWeight={"bold"}>
-                    Line 1
-                  </FormLabel>
-                <Input
-                  placeholder="Line 1 Street Address"
-                  type="text"
-                  name="line1"
-                  onChange={handleAddress}
-                  value= {vals.address.line1}
-                />
-                <Text color={"red.500"}>{errvals.address.line_1}</Text>
-                <FormLabel m={0} pe={4} fontWeight={"bold"}>
-                    Line 2
-                  </FormLabel>
-                <Input
-                  placeholder="Line 2 Street Address"
-                  type="text"
-                  name="line2"
-                  onChange={handleAddress}
-                  value= {vals.address.line2}
-                />
-                 <Text color={"red.500"}>{errvals.address.line_2}</Text>
-                <FormLabel m={0} pe={4} fontWeight={"bold"}>
-                    City
-                  </FormLabel>
-                <Input
-                  placeholder="City"
-                  type="text"
-                  name="city"
-                  onChange={handleAddress}
-                  value= {vals.address.city}
-                />
-                 <Text color={"red.500"}>{errvals.address.city}</Text>
-                <FormLabel m={0} pe={4} fontWeight={"bold"}>
-                    State
-                  </FormLabel>
-                <Input
-                  placeholder="State"
-                  type="text"
-                  name="state"
-                  onChange={handleAddress}
-                  value= {vals.address.state}
-                />
-                 <Text color={"red.500"}>{errvals.address.state}</Text>
-                <FormLabel m={0} pe={4} fontWeight={"bold"}>
-                    Postal Code
-                  </FormLabel>
-                <Input
-                  placeholder="Postal Code"
-                  type="text"
-                  name="postal_code"
-                  onChange={handleAddress}
-                  value= {vals.address.postal_code}
-                />
-                 <Text color={"red.500"}>{errvals.address.postal_code}</Text>
-                <FormLabel m={0} pe={4} fontWeight={"bold"}>
-                    Country
-                  </FormLabel>
-                <Input
-                  placeholder="Country"
-                  type="text"
-                  name="country"
-                  onChange={handleAddress}
-                  value= {vals.address.country}
-                />
-                 <Text color={"red.500"}>{errvals.address.country}</Text>
-                </AccordionPanel>
-                </AccordionItem>
+
+                    <AccordionPanel pb={4}>
+                      <FormLabel m={0} pe={4} fontWeight={"bold"}>
+                        Line 1
+                      </FormLabel>
+                      <Input
+                        placeholder="Line 1 Street Address"
+                        type="text"
+                        name="line1"
+                        onChange={handleAddress}
+                        value={vals.address.line1}
+                      />
+                      <Text color={"red.500"}>{errvals.address.line_1}</Text>
+                      <FormLabel m={0} pe={4} fontWeight={"bold"}>
+                        Line 2
+                      </FormLabel>
+                      <Input
+                        placeholder="Line 2 Street Address"
+                        type="text"
+                        name="line2"
+                        onChange={handleAddress}
+                        value={vals.address.line2}
+                      />
+                      <Text color={"red.500"}>{errvals.address.line_2}</Text>
+                      <FormLabel m={0} pe={4} fontWeight={"bold"}>
+                        City
+                      </FormLabel>
+                      <Input
+                        placeholder="City"
+                        type="text"
+                        name="city"
+                        onChange={handleAddress}
+                        value={vals.address.city}
+                      />
+                      <Text color={"red.500"}>{errvals.address.city}</Text>
+                      <FormLabel m={0} pe={4} fontWeight={"bold"}>
+                        State
+                      </FormLabel>
+                      <Input
+                        placeholder="State"
+                        type="text"
+                        name="state"
+                        onChange={handleAddress}
+                        value={vals.address.state}
+                      />
+                      <Text color={"red.500"}>{errvals.address.state}</Text>
+                      <FormLabel m={0} pe={4} fontWeight={"bold"}>
+                        Postal Code
+                      </FormLabel>
+                      <Input
+                        placeholder="Postal Code"
+                        type="text"
+                        name="postal_code"
+                        onChange={handleAddress}
+                        value={vals.address.postal_code}
+                      />
+                      <Text color={"red.500"}>
+                        {errvals.address.postal_code}
+                      </Text>
+                      <FormLabel m={0} pe={4} fontWeight={"bold"}>
+                        Country
+                      </FormLabel>
+                      <Input
+                        placeholder="Country"
+                        type="text"
+                        name="country"
+                        onChange={handleAddress}
+                        value={vals.address.country}
+                      />
+                      <Text color={"red.500"}>{errvals.address.country}</Text>
+                    </AccordionPanel>
+                  </AccordionItem>
                 </FormControl>
-                </Accordion>
-              {sources!==null&&sources.data.length>0?<FormControl mt={4}>
-                {console.log(sources)}
-                <Flex alignItems={"center"}>
-                  <FormLabel m={0} pe={4}>
-                  <Heading fontSize="xl">Default Source</Heading>
-                  </FormLabel>
-                  <Tooltip
-                    hasArrow
-                    label="The first source in the dropdown is the current default source. Select another source to change the default source."
-                    color="white"
-                  >
-                    <InfoIcon />
-                  </Tooltip>
-                </Flex>
-                
-                <Divider my={4} />
-                {/* <Radio value="master" defaultChecked="true">
+              </Accordion>
+              {sources !== null && sources.data.length > 0 ? (
+                <FormControl mt={4}>
+                  {console.log(sources)}
+                  <Flex alignItems={"center"}>
+                    <FormLabel m={0} pe={4}>
+                      <Heading fontSize="xl">Default Source</Heading>
+                    </FormLabel>
+                    <Tooltip
+                      hasArrow
+                      label="The first source in the dropdown is the current default source. Select another source to change the default source."
+                      color="white"
+                    >
+                      <InfoIcon />
+                    </Tooltip>
+                  </Flex>
+
+                  <Divider my={4} />
+                  {/* <Radio value="master" defaultChecked="true">
                   Manually enter card information
                 </Radio>
                 <CreditCard getCreditData={getCreditData} /> */}
-                <Stack width={400}>
-                  <Select
-                    id="source"
-                    icon={<TriangleDownIcon />}
-                    name="default_source"
-                    onChange={(e) => handleValues(e)}
-                  >
-                    {sources.data.map((val, index) => {
-                      return val.object === "card" ? (
-                        <option value={val.id} key={index}>
-                          XXXX XXXX {val.last4} {val.exp_month} / {val.exp_year}{" "}
-                          {val.brand}
-                        </option>
-                      ) : (
-                        <option value={val.id} key={index}>
-                          {val.card
-                            ? "XXXX XXXX XXXX " +
-                              val.card.last4 +
-                              " " +
-                              val.card.exp_month +
-                              " / " +
-                              val.card.exp_year +
-                              " " +
-                              val.card.brand
-                            : val.ach_credit_transfer
-                            ? val.ach_credit_transfer.bank_name +
-                              " " +
-                              val.ach_credit_transfer.account_number
-                            : ""}
-                        </option>
-                      );
-                    })}
-                  </Select>
-                </Stack>
-                <Text color={"red.500"}>{errvals.default_source}</Text>
-              </FormControl>:""}
+                  <Stack width={400}>
+                    <Select
+                      id="source"
+                      icon={<TriangleDownIcon />}
+                      name="default_source"
+                      onChange={(e) => handleValues(e)}
+                    >
+                      {sources.data.map((val, index) => {
+                        return val.object === "card" ? (
+                          <option value={val.id} key={index}>
+                            XXXX XXXX {val.last4} {val.exp_month} /{" "}
+                            {val.exp_year} {val.brand}
+                          </option>
+                        ) : (
+                          <option value={val.id} key={index}>
+                            {val.card
+                              ? "XXXX XXXX XXXX " +
+                                val.card.last4 +
+                                " " +
+                                val.card.exp_month +
+                                " / " +
+                                val.card.exp_year +
+                                " " +
+                                val.card.brand
+                              : val.ach_credit_transfer
+                              ? val.ach_credit_transfer.bank_name +
+                                " " +
+                                val.ach_credit_transfer.account_number
+                              : ""}
+                          </option>
+                        );
+                      })}
+                    </Select>
+                  </Stack>
+                  <Text color={"red.500"}>{errvals.default_source}</Text>
+                </FormControl>
+              ) : (
+                ""
+              )}
               {/* <BillingAdd /> */}
             </form>
           </ModalBody>
           <ModalFooter>
-            <Button isLoading={paymentbtnLoader} loadingText="Updating Customer!" colorScheme="blue" mr={3} onClick={() => {setpaymentbtnLoader(true); setupdateCusBtnText("Updating Customer!"); getAllValues()}}>
+            <Button
+              isLoading={paymentbtnLoader}
+              loadingText="Updating Customer!"
+              colorScheme="blue"
+              mr={3}
+              onClick={() => {
+                setpaymentbtnLoader(true);
+                setupdateCusBtnText("Updating Customer!");
+                getAllValues();
+              }}
+            >
               {updateCusBtnText}
             </Button>
             <Button onClick={onClose}>Cancel</Button>
@@ -487,6 +508,5 @@ const EditCustomer = (props) => {
     </>
   );
 };
-
 
 export default EditCustomer;
