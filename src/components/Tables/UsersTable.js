@@ -84,7 +84,7 @@ const UsersTable = (props) => {
             fontSize="sm"
             color="black.400"
             fontWeight="600"
-            textTransform={"lowercase"}
+            textTransform="lowercase"
           >
             {email}
           </Text>
@@ -105,22 +105,20 @@ const UsersTable = (props) => {
       </Td>
 
       <Td>
-        <Td>
-          <ChangeUserRoleDialog
-            userid={userid}
-            name={name}
-            email={email}
-            status={status}
-            bgStatus={bgStatus}
-            bgStatusVerified={bgStatusVerified}
-            bgStatusNotVerified={bgStatusNotVerified}
-            bgStatusRunning={bgStatusRunning}
-            colorStatus={colorStatus}
-            toast={toast}
-            setReloadHandler={setReloadHandler}
-            role={role}
-          />
-        </Td>
+        <ChangeUserRoleDialog
+          userid={userid}
+          name={name}
+          email={email}
+          status={status}
+          bgStatus={bgStatus}
+          bgStatusVerified={bgStatusVerified}
+          bgStatusNotVerified={bgStatusNotVerified}
+          bgStatusRunning={bgStatusRunning}
+          colorStatus={colorStatus}
+          toast={toast}
+          setReloadHandler={setReloadHandler}
+          role={role}
+        />
       </Td>
 
       <Td>
@@ -250,7 +248,7 @@ const ChangeUserRoleDialog = (jobObj) => {
             Are you sure you want to change this User's role?
             <Select onChange={handleUserRole} defaultValue="DEFAULT" mb={5}>
               <option disabled value="DEFAULT">
-                Change role to {": " + roleReq}
+                Change role to: {roleReq}
               </option>
               <option value="user">user</option>
               <option value="admin">admin</option>
@@ -262,7 +260,7 @@ const ChangeUserRoleDialog = (jobObj) => {
               *Current Role: <strong>{jobObj.role}</strong>
             </Text>
             <Text>
-              *Requested Role for:{" "}
+              *Requested Role for:
               <Badge
                 fontSize="16px"
                 p="0px 10px"
@@ -279,7 +277,7 @@ const ChangeUserRoleDialog = (jobObj) => {
               *Email: <strong>{jobObj.email}</strong>
             </Text>
             <Text>
-              *Status:{" "}
+              *Status:
               <Badge
                 bg={
                   jobObj.status !== "Not Verfied"
@@ -404,7 +402,7 @@ const DeleteJob = (jobObj) => {
               *Email: <strong>{jobObj.email}</strong>
             </Text>
             <Text>
-              *Status:{" "}
+              *Status:
               <Badge
                 bg={
                   jobObj.status !== "Not Verfied"

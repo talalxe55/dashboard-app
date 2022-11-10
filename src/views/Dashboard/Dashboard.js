@@ -335,7 +335,7 @@ export default function Dashboard() {
                 width={{ lg: "45%" }}
               >
                 <Text fontSize="sm" color="gray.400" fontWeight="bold">
-                  Built by developers
+                  Built by LSL Developers
                 </Text>
                 <Text
                   fontSize="lg"
@@ -346,8 +346,8 @@ export default function Dashboard() {
                   NLS UI Dashboard
                 </Text>
                 <Text fontSize="sm" color="gray.400" fontWeight="normal">
-                  From colors, cards, typography to complex elements, you will
-                  find the full documentation.
+                  Cut Through The Noise & Stand Out From The Competition With
+                  NoLimitSocial!
                 </Text>
                 <Spacer />
                 <Flex align="center">

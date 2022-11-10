@@ -50,7 +50,6 @@ function ForgotPassword() {
     }
 
     //setButtonText("Signing in");
-
     let payload = {};
     payload["email"] = email;
     const response = forgotPassword(payload);

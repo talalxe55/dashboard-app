@@ -326,6 +326,17 @@ const deleteUsers = async (email, id) => {
   return res;
 };
 
+const getRefreshToken = async () => {
+  const res = await axios.post(`${API_SERVER}users/delete/`, {
+    headers: {
+      Authorization: `${TOKEN_TYPE} ${TOKEN}`,
+      Accept: `${ACCEPT_TYPE}`,
+      "Content-Type": `${ACCEPT_TYPE}`,
+    },
+  });
+  return res;
+};
+
 export {
   getCustomersList,
   getAllPayments,
@@ -347,4 +358,5 @@ export {
   getUsers,
   editUsersRole,
   deleteUsers,
+  getRefreshToken,
 };

@@ -121,12 +121,9 @@ function Users() {
                     <Th color="gray.400">Delete Job</Th>
                   </Tr>
                 </Thead>
-                <Tbody className="customer_body" textTransform={"capitalize"}>
+                <Tbody textTransform="capitalize">
                   {newUsers !== null
                     ? customerListing.map((val, index) => {
-                        {
-                          /* console.log(val); */
-                        }
                         return (
                           <UsersTable
                             key={index}

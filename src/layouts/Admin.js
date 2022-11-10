@@ -16,6 +16,7 @@ import MainPanel from "../components/Layout/MainPanel";
 import PanelContainer from "../components/Layout/PanelContainer";
 import PanelContent from "../components/Layout/PanelContent";
 import { useAuth } from "auth-context/auth.context";
+import RefreshingToken from "config/RefreshingToken";
 export default function Dashboard(props) {
   const { user } = useAuth();
   useEffect(() => {
@@ -166,6 +167,7 @@ export default function Dashboard(props) {
           onTransparent={() => setSidebarVariant("transparent")}
         />
       </MainPanel>
+      <RefreshingToken />
     </ChakraProvider>
   );
 }
