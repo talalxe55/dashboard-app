@@ -48,7 +48,7 @@ var dashRoutes = [
     component: Tables,
     layout: "/admin",
     key: "customers",
-    role: ["admin", "superadmin"],
+    role: ["admin", "superadmin", "user"],
   },
   {
     path: "/billing/:id",
@@ -59,7 +59,7 @@ var dashRoutes = [
     layout: "/admin",
     hide: true,
     key: "customers-detail",
-    role: ["admin", "superadmin"],
+    role: ["admin", "superadmin", "user"],
   },
   {
     path: "/listing/",
@@ -69,7 +69,7 @@ var dashRoutes = [
     layout: "/admin",
     hide: true,
     key: "customers-listing",
-    role: ["admin", "superadmin"],
+    role: ["admin", "superadmin", "user"],
   },
 
   {
@@ -79,7 +79,7 @@ var dashRoutes = [
     component: Payments,
     layout: "/admin",
     key: "payments",
-    role: ["admin", "superadmin"],
+    role: ["admin", "superadmin", "user"],
   },
 
   {
@@ -90,7 +90,7 @@ var dashRoutes = [
     layout: "/admin",
     hide: true,
     key: "payment-detail",
-    role: ["admin", "superadmin"],
+    role: ["admin", "superadmin", "user"],
   },
 
   {
@@ -102,7 +102,7 @@ var dashRoutes = [
     layout: "/admin",
     hide: false,
     key: "bulk-payment-detail",
-    role: ["admin", "superadmin"],
+    role: ["admin", "superadmin", "user"],
   },
 
   {

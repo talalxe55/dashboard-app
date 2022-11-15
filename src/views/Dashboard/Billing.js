@@ -152,9 +152,8 @@ function Billing() {
       setLoading(false);
     } catch (err) {
       if (err.response.status === 404) {
-        console.log("No data found!!");
         setNoDataFound(true);
-        console.log("Resource could not be found!");
+        
       } else if (err.response.status === 401) {
         setUnauthorizedWarning(true);
       } else {
@@ -333,7 +332,7 @@ function Billing() {
   return (
     <Flex direction="column" pt={{ base: "120px", md: "75px" }}>
       {unauthorizedWarning ? <AlertUnauthorized /> : null}
-      {noDataFound ? <AlertDataNotFound /> : null}
+      {noDataFound ? <AlertDataNotFound setNoDataFound={setNoDataFound} /> : null}
 
       <Grid templateColumns={{ sm: "1fr", lg: "2fr 1.2fr" }} templateRows="1fr">
         <Box>

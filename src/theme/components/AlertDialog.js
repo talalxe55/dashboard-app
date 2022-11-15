@@ -149,14 +149,14 @@ const AlertUnauthorized = () => {
 
 const AlertDataNotFound = (props) => {
   const history = useHistory();
-  const { setisSuccess } = props;
+  const { setNoDataFound } = props;
   return (
     <SweetAlert
       warning
       title="The requested resource was not found!"
       confirmBtnText="OK!"
-      onCancel={() => setisSuccess(false)}
-      onConfirm={() => setisSuccess(false)}
+      onCancel={() => setNoDataFound(false)}
+      onConfirm={() => setNoDataFound(false)}
       customClass="alert_pop"
     />
   );

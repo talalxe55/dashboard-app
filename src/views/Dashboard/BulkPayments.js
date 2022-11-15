@@ -91,7 +91,7 @@ function BulkPayments() {
   return (
     <Flex direction="column" pt={{ base: "120px", md: "75px" }}>
       {unauthorizedWarning ? <AlertUnauthorized /> : null}
-      {noDataFound ? <AlertDataNotFound /> : null}
+      {noDataFound ? <AlertDataNotFound setNoDataFound={setNoDataFound} /> : null}
       <Card overflowX={{ sm: "scroll", xl: "hidden" }}>
         <CardHeader p="0 0 30px 0">
           <Text

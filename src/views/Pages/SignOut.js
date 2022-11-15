@@ -14,8 +14,8 @@ function SignOut() {
       const response = await AuthApi.Logout(user);
       if(response.status==200){
         if(response.data.success==true){
-          localStorage.removeItem("user");
           setUser(null)
+          localStorage.removeItem("user");
           history.push("/auth/signin");
           window.location.reload(false);
         }
@@ -24,6 +24,8 @@ function SignOut() {
     }
     catch(err){
       if(err.response.status==401){
+        setUser(null)
+        localStorage.removeItem("user");
         history.push("/auth/signin");
         window.location.reload(false);
       }

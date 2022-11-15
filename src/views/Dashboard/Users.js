@@ -47,7 +47,12 @@ function Users() {
             console.log(res);
           }
         })
-        .catch((err) => console.log(err) && setLoading(false));
+        .catch((err) => {
+          console.log(err) 
+          if(err.response.status==401){
+            setUnauthorizedWarning(true);
+          }
+           setLoading(false)});
     }
   };
 
@@ -70,7 +75,12 @@ function Users() {
             console.log(res);
           }
         })
-        .catch((err) => console.log(err) && setLoading(false));
+        .catch((err) => {
+          console.log(err) 
+          if(err.response.status==401){
+            setUnauthorizedWarning(true);
+          }
+           setLoading(false)});
     }
   }, []);
 
@@ -89,7 +99,7 @@ function Users() {
   return (
     <Flex direction="column" pt={{ base: "120px", md: "75px" }}>
       {unauthorizedWarning ? <AlertUnauthorized /> : null}
-      {noDataFound ? <AlertDataNotFound /> : null}
+      {noDataFound ? <AlertDataNotFound setNoDataFound={setNoDataFound} /> : null}
       <Card overflowX={{ sm: "scroll", xl: "hidden" }}>
         <CardHeader p="0 0 30px 0">
           <Text
@@ -153,7 +163,7 @@ function Users() {
             alignItems="center"
             direction={"column"}
           >
-            <Heading>Listing Payments Job...</Heading>
+            <Heading>Listing Users...</Heading>
             <Image src={LoadingGif} w={100} />
           </Flex>
         )}
@@ -165,7 +175,7 @@ function Users() {
             direction={"column"}
           >
             <p>
-              Showing {newUsers !== null ? newUsers.length : 0} of Payments Job
+              Showing {newUsers !== null ? newUsers.length : 0} of Users
             </p>
           </Flex>
         </Box>

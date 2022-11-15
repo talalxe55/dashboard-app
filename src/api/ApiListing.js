@@ -327,7 +327,7 @@ const deleteUsers = async (email, id) => {
 };
 
 const getRefreshToken = async () => {
-  const res = await axios.post(`${API_SERVER}users/delete/`, {
+  const res = await axios.get(`${API_SERVER}users/refresh-token/`, {
     headers: {
       Authorization: `${TOKEN_TYPE} ${TOKEN}`,
       Accept: `${ACCEPT_TYPE}`,
@@ -337,6 +337,28 @@ const getRefreshToken = async () => {
   return res;
 };
 
+const verifyOTP = async (otpcode,token) => {
+  const payload = JSON.stringify({ secret: otpcode });
+  const res = await axios.post(`${API_SERVER}users/2fa/verify`, payload, {
+    headers: {
+      Authorization: `${TOKEN_TYPE} ${token}`,
+      Accept: `${ACCEPT_TYPE}`,
+      "Content-Type": `${ACCEPT_TYPE}`,
+    },
+  });
+  return res;
+};
+
+const sendOTPConfig = async (token) => {
+  const res = await axios.get(`${API_SERVER}users/2fa/resend-email`, {
+    headers: {
+      Authorization: `${TOKEN_TYPE} ${token}`,
+      Accept: `${ACCEPT_TYPE}`,
+      "Content-Type": `${ACCEPT_TYPE}`,
+    },
+  });
+  return res;
+};
 export {
   getCustomersList,
   getAllPayments,
@@ -359,4 +381,6 @@ export {
   editUsersRole,
   deleteUsers,
   getRefreshToken,
+  verifyOTP,
+  sendOTPConfig
 };

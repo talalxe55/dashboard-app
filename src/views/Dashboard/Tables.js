@@ -33,6 +33,7 @@ import { API_SERVER, TOKEN_TYPE, TOKEN, ACCEPT_TYPE } from "config/constant";
 import axios from "axios";
 import LoadingGif from "assets/svg/loading-infinite.svg";
 import { useHistory } from "react-router-dom";
+import { AlertDataNotFound, AlertUnauthorized } from "theme/components/AlertDialog";
 
 function Tables() {
   const history = useHistory();
@@ -49,6 +50,8 @@ function Tables() {
   const [oldCustomers, setoldCustomers] = useState([]);
   const [oldload, setoldload] = useState(false);
   const [filterDate, setfilterDate] = useState([null]);
+  const [unauthorizedWarning, setUnauthorizedWarning] = useState(false);
+  const [noDataFound, setNoDataFound] = useState(false);
   const textColor = useColorModeValue("gray.700", "white");
   let filterCustomersdataRef = false;
   const getCustomersList = async (options) => {
@@ -103,12 +106,9 @@ function Tables() {
     } catch (err) {
       console.log(err);
       if (err.response.status === 404) {
-        alert("The requested resource was not found");
-        console.log("Resource could not be found!");
+        setNoDataFound(true);
       } else if (err.response.status === 401) {
-        alert("Your session has expired!");
-        localStorage.removeItem("user");
-        history.push("/auth/signin");
+        setUnauthorizedWarning(true);
       } else {
         console.log(err.message);
       }
@@ -173,11 +173,9 @@ function Tables() {
     } catch (err) {
       console.log(err);
       if (err.response.status === 404) {
-        alert("The requested resource was not found");
-        console.log("Resource could not be found!");
+        setNoDataFound(true);
       } else if (err.response.status === 401) {
-        localStorage.removeItem("user");
-        history.push("/auth/signin");
+        setUnauthorizedWarning(true);
       } else {
         console.log(err.message);
       }
@@ -318,6 +316,8 @@ function Tables() {
 
   return (
     <Flex direction="column" pt={{ base: "120px", md: "75px" }}>
+      {unauthorizedWarning ? <AlertUnauthorized /> : null}
+      {noDataFound ? <AlertDataNotFound setNoDataFound={setNoDataFound} /> : null}
       <Card overflowX={{ sm: "scroll", xl: "hidden" }}>
         <CardHeader p="0 0 30px 0">
           <Text

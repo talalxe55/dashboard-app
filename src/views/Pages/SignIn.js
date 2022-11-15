@@ -12,6 +12,7 @@ import {
   Switch,
   Text,
   useColorModeValue,
+  useToast,
 } from "@chakra-ui/react";
 // Assets
 import signInImage from "assets/img/no-limi-RED-logo-opt-2.png";
@@ -20,6 +21,7 @@ import { useAuth } from "../../auth-context/auth.context";
 import AuthApi from "../../api/auth";
 
 import { NavLink, useHistory } from "react-router-dom";
+import { verifyOTP, sendOTPConfig } from "api/ApiListing";
 
 function SignIn() {
   // Chakra color mode
@@ -30,7 +32,11 @@ function SignIn() {
   const history = useHistory();
   const { setUser } = useAuth();
   const { user } = useAuth();
+  const toast = useToast();
 
+  const [otpCode, setotpCode] = useState("");
+  const [otpToken, setotpToken] = useState("");
+  const [otpPrompt, setotpPrompt] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(undefined);
@@ -49,6 +55,7 @@ function SignIn() {
     if (password === "") {
       return setError("You must enter your password");
     }
+    setError("");
     setButtonText("Signing in");
     try {
       let response = await AuthApi.Login({
@@ -59,13 +66,90 @@ function SignIn() {
         setButtonText("Sign in");
         return setError(response.data.message);
       }
-      return setProfile(response);
+      setotpToken(response.data.user.token);
+      setButtonText("Verify OTP");
+      return setotpPrompt(true);
     } catch (err) {
       console.log(err);
       setButtonText("Sign in");
       if (err.response) {
         return setError(err.response.data.message);
       }
+      return setError("There has been an error.");
+    }
+  };
+
+const verifyOtp = async (event) => {
+    if (event) {
+      event.preventDefault();
+    }
+    if (user && user.token) {
+      return history.push("/dashboard");
+    }
+    if (otpCode === "") {
+      return setError("You must enter your OTP!.");
+    }
+    setButtonText("Verifying OTP..");
+    try {
+      let response = await verifyOTP(otpCode,otpToken);
+      if (response.data && response.data.success === false) {
+        setButtonText("Invalid or Expired Code!");
+        return setError(response.data.message);
+      }
+      // setotpToken(response.data.user.token);
+      // setotpPrompt(true);
+      return setProfile(response);
+    } catch (err) {
+      console.log(err);
+      setButtonText("Verify OTP");
+      if (err.response.status==400) {
+        if(err.response.data.message==="Too many attempts!"){
+          setotpPrompt(false)
+        }
+        return setError(err.response.data.message);
+      }
+
+      if (err.response.status==401) {
+         setotpPrompt(false)
+         setError("Please sign in again!");
+         return setButtonText("Sign in");
+      }
+      return setError("There has been an error.");
+    }
+  };
+
+  const emailOTPverification = async (event) => {
+    if (event) {
+      event.preventDefault();
+    }
+    setButtonText("Sending Email..");
+    try {
+      let response = await sendOTPConfig(otpToken);
+      if (response.data && response.data.success === false) {
+        setButtonText("Verify OTP!");
+        return setError(response.data.message);
+      }
+      // setotpToken(response.data.user.token);
+      // setotpPrompt(true);
+      toast({
+        title: "Email Sent!",
+        description: "Please check your email!",
+        status: "success",
+        duration: 9000,
+        isClosable: true,
+      })
+      return setButtonText("Verify OTP");
+    } catch (err) {
+      console.log(err);
+      setButtonText("Verify OTP");
+      if (err.response.status==400) {
+        return setError(err.response.data.message);
+      }
+      if (err.response.status==401) {
+        setotpPrompt(false)
+        setError("Please sign in again!");
+        return setButtonText("Sign in");
+     }
       return setError("There has been an error.");
     }
   };
@@ -81,7 +165,133 @@ function SignIn() {
     window.location.reload(false);
   };
 
-  return (
+  return otpPrompt?(    <Flex position="relative" mb="40px">
+  <Flex
+    h={{ sm: "initial", md: "75vh", lg: "85vh" }}
+    w="100%"
+    maxW="1044px"
+    mx="auto"
+    justifyContent="space-between"
+    mb="30px"
+    pt={{ sm: "100px", md: "0px" }}
+  >
+    <Flex
+      alignItems="center"
+      justifyContent="start"
+      style={{ userSelect: "none" }}
+      w={{ base: "100%", md: "50%", lg: "42%" }}
+    >     
+        <Flex
+          direction="column"
+          w="100%"
+          background="transparent"
+          p="48px"
+          mt={{ md: "150px", lg: "80px" }}
+        >
+          <Heading color={titleColor} fontSize="32px" mt="10px" mb="10px">
+            OTP Verification
+          </Heading>
+          <Text
+            mb="36px"
+            ms="4px"
+            color={textColor}
+            fontWeight="bold"
+            fontSize="14px"
+          >
+            Please enter the OTP from Google Authenticator App!
+          </Text>
+          <FormControl>
+            <FormLabel ms="4px" fontSize="sm" fontWeight="normal">
+              Code
+            </FormLabel>
+            <Input
+              borderRadius="15px"
+              mb="24px"
+              fontSize="sm"
+              type="text"
+              placeholder="Enter your one-time otp password"
+              size="lg"
+              id="email"
+              value={otpCode}
+              onChange={(event) => {
+                setotpCode(event.target.value);
+                setError(undefined);
+              }}
+            />
+            <h4
+              style={{
+                fontSize: ".9em",
+                color: "red",
+                textAlign: "center",
+                fontWeight: 400,
+                transition: ".2s all",
+              }}
+            >
+              {error}
+            </h4>
+            <Button
+              fontSize="18px"
+              type="submit"
+              bg="primaryColor"
+              w="100%"
+              h="45"
+              mb="20px"
+              color="white"
+              mt="20px"
+              _hover={{
+                bg: "primaryColorHover",
+              }}
+              _active={{
+                bg: "black",
+              }}
+              onClick={verifyOtp}
+            >
+              {buttonText}
+            </Button>
+            <Button
+                  color="primaryColor"
+                  _hover={{ color: "primaryColor" }}
+                  onClick={emailOTPverification}
+                >
+                  {" "}
+                  <Text
+                    mb="36px"
+                    ms="4px"
+                    color={textColor}
+                    fontWeight="bold"
+                    fontSize="14px"
+                    _hover={{ color: "primaryColor" }}
+                  >
+                    Not configured yet? Click to ask for configuration email!
+                  </Text>
+                </Button>
+          </FormControl>
+        </Flex>
+      
+    </Flex>
+    <Box
+      display={{ base: "none", md: "block" }}
+      overflowX="hidden"
+      h="100%"
+      w="55vw"
+      position="absolute"
+      right="0px"
+    >
+      <Box
+        bgImage={signInImage}
+        w="80%"
+        h="40%"
+        bgSize="contain"
+        bgRepeat="no-repeat"
+        bgPosition="50%"
+        position="absolute"
+        top="30%"
+        borderBottomLeftRadius="0"
+        backgroundColor={"white"}
+      ></Box>
+    </Box>
+  </Flex>
+</Flex>) : (
     <Flex position="relative" mb="40px">
       <Flex
         h={{ sm: "initial", md: "75vh", lg: "85vh" }}
