@@ -5,5 +5,4 @@ export const TOKEN = userToken ? userToken.token : "";
 // export const TOKEN = JSON.parse(localStorage.getItem("user"))
 //   ? JSON.parse(localStorage.getItem("user")).token
 //   : "123";
-// console.log(TOKEN);
 export const ACCEPT_TYPE = "Application/json";

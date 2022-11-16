@@ -59,7 +59,6 @@ const UploadCSVModal = ({ setReloadHandler }) => {
       const formData = new FormData();
       formData.append("file", selectFile);
       formData.append("description", fileDesc);
-      //   console.log(formData);
       const res = await axios.post(
         `${API_SERVER}bulk-payments/create`,
         formData,
@@ -72,7 +71,6 @@ const UploadCSVModal = ({ setReloadHandler }) => {
       );
 
       let data = res.data;
-      console.log(data);
       setLoading(false);
       setFileDesc("");
       if (res.status === 200) {
@@ -82,10 +80,8 @@ const UploadCSVModal = ({ setReloadHandler }) => {
       }
     } catch (err) {
       if (err.response.status === 404) {
-        console.log("Resource could not be found!");
         setLoading(false);
       } else if (err.response.status === 401) {
-        console.log("Unauthorized!");
         setLoading(false);
       } else if (err.response.status === 400) {
         toast({
@@ -97,7 +93,6 @@ const UploadCSVModal = ({ setReloadHandler }) => {
         });
         setLoading(false);
       } else {
-        console.log(err);
         toast({
           title: "Server error!",
           description: "err",
@@ -115,7 +110,6 @@ const UploadCSVModal = ({ setReloadHandler }) => {
     const { files } = event.target;
     setSelectedFile(event.target.files[0]);
     setFileName(event.target.files[0].name);
-    console.log(selectFile);
   };
 
   const onDropFiles = (files, event) => {
@@ -169,15 +163,6 @@ const UploadCSVModal = ({ setReloadHandler }) => {
                   >
                     <FileDrop
                       onTargetClick={onTargetClick}
-                      //   onFrameDragEnter={(event) =>
-                      //     console.log("onFrameDragEnter", event)
-                      //   }
-                      //   onFrameDragLeave={(event) =>
-                      //     console.log("onFrameDragLeave", event)
-                      //   }
-                      //   onFrameDrop={(event) => console.log("onFrameDrop", event)}
-                      //   onDragOver={(event) => console.log("onDragOver", event)}
-                      //   onDragLeave={(event) => console.log("onDragLeave", event)}
                       onDrop={onDropFiles}
                     >
                       <Text transform="translateY(-30px)">

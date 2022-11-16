@@ -219,7 +219,7 @@ const EditCustomer = (props) => {
   };
 
   const getCreditData = (data) => {
-    // console.log("Data comming from CreditCard", data);
+    
     setVals({ ...vals, data });
   };
 
@@ -426,7 +426,6 @@ const EditCustomer = (props) => {
               </Accordion>
               {sources !== null && sources.data.length > 0 ? (
                 <FormControl mt={4}>
-                  {console.log(sources)}
                   <Flex alignItems={"center"}>
                     <FormLabel m={0} pe={4}>
                       <Heading fontSize="xl">Default Source</Heading>

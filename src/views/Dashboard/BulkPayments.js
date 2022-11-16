@@ -37,7 +37,6 @@ function BulkPayments() {
   const [unauthorizedWarning, setUnauthorizedWarning] = useState(false);
   const [noDataFound, setNoDataFound] = useState(false);
   const setReloadHandler = (value) => {
-    console.log(value);
     if (value === true) {
       setLoading(true);
       getBulkPayments()
@@ -46,10 +45,9 @@ function BulkPayments() {
             setCustomers(res.data.data);
             setLoading(false);
           } else {
-            console.log(res);
           }
         })
-        .catch((err) => console.log(err) && setLoading(false));
+        .catch((err) => setLoading(false));
     }
   };
 
@@ -69,10 +67,9 @@ function BulkPayments() {
             setCustomers(res.data.data);
             setLoading(false);
           } else {
-            console.log(res);
           }
         })
-        .catch((err) => console.log(err) && setLoading(false));
+        .catch((err) => setLoading(false));
     }
   }, []);
 

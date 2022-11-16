@@ -61,7 +61,7 @@ const UsersTable = (props) => {
   const [isLoading, setLoading] = useState(false);
 
   useEffect(() => {
-    // console.log(userid);
+    
   }, []);
 
   return (
@@ -168,13 +168,13 @@ const UsersTable = (props) => {
 export default UsersTable;
 
 const ChangeUserRoleDialog = (jobObj) => {
-  // console.log(jobObj);
+  
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = useRef();
   let userRole = document.getElementById("userRole");
   const [roleReq, setRole] = useState("");
   const [isRoleSelected, setRoleSelected] = useState(false);
-  // console.log(userRole.textContent);
+  
 
   const handleRole = () => {
     editUsersRole(jobObj.email, roleReq)
@@ -189,7 +189,7 @@ const ChangeUserRoleDialog = (jobObj) => {
           });
           return jobObj.setReloadHandler(true);
         } else {
-          console.log(res);
+          
         }
       })
       .catch((err) => {
@@ -199,7 +199,7 @@ const ChangeUserRoleDialog = (jobObj) => {
             status: "error",
             duration: 5000,
             isClosable: true,
-          }) && console.log(err);
+          })
           return jobObj.setReloadHandler(true);
         } else {
           jobObj.toast({
@@ -208,7 +208,7 @@ const ChangeUserRoleDialog = (jobObj) => {
             status: "error",
             duration: 5000,
             isClosable: true,
-          }) && console.log(err);
+          })
         }
       });
     onClose();
@@ -333,7 +333,6 @@ const ChangeUserRoleDialog = (jobObj) => {
 };
 
 const DeleteJob = (jobObj) => {
-  // console.log(jobObj);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = useRef();
 
@@ -350,7 +349,7 @@ const DeleteJob = (jobObj) => {
           });
           return jobObj.setReloadHandler(true);
         } else {
-          console.log(res);
+          
         }
       })
       .catch((err) =>
@@ -361,8 +360,8 @@ const DeleteJob = (jobObj) => {
               status: "error",
               duration: 5000,
               isClosable: true,
-            }) && console.log(err)
-          : console.log(err)
+            }) 
+          : null
       );
     onClose();
   };

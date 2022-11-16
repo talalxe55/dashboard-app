@@ -146,7 +146,6 @@ const RefundForm = (props) => {
     const response = refundCharge(payload);
     response
       .then((res) => {
-        console.log(res);
         setisReload(true);
         setReloadState(true);
         setisSuccess(true);
@@ -192,7 +191,6 @@ const RefundForm = (props) => {
   };
 
   const getCreditData = (data) => {
-    // console.log("Data comming from CreditCard", data);
     setVals({ ...vals, data });
   };
 

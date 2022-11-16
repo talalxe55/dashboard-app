@@ -182,10 +182,6 @@ function Users() {
     if (filterApplied) {
       options = getFilterData();
 
-      // if(isMore){
-      //     options['page'] = filterPage;
-      // }
-      console.log(filterCustomersdataRef);
       var moreCustomers = filterCustomers(
         options,
         null,
@@ -226,11 +222,6 @@ function Users() {
     try {
       let data = {};
       setLoading(true);
-      // if(options){
-      //   options.forEach((item,index) => {
-      //     console.log(Object.keys(options[index])+' => '+ item)
-      //   })
-      // }
       var params = "";
       if (limit !== undefined && limit !== null) {
         !params ? (params = "?limit=" + limit) : (params += "&limit=" + limit);
@@ -241,7 +232,6 @@ function Users() {
       if (options !== null && options !== undefined) {
         Object.entries(options).forEach(([key, value]) => {
           data[key] = value;
-          console.log(data);
         });
       }
 
@@ -272,15 +262,11 @@ function Users() {
       setisMore(res.data.data.has_more);
       setfilterApplied(true);
     } catch (err) {
-      console.log(err);
       if (err.response.status === 404) {
         setNoDataFound(true);
-        // alert('The requested resource was not found');
-        console.log("Resource could not be found!");
       } else if (err.response.status === 401) {
         setUnauthorizedWarning(true);
       } else {
-        console.log(err.message);
       }
     }
   };
@@ -288,32 +274,7 @@ function Users() {
   const getCustomersList = async () => {
     try {
       setLoading(true);
-      // if(options){
-      //   options.forEach((item,index) => {
-      //     console.log(Object.keys(options[index])+' => '+ item)
-      //   })
-      // }
       var params = "";
-
-      // if (options !== null && options !== undefined) {
-      //   if (options.limit !== undefined) {
-      //     !params
-      //       ? (params = "?limit=" + options.limit)
-      //       : (params += "&limit=" + options.limit);
-      //   }
-
-      //   if (options.starting_after !== undefined) {
-      //     !params
-      //       ? (params = "?starting_after=" + options.starting_after)
-      //       : (params += "&starting_after=" + options.starting_after);
-      //   }
-
-      //   if (options.ending_before !== undefined) {
-      //     !params
-      //       ? (params = "?ending_before=" + options.ending_before)
-      //       : (params += "&ending_before=" + options.ending_before);
-      //   }
-      // }
 
       const res = await axios.get(`${API_SERVER}users/`, {
         headers: {
@@ -324,19 +285,16 @@ function Users() {
       });
       setLoading(false);
       let data = res.data.data;
-      console.log(data);
       setCustomers(data);
 
       // setisMore(res.data.data.has_more);
       // setoldload(res.data.data.has_more);
     } catch (err) {
-      console.log(err);
       if (err.response.status === 404) {
         setNoDataFound(true);
       } else if (err.response.status === 401) {
         setUnauthorizedWarning(true);
       } else {
-        console.log(err.message);
       }
     }
   };
@@ -363,7 +321,6 @@ function Users() {
     }
   });
   const emailTextHandler = (email) => {
-    //console.log(email);
     setEmailFilter(email);
   };
   return (

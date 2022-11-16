@@ -124,16 +124,7 @@ function Detail() {
       });
 
       let data = await res.data.data;
-      console.log(data);
       setSingleCustomerEmail(data.email);
-      //console.log(data.sources.data.length);
-      //return data;
-      //setSinglePayment(data);
-      //setSingleCharge(data.charges);
-      //console.log(data.charges);
-      //setsingleCustomer(data);
-      //setLoading(false);
-      //return data.email;
     } catch (err) {
       if (err.response.status === 404) {
         setdatanotFound(true);
@@ -149,7 +140,6 @@ function Detail() {
 
     try {
       if (id.startsWith("src")) {
-        console.log(id);
         const res = await axios.get(`${API_SERVER}sources/${id}`, {
           headers: {
             Authorization: `${TOKEN_TYPE} ${TOKEN}`,
@@ -160,7 +150,6 @@ function Detail() {
         let data = await res.data.data;
         setSingleCustomerSources(data);
       } else if (id.startsWith("card")) {
-        console.log(id);
         const res = await axios.get(
           `${API_SERVER}customers/${cus}/cards/${id}`,
           {
@@ -190,7 +179,6 @@ function Detail() {
         });
       }
     } catch (err) {
-      console.log(err);
       if (err.response.status === 404) {
         setdatanotFound(true);
       } else if (err.response.status === 401) {
@@ -212,10 +200,7 @@ function Detail() {
       });
 
       let data = await res.data.data;
-      console.log(data);
-      //console.log(data.sources.data.length);
       array.push(data);
-      //return data;
       setSinglePayment(data);
       setSingleCharge(data.charges);
       setSinglePaymentMeta(data.metadata);
@@ -230,16 +215,12 @@ function Detail() {
       if (data.customer !== null) {
         const customer = await getCustomerEmail(data.customer);
       }
-      console.log(data.charges);
-      //setSingleCustomerSources(data.sources);
-      //setLoading(false);
     } catch (err) {
       if (err.response.status === 404) {
         setdatanotFound(true);
       } else if (err.response.status === 401) {
         setisUnauthorized(true);
       } else {
-        console.log(err.message);
       }
     }
   };
@@ -247,16 +228,12 @@ function Detail() {
   function showMeta() {
     const timesTwo = [];
 
-    //console.log(timesTwo);
   }
 
   const ProductList = () => {
     const productEntries = [SinglePaymentMeta];
-    //console.log(productEntries);
     const keys = Object.keys(SinglePaymentMeta);
-    //console.log(keys);
     return productEntries.map((item, index) => {
-      console.log(Object.keys(item));
 
       return (
         <Box p="0px" bg={"#F8F9FA"} my="22px" borderRadius="12px">
@@ -279,38 +256,6 @@ function Detail() {
         </Box>
       );
     });
-    // productEntries.forEach((item, index) => {
-
-    //     keys.forEach((key, index) => {
-
-    //        console.log(key, item[key])
-
-    //     })
-
-    //     })
-
-    // <ul>
-    //     {productEntries.map(productEntry => (
-    //       <li key={productEntry[0]}>
-    //         {productEntry[0].customer_email}
-    //       </li>
-    //     ))}
-    //   </ul>
-    // return (
-    //     <ul>
-
-    // {productEntries.forEach((item, index) => {
-
-    //     keys.forEach((key, index) => {
-
-    //         <li >{key} : {item[key]}</li>
-
-    //     })
-
-    //     })}
-
-    //   </ul>
-    // )
   };
 
   function toStatus(val) {
@@ -385,13 +330,6 @@ function Detail() {
   }, []);
 
   useEffect(() => {
-    // custData.then((value) => {
-    //   // console.log(value.data.data);
-    //   setSingleCustomer(value.data.data);
-    //   // console.log(singleCustomer);
-    // });
-    // console.log(getCustomerID(id));
-    // setSingleCustomer(getCustomerID(id));
     if (isReload) {
       getCustomerID();
     }
@@ -449,7 +387,6 @@ function Detail() {
           title: "Payment Unsuccessfull",
         });
       } else {
-        console.log(err.message);
       }
     }
   };
@@ -481,7 +418,6 @@ function Detail() {
 
   const CardDetails = () => {
     if (singleCustomerSources) {
-      console.log(singleCustomerSources);
       //   return (
       //     <Text fontSize="xl" letterSpacing="2px" fontWeight="bold">
       //       XXXX XXXX XXXX {singleCustomerSources.data[0].card.last4}

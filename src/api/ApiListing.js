@@ -10,15 +10,13 @@ const getCustomersList = async () => {
         "Content-Type": `${ACCEPT_TYPE}`,
       },
     });
-    // let data = res.data.data.data;
-    // console.log(data);
   } catch (err) {
     if (err.response.status === 404) {
-      console.log("Resource could not be found!");
+      
     } else if (err.response.status === 401) {
-      console.log("Unauthorized!");
+      
     } else {
-      console.log(err.message);
+      
     }
   }
 };
@@ -32,15 +30,15 @@ const getCustomerID = async (cusID) => {
         "Content-Type": `${ACCEPT_TYPE}`,
       },
     });
-    // console.log(res.data.data);
+    
     return res;
   } catch (err) {
     if (err.response.status === 404) {
-      console.log("Resource could not be found!");
+     
     } else if (err.response.status === 401) {
-      console.log("Unauthorized!");
+      
     } else {
-      console.log(err.message);
+      
     }
   }
 };
@@ -54,11 +52,9 @@ const getAllPayments = async () => {
         "Content-Type": `${ACCEPT_TYPE}`,
       },
     });
-    // let data = await res.json();
-    // console.log(res.data.data.data);
-    // console.log(res.status);
+
   } catch (error) {
-    console.log(error);
+    
   }
 };
 
@@ -84,11 +80,9 @@ const getAllRefunds = async () => {
         "Content-Type": `${ACCEPT_TYPE}`,
       },
     });
-    // let data = await res.json();
-    // console.log(res.data.data.data);
-    // console.log(res.status);
+
   } catch (error) {
-    console.log(error);
+    
   }
 };
 
@@ -109,9 +103,7 @@ const createPayment = async (data) => {
     }
   );
   return res;
-  // let data = await res.json();
-  // console.log(res.data.data.data);
-  // console.log(res.status);
+
 };
 
 const editCustomer = async (data, cusid) => {
@@ -131,9 +123,7 @@ const editCustomer = async (data, cusid) => {
     }
   );
   return res;
-  // let data = await res.json();
-  // console.log(res.data.data.data);
-  // console.log(res.status);
+
 };
 
 const refundCharge = async (data) => {
@@ -254,15 +244,15 @@ const getBulkPayments = async () => {
         "Content-Type": `${ACCEPT_TYPE}`,
       },
     });
-    // console.log(res.data.data);
+   
     return res;
   } catch (err) {
     if (err.response.status === 404) {
-      console.log("Payments could not be found!");
+      
     } else if (err.response.status === 401) {
-      console.log("Unauthorized!");
+      
     } else {
-      console.log(err.message);
+      
     }
   }
 };
@@ -301,7 +291,7 @@ const getUsers = async () => {
 };
 
 const editUsersRole = async (userEmail, role) => {
-  // console.log(userEmail, role);
+  
   const jsonData = JSON.stringify({ email: userEmail, role });
   const res = await axios.post(`${API_SERVER}users/edit-role`, jsonData, {
     headers: {
@@ -314,7 +304,7 @@ const editUsersRole = async (userEmail, role) => {
 };
 
 const deleteUsers = async (email, id) => {
-  // console.log(email, id);
+  
   const payload = JSON.stringify({ email, id });
   const res = await axios.post(`${API_SERVER}users/delete/`, payload, {
     headers: {

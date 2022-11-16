@@ -18,7 +18,7 @@ import {
       var result = "";
       Object.entries(address).forEach(([key, value], index) => {
         if(value !== null){
-          console.log(value, index)
+          
           result+= index == Object.keys(address).length - 1?value:value+", "
         }
       })

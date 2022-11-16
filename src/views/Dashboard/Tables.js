@@ -57,11 +57,6 @@ function Tables() {
   const getCustomersList = async (options) => {
     try {
       setLoading(true);
-      // if(options){
-      //   options.forEach((item,index) => {
-      //     console.log(Object.keys(options[index])+' => '+ item)
-      //   })
-      // }
       var params = "";
 
       if (options !== null && options !== undefined) {
@@ -104,13 +99,11 @@ function Tables() {
       setisMore(res.data.data.has_more);
       setoldload(res.data.data.has_more);
     } catch (err) {
-      console.log(err);
       if (err.response.status === 404) {
         setNoDataFound(true);
       } else if (err.response.status === 401) {
         setUnauthorizedWarning(true);
       } else {
-        console.log(err.message);
       }
     }
   };
@@ -124,11 +117,6 @@ function Tables() {
     try {
       let data = {};
       setLoading(true);
-      // if(options){
-      //   options.forEach((item,index) => {
-      //     console.log(Object.keys(options[index])+' => '+ item)
-      //   })
-      // }
       var params = "";
       if (limit !== undefined && limit !== null) {
         !params ? (params = "?limit=" + limit) : (params += "&limit=" + limit);
@@ -139,7 +127,6 @@ function Tables() {
       if (options !== null && options !== undefined) {
         Object.entries(options).forEach(([key, value]) => {
           data[key] = value;
-          console.log(data);
         });
       }
 
@@ -157,7 +144,6 @@ function Tables() {
 
       setLoading(false);
       let resdata = res.data.data.data;
-      console.log(resdata);
       if (page == null) {
         setCustomers(resdata);
         filterCustomersdataRef = true;
@@ -171,13 +157,11 @@ function Tables() {
       setisMore(res.data.data.has_more);
       setfilterApplied(true);
     } catch (err) {
-      console.log(err);
       if (err.response.status === 404) {
         setNoDataFound(true);
       } else if (err.response.status === 401) {
         setUnauthorizedWarning(true);
       } else {
-        console.log(err.message);
       }
     }
   };
@@ -190,7 +174,6 @@ function Tables() {
       // if(isMore){
       //     options['page'] = filterPage;
       // }
-      console.log(filterCustomersdataRef);
       var moreCustomers = filterCustomers(
         options,
         null,
@@ -215,7 +198,6 @@ function Tables() {
 
   useEffect(() => {
     getCustomersList(null);
-    // console.log(customers.length);
   }, []);
 
   // useEffect(() => {
@@ -233,7 +215,6 @@ function Tables() {
     }
   });
   const emailTextHandler = (email) => {
-    console.log(email);
     setEmailFilter(email);
   };
 
@@ -606,11 +587,7 @@ function Tables() {
                   </Tr>
                 </Thead>
                 <Tbody className="customer_body" textTransform={"capitalize"}>
-                  {console.log(customerListing)}
                   {customerListing.map((val, index) => {
-                    {
-                      //console.log(val.sources.data[0].card.brand.toUpperCase());
-                    }
                     return (
                       <TablesTableRow
                         cusid={val.id}

@@ -56,9 +56,6 @@ function ForgotPassword() {
     response
       .then((res) => {
         setisloading(false);
-        console.log(res);
-        console.log(res.data);
-        console.log(res.data.status);
         if (res.data.status == "passwords.sent") {
           setButtonText("Email sent!");
           toast({
@@ -83,91 +80,6 @@ function ForgotPassword() {
           return setError("Email could not be sent. Please try again!");
         }
       });
-    //   try{
-    //     let response = await AuthApi.ForgotPassword({
-    //         "email": email,
-
-    //       });
-    //     console.log(response);
-    //     setisloading(false);
-    //     setButtonText("Email sent!");
-    //               toast({
-    //     title: 'Email Sent Successfully!',
-    //     description: res.data.message,
-    //     status: 'success',
-    //     duration: 9000,
-    //     isClosable: true,
-    //   })
-    //     if(response.data.status=="passwords.sent"){
-    //         setisloading(false);
-    //         setButtonText("Email sent!");
-    //                   toast({
-    //         title: 'Email Sent Successfully!',
-    //         description: res.data.message,
-    //         status: 'success',
-    //         duration: 9000,
-    //         isClosable: true,
-    //       })
-    //     }
-    //     // response.then(res => {
-    //     //     setisloading(false);
-    //     //     console.log(res);
-    //     //     console.log(res.data);
-    //     //     console.log(res.data.status);
-    //     //     if(res.data.status=="passwords.sent"){
-    //     //         setButtonText("Email sent!");
-    //     //                   toast({
-    //     //         title: 'Email Sent Successfully!',
-    //     //         description: res.data.message,
-    //     //         status: 'success',
-    //     //         duration: 9000,
-    //     //         isClosable: true,
-    //     //       })
-    //     //     }
-    //     // })
-
-    //   }
-    //   catch(err){
-    //     setisloading(false);
-    //     setButtonText("Resend Email!");
-    //     if (err.response) {
-
-    //       return setError(err.response.data.message);
-    //     }
-    //     else{
-    //         return setError("Email could not be sent. Please try again!");
-    //     }
-    //   }
-
-    //   response.then( res => {
-    //     setisloading(false);
-    //     if(res.data.status=="passwords.sent"){
-    //         setButtonText("Email sent!");
-    //                   toast({
-    //         title: 'Email Sent Successfully!',
-    //         description: res.data.message,
-    //         status: 'success',
-    //         duration: 9000,
-    //         isClosable: true,
-    //       })
-    //     }
-    //   }).catch( err => {
-    //     setisloading(false);
-    //     setButtonText("Resend Email!");
-    //     if (err.response) {
-
-    //       return setError(err.response.data.message);
-    //     }
-    //     else{
-    //         return setError("Email could not be sent. Please try again!");
-    //     }
-
-    //   })
-    //   if (response.data && response.data.success === false) {
-    //     setButtonText("Sign in");
-    //     return setError(response.data.message);
-    //   }
-    //return setProfile(response);
   };
 
   const setProfile = async (response) => {
@@ -176,7 +88,6 @@ function ForgotPassword() {
     user = JSON.stringify(user);
     setUser(user);
     localStorage.setItem("user", user);
-    // console.log(user);
     history.push("/dashboard");
     window.location.reload(false);
   };

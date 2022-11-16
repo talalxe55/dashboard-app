@@ -74,7 +74,6 @@ function SignUp() {
           return setError(err.response.data.message.password);
         }
       }
-      //console.log(err);
       setButtonText("Register");
       if (message.response) {
         return setError(message.response.data.msg);

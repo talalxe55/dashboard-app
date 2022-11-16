@@ -93,9 +93,6 @@ function ResetPassword() {
     response
       .then((res) => {
         setisloading(false);
-        console.log(res);
-        console.log(res.data);
-        console.log(res.data.status);
         if (res.data.status == "passwords.reset") {
           setisSuccess(true);
           setButtonText("Reset Password!");
@@ -121,7 +118,6 @@ function ResetPassword() {
               "Invalid token! Please request the reset code again!"
             );
           } else if (err.response.data.message.password) {
-            console.log(err.response.data.message.password);
             errvals["password"] = err.response.data.message.password;
             seterrVals({ ...errvals });
           } else if (err.response.data.message.confirm_password) {
@@ -151,7 +147,6 @@ function ResetPassword() {
     user = JSON.stringify(user);
     setUser(user);
     localStorage.setItem("user", user);
-    // console.log(user);
     history.push("/dashboard");
     window.location.reload(false);
   };

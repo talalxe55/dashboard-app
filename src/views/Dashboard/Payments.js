@@ -186,11 +186,6 @@ function Tables() {
     let options = [];
     if (filterApplied) {
       options = getFilterData();
-
-      // if(isMore){
-      //     options['page'] = filterPage;
-      // }
-      console.log(filterCustomersdataRef);
       var moreCustomers = filterCustomers(
         options,
         null,
@@ -231,11 +226,6 @@ function Tables() {
     try {
       let data = {};
       setLoading(true);
-      // if(options){
-      //   options.forEach((item,index) => {
-      //     console.log(Object.keys(options[index])+' => '+ item)
-      //   })
-      // }
       var params = "";
       if (limit !== undefined && limit !== null) {
         !params ? (params = "?limit=" + limit) : (params += "&limit=" + limit);
@@ -246,7 +236,6 @@ function Tables() {
       if (options !== null && options !== undefined) {
         Object.entries(options).forEach(([key, value]) => {
           data[key] = value;
-          console.log(data);
         });
       }
 
@@ -277,15 +266,11 @@ function Tables() {
       setisMore(res.data.data.has_more);
       setfilterApplied(true);
     } catch (err) {
-      console.log(err);
       if (err.response.status === 404) {
         setNoDataFound(true);
-        // alert('The requested resource was not found');
-        console.log("Resource could not be found!");
       } else if (err.response.status === 401) {
         setUnauthorizedWarning(true);
       } else {
-        console.log(err.message);
       }
     }
   };
@@ -293,11 +278,6 @@ function Tables() {
   const getCustomersList = async (options) => {
     try {
       setLoading(true);
-      // if(options){
-      //   options.forEach((item,index) => {
-      //     console.log(Object.keys(options[index])+' => '+ item)
-      //   })
-      // }
       var params = "";
 
       if (options !== null && options !== undefined) {
@@ -340,14 +320,11 @@ function Tables() {
       setisMore(res.data.data.has_more);
       setoldload(res.data.data.has_more);
     } catch (err) {
-      console.log(err);
       if (err.response.status === 404) {
         setNoDataFound(true);
-        console.log("Resource could not be found!");
       } else if (err.response.status === 401) {
         setUnauthorizedWarning(true);
       } else {
-        console.log(err.message);
       }
     }
   };
@@ -408,16 +385,9 @@ function Tables() {
     } else {
       getCustomersList(null);
     }
-    // const queryParams = new URLSearchParams(window.location.search)
-    // const term = queryParams.get("customer")
-    // console.log(term)
   }, []);
 
   useEffect(() => {
-    //filterCustomers(null);
-    // console.log(filterData);
-    // console.log(isfilterApplied)
-    // console.log(filterEmail)
   }, [isfilterApplied, filterData, filterEmail]);
 
   // Filtering Email
@@ -429,7 +399,6 @@ function Tables() {
     }
   });
   const emailTextHandler = (email) => {
-    //console.log(email);
     setEmailFilter(email);
   };
   return (

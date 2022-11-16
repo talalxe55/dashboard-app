@@ -65,7 +65,6 @@ function Billing() {
   const nameColor = useColorModeValue("gray.500", "white");
 
   const extractBilling = (sourceData) => {
-    // console.log(sourceData);
     if (sourceData.data.length > 0) {
       let data = [];
       sourceData.data.forEach((element) => {
@@ -140,12 +139,8 @@ function Billing() {
         },
       });
       let data = await res.data.data;
-      // console.log(data.sources.data);
-      array.push(data);
-      //return data;
-      // console.log(data);
+      array.push(data);;
       setSingleCustomer(data);
-      console.log(data);
       setSingleCustomerSources(data.sources);
       extractSource(data.sources);
       extractBilling(data.sources);
@@ -157,29 +152,21 @@ function Billing() {
       } else if (err.response.status === 401) {
         setUnauthorizedWarning(true);
       } else {
-        console.log(err.message);
       }
     }
   };
 
   useEffect(() => {
-    // custData.then((value) => {
-    //   // console.log(value.data.data);
-    //   setSingleCustomer(value.data.data);
-    //   // console.log(singleCustomer);
-    // });
-    // console.log(getCustomerID(id));
-    // setSingleCustomer(getCustomerID(id));
+
     if (isReload) {
       const response = getAllPaymentsByCustomerID(id);
       response
         .then((res) => {
-          // console.log(res.data.data);
           setSingleCustomerPayments(res.data.data);
         })
         .catch((err) => {
           if (err.response.status == 400) {
-            console.log(err);
+            setNoDataFound(true);
           }
           if (err.response.status == 401) {
             setUnauthorizedWarning(true);
@@ -193,12 +180,11 @@ function Billing() {
       const response = getAllPaymentsByCustomerID(id);
       response
         .then((res) => {
-          // console.log(res.data.data);
           setSingleCustomerPayments(res.data.data);
         })
         .catch((err) => {
           if (err.response.status == 400) {
-            console.log(err);
+            setNoDataFound(true);
           }
           if (err.response.status == 401) {
             setUnauthorizedWarning(true);
@@ -208,23 +194,14 @@ function Billing() {
     }
   };
   useEffect(() => {
-    console.log("reload state" + isReload);
-    // custData.then((value) => {
-    //   // console.log(value.data.data);
-    //   setSingleCustomer(value.data.data);
-    //   // console.log(singleCustomer);
-    // });
-    // console.log(getCustomerID(id));
-    // setSingleCustomer(getCustomerID(id));
     const response = getAllPaymentsByCustomerID(id);
     response
       .then((res) => {
-        // console.log(res.data.data);
         setSingleCustomerPayments(res.data.data);
       })
       .catch((err) => {
         if (err.response.status == 400) {
-          console.log(err);
+          setNoDataFound(true);
         }
         if (err.response.status == 401) {
           setUnauthorizedWarning(true);
@@ -234,13 +211,7 @@ function Billing() {
   }, []);
 
   useEffect(() => {
-    // custData.then((value) => {
-    //   // console.log(value.data.data);
-    //   setSingleCustomer(value.data.data);
-    //   // console.log(singleCustomer);
-    // });
-    // console.log(getCustomerID(id));
-    // setSingleCustomer(getCustomerID(id));
+
 
     if (
       singleCustomerPayments !== null &&
@@ -249,7 +220,6 @@ function Billing() {
       singleCustomerPayments.data.forEach((item, index) => {
         if (item.metadata !== null) {
           if ("customer_email" in item.metadata) {
-            console.log(item.metadata.customer_email);
             setcustomerMetaEmail(item.metadata.customer_email);
             return;
           }
@@ -293,12 +263,6 @@ function Billing() {
 
   const CardDetails = () => {
     if (singleCustomerDefaultSource) {
-      //console.log(singleCustomerDefaultSource);
-      //   return (
-      //     <Text fontSize="xl" letterSpacing="2px" fontWeight="bold">
-      //       XXXX XXXX XXXX {singleCustomerSources.data[0].card.last4}
-      //     </Text>
-      //   );
       if (Object.keys(singleCustomerDefaultSource.card) !== 0) {
         if (singleCustomerDefaultSource.card.last4.length > 0) {
           return (

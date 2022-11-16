@@ -26,7 +26,7 @@ export default function AuthNavbar(props) {
     setOpen(!open);
   };
   const { logo, logoText, secondary, ...rest } = props;
-  console.log(props);
+  
   // verifies if routeName is the one active (in browser input)
   const activeRoute = (routeName) => {
     return window.location.href.indexOf(routeName) > -1 ? true : false;

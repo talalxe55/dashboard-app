@@ -27,7 +27,6 @@ import { useParams } from "react-router-dom";
 const PaymentCreateModal = () => {
   const [currency, setCurrency] = useState();
   let { id } = useParams();
-  console.log(id);
   const getCustomerID = async () => {
     try {
       const res = await axios.get(`${API_SERVER}customers/cus_MUAJ4H3JWVHQiR`, {
@@ -37,11 +36,8 @@ const PaymentCreateModal = () => {
           "Content-Type": `${ACCEPT_TYPE}`,
         },
       });
-      // let data = await res.json();
-      console.log(res.data.data);
-      console.log(res.status);
     } catch (error) {
-      console.log(error);
+      
     }
   };
   useEffect(() => {
@@ -56,7 +52,6 @@ const PaymentCreateModal = () => {
   ];
 
   function handleCurrency(e) {
-    console.log(e.target.value);
     setCurrency(e.target.value);
   }
 

@@ -50,7 +50,7 @@ import {
 } from "@chakra-ui/icons";
 import ReactSelect from "react-select";
 import Currency from "../../api/CountriesCurrency";
-import { CreditCard } from "./CreditCard";
+//import { CreditCard } from "./CreditCard";
 import {
   getCustomersList,
   getAllPayments,
@@ -148,9 +148,6 @@ const PaymentForm = (props) => {
     if (!checked) {
       return;
     }
-    //vals.metadata =
-    console.log(email);
-    console.log(payload);
     if (email) {
       payload["metadata"] = { ...payload["metadata"], customer_email: email };
     }
@@ -202,7 +199,6 @@ const PaymentForm = (props) => {
   };
 
   const getCreditData = (data) => {
-    // console.log("Data comming from CreditCard", data);
     setVals({ ...vals, data });
   };
 
@@ -507,7 +503,6 @@ const BillingAdd = () => {
       },
     });
     let data = await res.json();
-    // console.log(data.auth_token);
     let authToken = data.auth_token;
     localStorage.setItem("countryapi", authToken);
   };
@@ -523,18 +518,13 @@ const BillingAdd = () => {
           Accept: "application/json",
         },
       });
-      // console.log(res);
       let data = await res.json();
-      // console.log(data);
       if (res.status !== 200) {
         console.warn("Generate a new token!");
       } else {
-        console.log("Universal Countries: Token Generated!");
-        // console.log(data[0].country_name);
         setCountries(data);
       }
     } catch (error) {
-      console.log("hmmm new err ehh! " + error);
     }
   };
   const getStatesList = async () => {
@@ -547,17 +537,13 @@ const BillingAdd = () => {
           Accept: "application/json",
         },
       });
-      // console.log(res);
       let data = await res.json();
-      // console.log(data);
       setcStates(data);
     } catch (error) {
-      console.log("hmmm new err states ehh! " + error);
     }
   };
   const handleStates = () => {
     setIniStates(document.getElementById("countrieslist").value);
-    // console.log("v", v);
     getStatesList();
   };
 

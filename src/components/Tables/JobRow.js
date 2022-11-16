@@ -58,7 +58,7 @@ const JobRow = (props) => {
   const [isLoading, setLoading] = useState(false);
 
   useEffect(() => {
-    // console.log(userid);
+    
   }, []);
   const handleRunLog = () => {
     setLoading(true);
@@ -72,27 +72,24 @@ const JobRow = (props) => {
             duration: 9000,
             isClosable: true,
           }) &&
-            setLoading(false) &&
-            console.log(res);
+            setLoading(false)
           return setReloadHandler(true);
         } else {
-          setLoading(false) && console.log(res);
+          setLoading(false)
         }
       })
-      .catch((err) =>
-        err
-          ? toast({
-              title: "Getting Error! Try again!",
-              description: "Error while running log",
-              status: "error",
-              duration: 9000,
-              isClosable: true,
-            }) &&
-            setLoading(false) &&
-            console.log(err)
-          : setLoading(false) && console.log(err)
-      );
-    // alert(userid);
+      .catch((err) => {
+        toast({
+        title: "Getting Error! Try again!",
+        description: "Error while running log",
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      })
+      setLoading(false);
+    })
+
+    
   };
 
   return (
@@ -210,7 +207,7 @@ const LogModal = (jobObj) => {
   const [getJobData, setJobData] = useState(null);
   const [sumVal, setSumVal] = useState(0);
   const [userID, setUserID] = useState(0);
-  // console.log(jobObj);
+  
 
   const logJobPayment = async () => {
     try {
@@ -224,14 +221,13 @@ const LogModal = (jobObj) => {
       let data = res.data.data;
 
       setJobData(data);
-      console.log(res.data.data);
     } catch (err) {
       if (err.response.status === 404) {
-        console.log("Resource could not be found!");
+        
       } else if (err.response.status === 401) {
-        console.log("Unauthorized!");
+        
       } else {
-        console.log(err.message);
+        
       }
     }
   };
@@ -255,7 +251,7 @@ const LogModal = (jobObj) => {
       getJobData.map((elem) => {
         total += elem.amount;
       });
-      // console.log(total);
+      
       setSumVal(total);
     }
   }, [getJobData]);
@@ -370,7 +366,6 @@ const LogModal = (jobObj) => {
 };
 
 const DeleteJob = (jobObj) => {
-  // console.log(jobObj);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = useRef();
 
@@ -384,10 +379,10 @@ const DeleteJob = (jobObj) => {
             status: "success",
             duration: 9000,
             isClosable: true,
-          }) && console.log(res);
+          })
           return jobObj.setReloadHandler(true);
         } else {
-          console.log(res);
+         
         }
       })
       .catch((err) =>
@@ -398,8 +393,8 @@ const DeleteJob = (jobObj) => {
               status: "error",
               duration: 9000,
               isClosable: true,
-            }) && console.log(err)
-          : console.log(err)
+            }) 
+          : null
       );
     onClose();
   };

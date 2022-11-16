@@ -132,7 +132,7 @@ const SingleCustomer = () => {
               </MenuButton>
               <MenuList className="action_menu">
                 <Heading>Payments</Heading>
-                <MenuItem onClick={() => console.log("Click")}>
+                <MenuItem>
                   Create Payment
                 </MenuItem>
                 <MenuItem>Create Invoice</MenuItem>

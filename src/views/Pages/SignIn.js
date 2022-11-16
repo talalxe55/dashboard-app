@@ -70,7 +70,6 @@ function SignIn() {
       setButtonText("Verify OTP");
       return setotpPrompt(true);
     } catch (err) {
-      console.log(err);
       setButtonText("Sign in");
       if (err.response) {
         return setError(err.response.data.message);
@@ -100,7 +99,6 @@ const verifyOtp = async (event) => {
       // setotpPrompt(true);
       return setProfile(response);
     } catch (err) {
-      console.log(err);
       setButtonText("Verify OTP");
       if (err.response.status==400) {
         if(err.response.data.message==="Too many attempts!"){
@@ -140,7 +138,6 @@ const verifyOtp = async (event) => {
       })
       return setButtonText("Verify OTP");
     } catch (err) {
-      console.log(err);
       setButtonText("Verify OTP");
       if (err.response.status==400) {
         return setError(err.response.data.message);
@@ -160,7 +157,6 @@ const verifyOtp = async (event) => {
     user = JSON.stringify(user);
     setUser(user);
     localStorage.setItem("user", user);
-    // console.log(user);
     history.push("/dashboard");
     window.location.reload(false);
   };

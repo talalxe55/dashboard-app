@@ -35,7 +35,6 @@ function Users() {
   const [unauthorizedWarning, setUnauthorizedWarning] = useState(false);
   const [noDataFound, setNoDataFound] = useState(false);
   const setReloadHandler = (value) => {
-    console.log(value);
     if (value === true) {
       setLoading(true);
       getUsers()
@@ -44,11 +43,9 @@ function Users() {
             setNewUsers(res.data.data);
             setLoading(false);
           } else {
-            console.log(res);
           }
         })
         .catch((err) => {
-          console.log(err) 
           if(err.response.status==401){
             setUnauthorizedWarning(true);
           }
@@ -72,11 +69,9 @@ function Users() {
             setNewUsers(res.data.data);
             setLoading(false);
           } else {
-            console.log(res);
           }
         })
         .catch((err) => {
-          console.log(err) 
           if(err.response.status==401){
             setUnauthorizedWarning(true);
           }
