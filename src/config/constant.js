@@ -1,4 +1,4 @@
-export const API_SERVER = "http://192.168.7.51:8001/api/";
+export const API_SERVER = "https://project.funnelpageinc.com/api/";
 const userToken = JSON.parse(localStorage.getItem("user"));
 export const TOKEN_TYPE = "Bearer";
 export const TOKEN = userToken ? userToken.token : "";
