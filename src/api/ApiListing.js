@@ -237,7 +237,7 @@ const verifyEmail = async (url) => {
 
 const getBulkPayments = async () => {
   
-    const res = await axios.get(`${API_SERVER}bulk-payments/`, {
+    const res = await axios.get(`${API_SERVER}bulk-payments`, {
       headers: {
         Authorization: `${TOKEN_TYPE} ${TOKEN}`,
         Accept: `${ACCEPT_TYPE}`,
@@ -272,7 +272,7 @@ const deleteJobPaymentID = async (jobID) => {
 };
 
 const getUsers = async () => {
-  const res = await axios.get(`${API_SERVER}users/`, {
+  const res = await axios.get(`${API_SERVER}users`, {
     headers: {
       Authorization: `${TOKEN_TYPE} ${TOKEN}`,
       Accept: `${ACCEPT_TYPE}`,

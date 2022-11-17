@@ -300,7 +300,7 @@ function Tables() {
         }
       }
 
-      const res = await axios.get(`${API_SERVER}payments/` + params, {
+      const res = await axios.get(`${API_SERVER}payments` + params, {
         headers: {
           Authorization: `${TOKEN_TYPE} ${TOKEN}`,
           Accept: `${ACCEPT_TYPE}`,

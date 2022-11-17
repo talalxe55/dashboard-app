@@ -79,7 +79,7 @@ function Tables() {
         }
       }
 
-      const res = await axios.get(`${API_SERVER}customers/` + params, {
+      const res = await axios.get(`${API_SERVER}customers` + params, {
         headers: {
           Authorization: `${TOKEN_TYPE} ${TOKEN}`,
           Accept: `${ACCEPT_TYPE}`,
