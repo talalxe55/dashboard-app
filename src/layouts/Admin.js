@@ -26,7 +26,7 @@ export default function Dashboard(props) {
       // delete the iframe element
       iframe.parentNode.removeChild(iframe);
       // log success
-      console.log("iframe removed");
+      
     }
   }, []);
   const { ...rest } = props;

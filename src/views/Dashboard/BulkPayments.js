@@ -47,7 +47,15 @@ function BulkPayments() {
           } else {
           }
         })
-        .catch((err) => setLoading(false));
+        .catch((err) => {
+          setLoading(false)
+          if(err.response.status==401){
+            setUnauthorizedWarning(true);
+          }
+          else if(err.response.status==401){
+            setNoDataFound(true)
+          }
+        });
     }
   };
 
@@ -69,7 +77,15 @@ function BulkPayments() {
           } else {
           }
         })
-        .catch((err) => setLoading(false));
+        .catch((err) => {
+          setLoading(false)
+          if(err.response.status==401){
+            setUnauthorizedWarning(true);
+          }
+          else if(err.response.status==401){
+            setNoDataFound(true)
+          }
+           });
     }
   }, []);
 

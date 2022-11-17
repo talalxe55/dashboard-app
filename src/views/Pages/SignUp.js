@@ -63,6 +63,7 @@ function SignUp() {
       }
       return history.push("/admin/users");
     } catch (err) {
+      setButtonText("Register");
       if (err.response.status === 400) {
         if (err.response.data.message.name) {
           return setError(err.response.data.message.name);

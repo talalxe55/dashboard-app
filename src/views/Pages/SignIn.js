@@ -24,6 +24,7 @@ import { NavLink, useHistory } from "react-router-dom";
 import { verifyOTP, sendOTPConfig } from "api/ApiListing";
 
 function SignIn() {
+  console.log(process.env)
   // Chakra color mode
   const titleColor = useColorModeValue("red.450", "red.500");
   const textColor = useColorModeValue("gray.400", "white");
@@ -136,7 +137,8 @@ const verifyOtp = async (event) => {
         duration: 9000,
         isClosable: true,
       })
-      return setButtonText("Verify OTP");
+      setotpPrompt(false)
+      return setButtonText("Sign in");
     } catch (err) {
       setButtonText("Verify OTP");
       if (err.response.status==400) {
@@ -207,7 +209,7 @@ const verifyOtp = async (event) => {
               type="text"
               placeholder="Enter your one-time otp password"
               size="lg"
-              id="email"
+              id="otp"
               value={otpCode}
               onChange={(event) => {
                 setotpCode(event.target.value);

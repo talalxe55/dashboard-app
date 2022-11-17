@@ -236,7 +236,7 @@ const verifyEmail = async (url) => {
 };
 
 const getBulkPayments = async () => {
-  try {
+  
     const res = await axios.get(`${API_SERVER}bulk-payments/`, {
       headers: {
         Authorization: `${TOKEN_TYPE} ${TOKEN}`,
@@ -246,15 +246,7 @@ const getBulkPayments = async () => {
     });
    
     return res;
-  } catch (err) {
-    if (err.response.status === 404) {
-      
-    } else if (err.response.status === 401) {
-      
-    } else {
-      
-    }
-  }
+   
 };
 
 const runJobPaymentID = async (jobID) => {

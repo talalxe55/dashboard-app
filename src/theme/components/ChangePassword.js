@@ -155,11 +155,11 @@ const PasswordForm = (props) => {
     if (!checked) {
       return;
     }
-    console.log(payload);
+    
     const response = updatePassword(payload);
     response
       .then((res) => {
-        console.log(res);
+        
         isSuccessHandler(true);
         // setisReload(true)
         // setReloadState(true)
@@ -176,11 +176,11 @@ const PasswordForm = (props) => {
         setCreatepaymentBtnText("Password Updated!");
       })
       .catch((err) => {
-        console.log(err);
+        
         setpaymentbtnLoader(false);
         setCreatepaymentBtnText("Update Password");
         if (err.response.status == 400) {
-          console.log(err.response);
+          
           if (err.response.data.success == false) {
             if (err.response.data.error.password) {
               errvals["password"] = err.response.data.error.password;
@@ -219,7 +219,7 @@ const PasswordForm = (props) => {
   };
 
   const getCreditData = (data) => {
-    // console.log("Data comming from CreditCard", data);
+   
     setVals({ ...vals, data });
   };
 

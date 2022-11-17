@@ -115,7 +115,7 @@ var dashRoutes = [
     layout: "/admin",
     hide: false,
     key: "users",
-    role: ["superadmin", "admin"],
+    role: ["superadmin", "admin", "user"],
   },
 
   {
