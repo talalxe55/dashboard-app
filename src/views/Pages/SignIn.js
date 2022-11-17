@@ -24,7 +24,7 @@ import { NavLink, useHistory } from "react-router-dom";
 import { verifyOTP, sendOTPConfig } from "api/ApiListing";
 
 function SignIn() {
-  console.log(process.env)
+  
   // Chakra color mode
   const titleColor = useColorModeValue("red.450", "red.500");
   const textColor = useColorModeValue("gray.400", "white");

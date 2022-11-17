@@ -72,7 +72,8 @@ function Users() {
           }
         })
         .catch((err) => {
-          if(err.response.status==401){
+          console.log(err);
+          if(err.response.includes('status') && err.response.status==401){
             setUnauthorizedWarning(true);
           }
            setLoading(false)});
