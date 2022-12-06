@@ -167,7 +167,7 @@ export default function Dashboard(props) {
           onTransparent={() => setSidebarVariant("transparent")}
         />
       </MainPanel>
-      <RefreshingToken />
+      {/* <RefreshingToken /> */}
     </ChakraProvider>
   );
 }

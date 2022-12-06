@@ -24,7 +24,7 @@ import PropTypes from "prop-types";
 import React from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { useAuth } from "auth-context/auth.context";
-
+import { RocketIcon } from "components/Icons/Icons";
 // FUNCTIONS
 
 function Sidebar(props) {
@@ -248,7 +248,11 @@ function Sidebar(props) {
   // SIDEBAR
   return (
     <Box ref={mainPanel}>
-      <Box display={{ sm: "none", xl: "block" }} position="fixed" overflowY="auto">
+      <Box
+        display={{ sm: "none", xl: "block" }}
+        position="fixed"
+        overflowY="auto"
+      >
         <Box
           bg={sidebarBg}
           transition={variantChange}
@@ -277,9 +281,12 @@ function Sidebar(props) {
   );
 }
 
-// FUNCTIONS
+// FUNCTIONS MOBILE
 
 export function SidebarResponsive(props) {
+  let variantChange = "0.2s linear";
+
+  const { user } = useAuth();
   // to check for active links and opened collapses
 
   let location = useLocation();
@@ -287,6 +294,10 @@ export function SidebarResponsive(props) {
   const [state, setState] = React.useState({});
   const mainPanel = React.createRef();
   // verifies if routeName is the one active (in browser input)
+  let currentPageURL = location.pathname.substring(
+    location.pathname.lastIndexOf("/") + 1
+  );
+  console.log(currentPageURL === "signin");
   const activeRoute = (routeName) => {
     return location.pathname === routeName ? "active" : "";
   };
@@ -298,148 +309,194 @@ export function SidebarResponsive(props) {
     const activeColor = useColorModeValue("gray.700", "white");
     const inactiveColor = useColorModeValue("gray.400", "gray.400");
 
-    return routes.map((prop, index) => {
-      if (prop.redirect) {
-        return null;
-      }
-      if (prop.category) {
-        var st = {};
-        st[prop["state"]] = !state[prop.state];
+    {
+      if (currentPageURL === "signin" || currentPageURL === "forgot-password") {
         return (
-          <React.Fragment key={index}>
-            <Text
-              color={activeColor}
-              fontWeight="bold"
-              mb={{
-                xl: "12px",
-              }}
-              mx="auto"
-              ps={{
-                sm: "10px",
-                xl: "16px",
-              }}
-              py="12px"
-            >
-              {document.documentElement.dir === "rtl"
-                ? prop.rtlName
-                : prop.name}
-            </Text>
-            {createLinks(prop.views)}
-          </React.Fragment>
+          <>
+            <NavLink to="signin">
+              <Flex alignItems="center">
+                <IconBox
+                  bg={inactiveBg}
+                  color="primaryColor"
+                  h="30px"
+                  w="30px"
+                  me="12px"
+                  transition={variantChange}
+                >
+                  <RocketIcon color="inherit" />
+                </IconBox>
+                <Text
+                  color={activeColor}
+                  fontWeight="bold"
+                  mb={{
+                    xl: "12px",
+                  }}
+                  mx="auto"
+                  py="12px"
+                >
+                  SignIn
+                </Text>
+              </Flex>
+            </NavLink>
+          </>
         );
+      } else {
+        return routes.map((prop, index) => {
+          if (prop.redirect) {
+            return null;
+          }
+          if (prop.category) {
+            var st = {};
+            st[prop["state"]] = !state[prop.state];
+            return (
+              <React.Fragment key={index}>
+                <Text
+                  color={activeColor}
+                  fontWeight="bold"
+                  mb={{
+                    xl: "12px",
+                  }}
+                  mx="auto"
+                  ps={{
+                    sm: "10px",
+                    xl: "16px",
+                  }}
+                  py="12px"
+                >
+                  {document.documentElement.dir === "rtl"
+                    ? prop.rtlName
+                    : prop.name}
+                </Text>
+                {createLinks(prop.views)}
+              </React.Fragment>
+            );
+          }
+          if (prop.layout === "/admin" && user && prop.role) {
+            if (!prop.role.includes(user.role)) {
+              return null;
+            }
+          }
+          return (
+            <React.Fragment key={index}>
+              {prop.hide ? null : (
+                <NavLink key={index + prop.key} to={prop.layout + prop.path}>
+                  {activeRoute(prop.layout + prop.path) === "active" ? (
+                    <Button
+                      boxSize="initial"
+                      justifyContent="flex-start"
+                      alignItems="center"
+                      boxShadow={sidebarActiveShadow}
+                      bg={activeBg}
+                      transition={variantChange}
+                      mb={{
+                        xl: "12px",
+                      }}
+                      mx={{
+                        xl: "auto",
+                      }}
+                      ps={{
+                        sm: "10px",
+                        xl: "16px",
+                      }}
+                      py="12px"
+                      borderRadius="15px"
+                      _hover="none"
+                      w="100%"
+                      _active={{
+                        bg: "inherit",
+                        transform: "none",
+                        borderColor: "transparent",
+                      }}
+                      _focus={{
+                        boxShadow: "0px 7px 11px rgba(0, 0, 0, 0.04)",
+                      }}
+                    >
+                      <Flex>
+                        {typeof prop.icon === "string" ? (
+                          <Icon>{prop.icon}</Icon>
+                        ) : (
+                          <IconBox
+                            bg="primaryColor"
+                            color="white"
+                            h="30px"
+                            w="30px"
+                            me="12px"
+                            transition={variantChange}
+                          >
+                            {prop.icon}
+                          </IconBox>
+                        )}
+                        <Text color={activeColor} my="auto" fontSize="sm">
+                          {document.documentElement.dir === "rtl"
+                            ? prop.rtlName
+                            : prop.name}
+                        </Text>
+                      </Flex>
+                    </Button>
+                  ) : (
+                    <Button
+                      boxSize="initial"
+                      justifyContent="flex-start"
+                      alignItems="center"
+                      bg="transparent"
+                      mb={{
+                        xl: "12px",
+                      }}
+                      mx={{
+                        xl: "auto",
+                      }}
+                      py="12px"
+                      ps={{
+                        sm: "10px",
+                        xl: "16px",
+                      }}
+                      borderRadius="15px"
+                      _hover="none"
+                      w="100%"
+                      _active={{
+                        bg: "inherit",
+                        transform: "none",
+                        borderColor: "transparent",
+                      }}
+                      _focus={{
+                        boxShadow: "none",
+                      }}
+                    >
+                      <Flex>
+                        {typeof prop.icon === "string" ? (
+                          <Icon>{prop.icon}</Icon>
+                        ) : (
+                          <IconBox
+                            bg={inactiveBg}
+                            color="primaryColor"
+                            h="30px"
+                            w="30px"
+                            me="12px"
+                            transition={variantChange}
+                          >
+                            {prop.icon}
+                          </IconBox>
+                        )}
+                        <Text color={inactiveColor} my="auto" fontSize="sm">
+                          {document.documentElement.dir === "rtl"
+                            ? prop.rtlName
+                            : prop.name}
+                        </Text>
+                      </Flex>
+                    </Button>
+                  )}
+                </NavLink>
+              )}
+            </React.Fragment>
+          );
+        });
       }
-      return (
-        <React.Fragment key={index}>
-          <NavLink key={prop.key} to={prop.layout + prop.path}>
-            {activeRoute(prop.layout + prop.path) === "active" ? (
-              <Button
-                boxSize="initial"
-                justifyContent="flex-start"
-                alignItems="center"
-                bg={activeBg}
-                mb={{
-                  xl: "12px",
-                }}
-                mx={{
-                  xl: "auto",
-                }}
-                ps={{
-                  sm: "10px",
-                  xl: "16px",
-                }}
-                py="12px"
-                borderRadius="15px"
-                _hover="none"
-                w="100%"
-                _active={{
-                  bg: "inherit",
-                  transform: "none",
-                  borderColor: "transparent",
-                }}
-                _focus={{
-                  boxShadow: "none",
-                }}
-              >
-                <Flex>
-                  {typeof prop.icon === "string" ? (
-                    <Icon>{prop.icon}</Icon>
-                  ) : (
-                    <IconBox
-                      bg="primaryColor"
-                      color="white"
-                      h="30px"
-                      w="30px"
-                      me="12px"
-                    >
-                      {prop.icon}
-                    </IconBox>
-                  )}
-                  <Text color={activeColor} my="auto" fontSize="sm">
-                    {document.documentElement.dir === "rtl"
-                      ? prop.rtlName
-                      : prop.name}
-                  </Text>
-                </Flex>
-              </Button>
-            ) : (
-              <Button
-                boxSize="initial"
-                justifyContent="flex-start"
-                alignItems="center"
-                bg="transparent"
-                mb={{
-                  xl: "12px",
-                }}
-                mx={{
-                  xl: "auto",
-                }}
-                py="12px"
-                ps={{
-                  sm: "10px",
-                  xl: "16px",
-                }}
-                borderRadius="15px"
-                _hover="none"
-                w="100%"
-                _active={{
-                  bg: "inherit",
-                  transform: "none",
-                  borderColor: "transparent",
-                }}
-                _focus={{
-                  boxShadow: "none",
-                }}
-              >
-                <Flex>
-                  {typeof prop.icon === "string" ? (
-                    <Icon>{prop.icon}</Icon>
-                  ) : (
-                    <IconBox
-                      bg={inactiveBg}
-                      color="primaryColor"
-                      h="30px"
-                      w="30px"
-                      me="12px"
-                    >
-                      {prop.icon}
-                    </IconBox>
-                  )}
-                  <Text color={inactiveColor} my="auto" fontSize="sm">
-                    {document.documentElement.dir === "rtl"
-                      ? prop.rtlName
-                      : prop.name}
-                  </Text>
-                </Flex>
-              </Button>
-            )}
-          </NavLink>
-        </React.Fragment>
-      );
-    });
+    }
   };
   const { logoText, routes, ...rest } = props;
 
   var links = <>{createLinks(routes)}</>;
+  // MOBILE?
   //  BRAND
   //  Chakra Color Mode
   const mainText = useColorModeValue("gray.700", "gray.200");
@@ -486,6 +543,7 @@ export function SidebarResponsive(props) {
         ref={btnRef}
         colorscheme="teal"
         onClick={onOpen}
+        cursor="pointer"
       />
       <Drawer
         isOpen={isOpen}
@@ -514,6 +572,11 @@ export function SidebarResponsive(props) {
               <Box>{brand}</Box>
               <Stack direction="column" mb="40px">
                 <Box>{links}</Box>
+                {/* {routes.map((element, index) => {
+                  {
+                    element.hide === false ? console.log(element) : "";
+                  }
+                })} */}
               </Stack>
               <SidebarHelp></SidebarHelp>
             </Box>

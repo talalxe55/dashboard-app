@@ -13,6 +13,9 @@ import {
   Text,
   useColorModeValue,
   useToast,
+  HStack,
+  PinInput,
+  PinInputField,
 } from "@chakra-ui/react";
 // Assets
 import signInImage from "assets/img/no-limi-RED-logo-opt-2.png";
@@ -24,7 +27,6 @@ import { NavLink, useHistory } from "react-router-dom";
 import { verifyOTP, sendOTPConfig } from "api/ApiListing";
 
 function SignIn() {
-  
   // Chakra color mode
   const titleColor = useColorModeValue("red.450", "red.500");
   const textColor = useColorModeValue("gray.400", "white");
@@ -36,12 +38,27 @@ function SignIn() {
   const toast = useToast();
 
   const [otpCode, setotpCode] = useState("");
+  const [otp1, setOtp1] = useState("");
+  const [otp2, setOtp2] = useState("");
+  const [otp3, setOtp3] = useState("");
+  const [otp4, setOtp4] = useState("");
+  const [otp5, setOtp5] = useState("");
+  const [otp6, setOtp6] = useState("");
   const [otpToken, setotpToken] = useState("");
   const [otpPrompt, setotpPrompt] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(undefined);
   const [buttonText, setButtonText] = useState("Sign in");
+
+  const otpPinData = {
+    otp1,
+    otp2,
+    otp3,
+    otp4,
+    otp5,
+    otp6,
+  };
 
   const login = async (event) => {
     if (event) {
@@ -79,7 +96,7 @@ function SignIn() {
     }
   };
 
-const verifyOtp = async (event) => {
+  const verifyOtp = async (event) => {
     if (event) {
       event.preventDefault();
     }
@@ -91,7 +108,7 @@ const verifyOtp = async (event) => {
     }
     setButtonText("Verifying OTP..");
     try {
-      let response = await verifyOTP(otpCode,otpToken);
+      let response = await verifyOTP(otpCode, otpToken);
       if (response.data && response.data.success === false) {
         setButtonText("Invalid or Expired Code!");
         return setError(response.data.message);
@@ -101,17 +118,17 @@ const verifyOtp = async (event) => {
       return setProfile(response);
     } catch (err) {
       setButtonText("Verify OTP");
-      if (err.response.status==400) {
-        if(err.response.data.message==="Too many attempts!"){
-          setotpPrompt(false)
+      if (err.response.status == 400) {
+        if (err.response.data.message === "Too many attempts!") {
+          setotpPrompt(false);
         }
         return setError(err.response.data.message);
       }
 
-      if (err.response.status==401) {
-         setotpPrompt(false)
-         setError("Please sign in again!");
-         return setButtonText("Sign in");
+      if (err.response.status == 401) {
+        setotpPrompt(false);
+        setError("Please sign in again!");
+        return setButtonText("Sign in");
       }
       return setError("There has been an error.");
     }
@@ -136,19 +153,19 @@ const verifyOtp = async (event) => {
         status: "success",
         duration: 9000,
         isClosable: true,
-      })
-      setotpPrompt(false)
+      });
+      setotpPrompt(false);
       return setButtonText("Sign in");
     } catch (err) {
       setButtonText("Verify OTP");
-      if (err.response.status==400) {
+      if (err.response.status == 400) {
         return setError(err.response.data.message);
       }
-      if (err.response.status==401) {
-        setotpPrompt(false)
+      if (err.response.status == 401) {
+        setotpPrompt(false);
         setError("Please sign in again!");
         return setButtonText("Sign in");
-     }
+      }
       return setError("There has been an error.");
     }
   };
@@ -163,133 +180,184 @@ const verifyOtp = async (event) => {
     window.location.reload(false);
   };
 
-  return otpPrompt?(    <Flex position="relative" mb="40px">
-  <Flex
-    h={{ sm: "initial", md: "75vh", lg: "85vh" }}
-    w="100%"
-    maxW="1044px"
-    mx="auto"
-    justifyContent="space-between"
-    mb="30px"
-    pt={{ sm: "100px", md: "0px" }}
-  >
-    <Flex
-      alignItems="center"
-      justifyContent="start"
-      style={{ userSelect: "none" }}
-      w={{ base: "100%", md: "50%", lg: "42%" }}
-    >     
+  return otpPrompt ? (
+    <Flex position="relative" mb="40px">
+      <Flex
+        h={{ sm: "initial", md: "75vh", lg: "85vh" }}
+        w="100%"
+        maxW="1044px"
+        mx="auto"
+        justifyContent="space-between"
+        mb="30px"
+        pt={{ sm: "100px", md: "0px" }}
+      >
         <Flex
-          direction="column"
-          w="100%"
-          background="transparent"
-          p="48px"
-          mt={{ md: "150px", lg: "80px" }}
+          alignItems="center"
+          justifyContent="start"
+          style={{ userSelect: "none" }}
+          w={{ base: "100%", md: "50%", lg: "42%" }}
         >
-          <Heading color={titleColor} fontSize="32px" mt="10px" mb="10px">
-            OTP Verification
-          </Heading>
-          <Text
-            mb="36px"
-            ms="4px"
-            color={textColor}
-            fontWeight="bold"
-            fontSize="14px"
+          <Flex
+            direction="column"
+            w="100%"
+            background="transparent"
+            p="48px"
+            mt={{ md: "150px", lg: "80px" }}
           >
-            Please enter the OTP from Google Authenticator App!
-          </Text>
-          <FormControl>
-            <FormLabel ms="4px" fontSize="sm" fontWeight="normal">
-              Code
-            </FormLabel>
-            <Input
-              borderRadius="15px"
-              mb="24px"
-              fontSize="sm"
-              type="text"
-              placeholder="Enter your one-time otp password"
-              size="lg"
-              id="otp"
-              value={otpCode}
-              onChange={(event) => {
-                setotpCode(event.target.value);
-                setError(undefined);
-              }}
-            />
-            <h4
-              style={{
-                fontSize: ".9em",
-                color: "red",
-                textAlign: "center",
-                fontWeight: 400,
-                transition: ".2s all",
-              }}
+            <Heading color={titleColor} fontSize="32px" mt="10px" mb="10px">
+              OTP Verification
+            </Heading>
+            <Text
+              mb="36px"
+              ms="4px"
+              color={textColor}
+              fontWeight="bold"
+              fontSize="14px"
             >
-              {error}
-            </h4>
-            <Button
-              fontSize="18px"
-              type="submit"
-              bg="primaryColor"
-              w="100%"
-              h="45"
-              mb="20px"
-              color="white"
-              mt="20px"
-              _hover={{
-                bg: "primaryColorHover",
-              }}
-              _active={{
-                bg: "black",
-              }}
-              onClick={verifyOtp}
-            >
-              {buttonText}
-            </Button>
-            <Button
-                  color="primaryColor"
+              Please enter the OTP from Google Authenticator App!
+            </Text>
+            <FormControl>
+              <FormLabel ms="4px" fontSize="sm" fontWeight="normal">
+                Enter your one-time otp password
+              </FormLabel>
+              <HStack
+                id="otp"
+                // value={otpCode}
+                // onChange={(event) => {
+                //   setSumOtpCode(event.target.value);
+                //   setError(undefined);
+                // }}
+              >
+                <PinInput otp>
+                  {console.log(otpCode)}
+                  <PinInputField
+                    maxLength={1}
+                    value={otp1}
+                    onChange={(e) => setOtp1(e.target.value)}
+                  />
+                  <PinInputField
+                    maxLength={1}
+                    value={otp2}
+                    onChange={(e) => setOtp2(e.target.value)}
+                  />
+                  <PinInputField
+                    maxLength={1}
+                    value={otp3}
+                    onChange={(e) => setOtp3(e.target.value)}
+                  />
+                  <PinInputField
+                    maxLength={1}
+                    value={otp4}
+                    onChange={(e) => setOtp4(e.target.value)}
+                  />
+                  <PinInputField
+                    maxLength={1}
+                    value={otp5}
+                    onChange={(e) => setOtp5(e.target.value)}
+                  />
+                  <PinInputField
+                    maxLength={1}
+                    value={otp6}
+                    onChange={(e) => setOtp6(e.target.value)}
+                  />
+                </PinInput>
+              </HStack>
+              <Button
+                onClick={() => setotpCode(Object.values(otpPinData).join(""))}
+              >
+                TEST OTP LOCAL
+              </Button>
+              {/* <Input
+                borderRadius="15px"
+                mb="24px"
+                fontSize="sm"
+                type="text"
+                placeholder="Enter your one-time otp password"
+                size="lg"
+                id="otp"
+                value={otpCode}
+                onChange={(event) => {
+                  setotpCode(event.target.value);
+                  setError(undefined);
+                }}
+              /> */}
+              <h4
+                style={{
+                  fontSize: ".9em",
+                  color: "red",
+                  textAlign: "center",
+                  fontWeight: 400,
+                  transition: ".2s all",
+                }}
+              >
+                {error}
+              </h4>
+              <Button
+                fontSize="18px"
+                type="submit"
+                bg="primaryColor"
+                w="100%"
+                h="45"
+                mb="20px"
+                color="white"
+                mt="20px"
+                _hover={{
+                  bg: "primaryColorHover",
+                }}
+                _active={{
+                  bg: "black",
+                }}
+                onClick={
+                  (() => setotpCode(Object.values(otpPinData).join("")),
+                  verifyOtp)
+                }
+              >
+                {buttonText}
+              </Button>
+              <Button
+                color="primaryColor"
+                _hover={{ color: "primaryColor" }}
+                onClick={emailOTPverification}
+              >
+                {" "}
+                <Text
+                  mb="36px"
+                  ms="4px"
+                  color={textColor}
+                  fontWeight="bold"
+                  fontSize="14px"
                   _hover={{ color: "primaryColor" }}
-                  onClick={emailOTPverification}
                 >
-                  {" "}
-                  <Text
-                    mb="36px"
-                    ms="4px"
-                    color={textColor}
-                    fontWeight="bold"
-                    fontSize="14px"
-                    _hover={{ color: "primaryColor" }}
-                  >
-                    Not configured yet? Click to ask for configuration email!
-                  </Text>
-                </Button>
-          </FormControl>
+                  Not configured yet? Click to ask for configuration email!
+                </Text>
+              </Button>
+            </FormControl>
+          </Flex>
         </Flex>
-      
+        <Box
+          display={{ base: "none", md: "block" }}
+          overflowX="hidden"
+          h="100%"
+          w="55vw"
+          position="absolute"
+          right="0px"
+        >
+          <Box
+            bgImage={signInImage}
+            w="80%"
+            h="40%"
+            bgSize="contain"
+            bgRepeat="no-repeat"
+            bgPosition="50%"
+            position="absolute"
+            top="30%"
+            borderBottomLeftRadius="0"
+            backgroundColor={"white"}
+          ></Box>
+        </Box>
+      </Flex>
     </Flex>
-    <Box
-      display={{ base: "none", md: "block" }}
-      overflowX="hidden"
-      h="100%"
-      w="55vw"
-      position="absolute"
-      right="0px"
-    >
-      <Box
-        bgImage={signInImage}
-        w="80%"
-        h="40%"
-        bgSize="contain"
-        bgRepeat="no-repeat"
-        bgPosition="50%"
-        position="absolute"
-        top="30%"
-        borderBottomLeftRadius="0"
-        backgroundColor={"white"}
-      ></Box>
-    </Box>
-  </Flex>
-</Flex>) : (
+  ) : (
     <Flex position="relative" mb="40px">
       <Flex
         h={{ sm: "initial", md: "75vh", lg: "85vh" }}

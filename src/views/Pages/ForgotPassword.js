@@ -255,7 +255,26 @@ function ForgotPassword() {
               alignItems="center"
               maxW="100%"
               mt="0px"
-            ></Flex>
+            >
+              {" "}
+              <NavLink
+                color="primaryColor"
+                _hover={{ color: "primaryColor" }}
+                to={"/auth/signin"}
+              >
+                {" "}
+                <Text
+                  mb="36px"
+                  ms="4px"
+                  color={textColor}
+                  fontWeight="bold"
+                  fontSize="14px"
+                  _hover={{ color: "primaryColor" }}
+                >
+                  SignIn?
+                </Text>
+              </NavLink>
+            </Flex>
           </Flex>
         </Flex>
         {/* <Box
