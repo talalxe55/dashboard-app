@@ -155,3 +155,18 @@ a.anchor_hover {
   /* turn stuff orange when we are dragging over the target */
   color: #fff;
 }
+
+@media only screen and (max-width: 767px) {
+  .filter_customers {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .filter_customers > button {
+    width: 100%;
+    text-align: start;
+  }
+  .title_listing {
+    font-size: 20px !important;
+  }
+}

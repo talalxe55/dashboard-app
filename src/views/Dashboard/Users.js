@@ -17,6 +17,7 @@ import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
 import LoadingGif from "assets/svg/loading-infinite.svg";
+import LoadingDark from "assets/svg/loader-dark.svg";
 import { useLocation } from "react-router-dom";
 import {
   AlertUnauthorized,
@@ -46,10 +47,11 @@ function Users() {
           }
         })
         .catch((err) => {
-          if(err.response.status==401){
+          if (err.response.status == 401) {
             setUnauthorizedWarning(true);
           }
-           setLoading(false)});
+          setLoading(false);
+        });
     }
   };
 
@@ -73,10 +75,11 @@ function Users() {
         })
         .catch((err) => {
           console.log(err);
-          if(err.response.includes('status') && err.response.status==401){
+          if (err.response.includes("status") && err.response.status == 401) {
             setUnauthorizedWarning(true);
           }
-           setLoading(false)});
+          setLoading(false);
+        });
     }
   }, []);
 
@@ -95,7 +98,9 @@ function Users() {
   return (
     <Flex direction="column" pt={{ base: "120px", md: "75px" }}>
       {unauthorizedWarning ? <AlertUnauthorized /> : null}
-      {noDataFound ? <AlertDataNotFound setNoDataFound={setNoDataFound} /> : null}
+      {noDataFound ? (
+        <AlertDataNotFound setNoDataFound={setNoDataFound} />
+      ) : null}
       <Card overflowX={{ sm: "scroll", xl: "hidden" }}>
         <CardHeader p="0 0 30px 0">
           <Text
@@ -159,7 +164,7 @@ function Users() {
             alignItems="center"
             direction={"column"}
           >
-            <Heading>Listing Users...</Heading>
+            <Heading className="title_listing">Listing Users...</Heading>
             <Image src={LoadingGif} w={100} />
           </Flex>
         )}
@@ -170,9 +175,7 @@ function Users() {
             alignItems="center"
             direction={"column"}
           >
-            <p>
-              Showing {newUsers !== null ? newUsers.length : 0} of Users
-            </p>
+            <p>Showing {newUsers !== null ? newUsers.length : 0} of Users</p>
           </Flex>
         </Box>
       </Card>

@@ -297,7 +297,6 @@ export function SidebarResponsive(props) {
   let currentPageURL = location.pathname.substring(
     location.pathname.lastIndexOf("/") + 1
   );
-  console.log(currentPageURL === "signin");
   const activeRoute = (routeName) => {
     return location.pathname === routeName ? "active" : "";
   };

@@ -553,7 +553,7 @@ function Users() {
               alignItems="center"
               direction={"column"}
             >
-              <Heading>Listing Users...</Heading>
+              <Heading className="title_listing">Listing Users...</Heading>
               <Image src={LoadingGif} w={100} />
             </Flex>
           </Box>

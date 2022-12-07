@@ -394,7 +394,7 @@ export default function Dashboard() {
                 <Image
                   src={logoNLS}
                   alt="NLS Logo"
-                  width={{ md: "230px", lg: "230px" }}
+                  width={{sm: 200, md: "230px", lg: "230px" }}
                 />
               </Flex>
             </Flex>

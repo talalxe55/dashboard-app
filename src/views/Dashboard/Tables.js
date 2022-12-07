@@ -33,7 +33,10 @@ import { API_SERVER, TOKEN_TYPE, TOKEN, ACCEPT_TYPE } from "config/constant";
 import axios from "axios";
 import LoadingGif from "assets/svg/loading-infinite.svg";
 import { useHistory } from "react-router-dom";
-import { AlertDataNotFound, AlertUnauthorized } from "theme/components/AlertDialog";
+import {
+  AlertDataNotFound,
+  AlertUnauthorized,
+} from "theme/components/AlertDialog";
 
 function Tables() {
   const history = useHistory();
@@ -298,7 +301,9 @@ function Tables() {
   return (
     <Flex direction="column" pt={{ base: "120px", md: "75px" }}>
       {unauthorizedWarning ? <AlertUnauthorized /> : null}
-      {noDataFound ? <AlertDataNotFound setNoDataFound={setNoDataFound} /> : null}
+      {noDataFound ? (
+        <AlertDataNotFound setNoDataFound={setNoDataFound} />
+      ) : null}
       <Card overflowX={{ sm: "scroll", xl: "hidden" }}>
         <CardHeader p="0 0 30px 0">
           <Text
@@ -311,12 +316,7 @@ function Tables() {
           </Text>
         </CardHeader>
         <Box>
-          <Flex display={"inline-block"} width={[
-      '30%', // 0-30em
-      '50%', // 30em-48em
-      '70%', // 48em-62em
-      '100%', // 62em+
-    ]} direction="column" className="filter_customers">
+          <Flex className="filter_customers">
             <Menu>
               <MenuButton
                 as={Button}
@@ -486,20 +486,23 @@ function Tables() {
               </MenuButton>
               <MenuList>
                 <Box p={3}>
-                  <Button
-                    p={0}
-                    fontSize={15}
-                    borderRadius={50}
-                    onClick={() => {
-                      setfilterDate("");
-                      document.querySelector("input[name=payment-date]").value =
-                        "";
-                      searchPaymentsbyfilter();
-                    }}
-                  >
-                    <CloseIcon />
-                  </Button>
-                  <Text fontWeight={"bold"}>Filter By Date</Text>
+                  <Flex justifyContent="space-between">
+                    <Text fontWeight={"bold"}>Filter By Date</Text>
+                    <Button
+                      p={0}
+                      fontSize={15}
+                      borderRadius={50}
+                      onClick={() => {
+                        setfilterDate("");
+                        document.querySelector(
+                          "input[name=payment-date]"
+                        ).value = "";
+                        searchPaymentsbyfilter();
+                      }}
+                    >
+                      <CloseIcon />
+                    </Button>
+                  </Flex>
                   <Select my={3} name="payment-date-operator">
                     <option value="=">is equal to</option>
                     <option value=">">is after</option>
@@ -641,7 +644,7 @@ function Tables() {
               alignItems="center"
               direction={"column"}
             >
-              <Heading>Listing Customers...</Heading>
+              <Heading className="title_listing">Listing Customers...</Heading>
               <Image src={LoadingGif} w={100} />
             </Flex>
           </Box>

@@ -387,8 +387,7 @@ function Tables() {
     }
   }, []);
 
-  useEffect(() => {
-  }, [isfilterApplied, filterData, filterEmail]);
+  useEffect(() => {}, [isfilterApplied, filterData, filterEmail]);
 
   // Filtering Email
   const customerListing = customers.filter((customer) => {
@@ -418,12 +417,7 @@ function Tables() {
         </CardHeader>
         <Box>
           {/* //<FilterCustomers emailTextHadler={emailTextHandler} /> */}
-          <Flex   display={"inline-block"} width={[
-      '30%', // 0-30em
-      '50%', // 30em-48em
-      '70%', // 48em-62em
-      '100%', // 62em+
-    ]} direction="column" className="filter_customers">
+          <Flex className="filter_customers">
             <Menu>
               <MenuButton
                 as={Button}
@@ -506,21 +500,23 @@ function Tables() {
               </MenuButton>
               <MenuList>
                 <Box p={3}>
-                  <Text fontWeight={"bold"}>Filter By Amount</Text>
-                  <Button
-                    p={0}
-                    fontSize={15}
-                    borderRadius={50}
-                    onClick={() => {
-                      setfilterAmount("");
-                      document.querySelector(
-                        "input[name=payment-amount]"
-                      ).value = "";
-                      searchPaymentsbyfilter();
-                    }}
-                  >
-                    <CloseIcon />
-                  </Button>
+                  <Flex alignItems="center" justifyContent="space-between">
+                    <Text fontWeight={"bold"}>Filter By Amount</Text>
+                    <Button
+                      p={0}
+                      fontSize={15}
+                      borderRadius={50}
+                      onClick={() => {
+                        setfilterAmount("");
+                        document.querySelector(
+                          "input[name=payment-amount]"
+                        ).value = "";
+                        searchPaymentsbyfilter();
+                      }}
+                    >
+                      <CloseIcon />
+                    </Button>
+                  </Flex>
                   <Select
                     my={3}
                     name="payment-amount-operator"
@@ -587,20 +583,23 @@ function Tables() {
               </MenuButton>
               <MenuList>
                 <Box p={3}>
-                  <Text fontWeight={"bold"}>Filter By Date</Text>
-                  <Button
-                    p={0}
-                    fontSize={15}
-                    borderRadius={50}
-                    onClick={() => {
-                      setfilterDate("");
-                      document.querySelector("input[name=payment-date]").value =
-                        "";
-                      searchPaymentsbyfilter();
-                    }}
-                  >
-                    <CloseIcon />
-                  </Button>
+                  <Flex alignItems="center" justifyContent="space-between">
+                    <Text fontWeight={"bold"}>Filter By Date</Text>
+                    <Button
+                      p={0}
+                      fontSize={15}
+                      borderRadius={50}
+                      onClick={() => {
+                        setfilterDate("");
+                        document.querySelector(
+                          "input[name=payment-date]"
+                        ).value = "";
+                        searchPaymentsbyfilter();
+                      }}
+                    >
+                      <CloseIcon />
+                    </Button>
+                  </Flex>
                   <Select my={3} name="payment-date-operator">
                     <option defaultValue disabled value="default">
                       Please select an option
@@ -653,20 +652,23 @@ function Tables() {
               </MenuButton>
               <MenuList>
                 <Box p={3}>
-                  <Button
-                    p={0}
-                    fontSize={15}
-                    borderRadius={50}
-                    onClick={() => {
-                      setCustomerType("");
-                      document.querySelector(
-                        'select[name="payment-metadata"]'
-                      ).selectedIndex = 0;
-                      searchPaymentsbyfilter();
-                    }}
-                  >
-                    <CloseIcon />
-                  </Button>
+                  <Flex alignItems="center" justifyContent="space-between">
+                  <Text fontWeight={"bold"}>Filter By Customer</Text>
+                    <Button
+                      p={0}
+                      fontSize={15}
+                      borderRadius={50}
+                      onClick={() => {
+                        setCustomerType("");
+                        document.querySelector(
+                          'select[name="payment-metadata"]'
+                        ).selectedIndex = 0;
+                        searchPaymentsbyfilter();
+                      }}
+                    >
+                      <CloseIcon />
+                    </Button>
+                  </Flex>
                   <Select my={3} name="payment-metadata">
                     <option defaultValue value="default">
                       Please select an option
@@ -721,20 +723,23 @@ function Tables() {
               </MenuButton>
               <MenuList>
                 <Box p={3}>
-                  <Button
-                    p={0}
-                    fontSize={15}
-                    borderRadius={50}
-                    onClick={() => {
-                      setfilterStatus("");
-                      document.querySelector(
-                        'select[name="payment-status"]'
-                      ).selectedIndex = 0;
-                      searchPaymentsbyfilter();
-                    }}
-                  >
-                    <CloseIcon />
-                  </Button>
+                  <Flex alignItems="center" justifyContent="space-between">
+                  <Text fontWeight={"bold"}>Filter By Status</Text>
+                    <Button
+                      p={0}
+                      fontSize={15}
+                      borderRadius={50}
+                      onClick={() => {
+                        setfilterStatus("");
+                        document.querySelector(
+                          'select[name="payment-status"]'
+                        ).selectedIndex = 0;
+                        searchPaymentsbyfilter();
+                      }}
+                    >
+                      <CloseIcon />
+                    </Button>
+                  </Flex>
                   <Select my={3} name="payment-status">
                     <option defaultValue value="default">
                       Please select an option
@@ -849,7 +854,7 @@ function Tables() {
               alignItems="center"
               direction={"column"}
             >
-              <Heading>Listing Payments...</Heading>
+              <Heading className="title_listing">Listing Payments...</Heading>
               <Image src={LoadingGif} w={100} />
             </Flex>
           </Box>
