@@ -97,18 +97,19 @@ function SignIn() {
   };
 
   const verifyOtp = async (event) => {
+    let otpcode = otp1+otp2+otp3+otp4+otp5+otp6;
     if (event) {
       event.preventDefault();
     }
     if (user && user.token) {
       return history.push("/dashboard");
     }
-    if (otpCode === "") {
+    if (otpcode === "" || otpcode === null) {
       return setError("You must enter your OTP!.");
     }
     setButtonText("Verifying OTP..");
     try {
-      let response = await verifyOTP(otpCode, otpToken);
+      let response = await verifyOTP(otpcode, otpToken);
       if (response.data && response.data.success === false) {
         setButtonText("Invalid or Expired Code!");
         return setError(response.data.message);
@@ -262,11 +263,11 @@ function SignIn() {
                   />
                 </PinInput>
               </HStack>
-              <Button
+              {/* <Button
                 onClick={() => setotpCode(Object.values(otpPinData).join(""))}
               >
                 TEST OTP LOCAL
-              </Button>
+              </Button> */}
               {/* <Input
                 borderRadius="15px"
                 mb="24px"

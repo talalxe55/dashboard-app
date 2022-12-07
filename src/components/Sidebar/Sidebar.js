@@ -308,6 +308,7 @@ export function SidebarResponsive(props) {
     const inactiveBg = useColorModeValue("white", "gray.700");
     const activeColor = useColorModeValue("gray.700", "white");
     const inactiveColor = useColorModeValue("gray.400", "gray.400");
+    let sidebarActiveShadow = "0px 7px 11px rgba(0, 0, 0, 0.04)";
 
     {
       if (currentPageURL === "signin" || currentPageURL === "forgot-password") {

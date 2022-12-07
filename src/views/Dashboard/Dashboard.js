@@ -347,7 +347,7 @@ export default function Dashboard() {
                 </Text>
                 <Text fontSize="sm" color="gray.400" fontWeight="normal">
                   Cut Through The Noise & Stand Out From The Competition With
-                  NoLimitSocial!
+                  NoLimitSocial99!
                 </Text>
                 <Spacer />
                 <Flex align="center">
@@ -472,7 +472,7 @@ export default function Dashboard() {
         gap="24px"
         mb={{ lg: "26px" }}
       >
-        <Card p="16px">
+        {/* <Card p="16px">
           <CardBody>
             <Flex direction="column" w="100%">
               <BarChart />
@@ -601,8 +601,8 @@ export default function Dashboard() {
               </SimpleGrid>
             </Flex>
           </CardBody>
-        </Card>
-        <Card p="28px 10px 16px 0px" mb={{ sm: "26px", lg: "0px" }}>
+        </Card> */}
+        {/* <Card p="28px 10px 16px 0px" mb={{ sm: "26px", lg: "0px" }}>
           <CardHeader mb="20px" pl="22px">
             <Flex direction="column" alignSelf="flex-start">
               <Text fontSize="lg" color={textColor} fontWeight="bold" mb="6px">
@@ -619,7 +619,7 @@ export default function Dashboard() {
           <Box w="100%" h={{ sm: "300px" }} ps="8px">
             <LineChart />
           </Box>
-        </Card>
+        </Card> */}
       </Grid>
       <Grid
         templateColumns={{ sm: "1fr", md: "1fr 1fr", lg: "2fr 1fr" }}
@@ -682,7 +682,7 @@ export default function Dashboard() {
             </Tbody>
           </Table>
         </Card> */}
-        <Card maxH="100%">
+        {/* <Card maxH="100%">
           <CardHeader p="22px 0px 35px 14px">
             <Flex direction="column">
               <Text
@@ -719,7 +719,7 @@ export default function Dashboard() {
               })}
             </Flex>
           </CardBody>
-        </Card>
+        </Card> */}
       </Grid>
     </Flex>
   );

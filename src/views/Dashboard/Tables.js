@@ -311,7 +311,12 @@ function Tables() {
           </Text>
         </CardHeader>
         <Box>
-          <Flex className="filter_customers">
+          <Flex display={"inline-block"} width={[
+      '30%', // 0-30em
+      '50%', // 30em-48em
+      '70%', // 48em-62em
+      '100%', // 62em+
+    ]} direction="column" className="filter_customers">
             <Menu>
               <MenuButton
                 as={Button}
