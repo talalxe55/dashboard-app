@@ -90,6 +90,12 @@ function SignIn() {
     } catch (err) {
       setButtonText("Sign in");
       if (err.response) {
+        if(err.response.data.message.email){
+          return setError(err.response.data.message.email);
+        }
+        if(err.response.data.message.password){
+          return setError(err.response.data.message.password);
+        }
         return setError(err.response.data.message);
       }
       return setError("There has been an error.");
