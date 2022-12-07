@@ -112,7 +112,7 @@ export default function Dashboard() {
         });
       }
       const res = await axios.post(
-        `${API_SERVER}account/transactions?limit=100&type=charge`,
+        `${API_SERVER}account/transactions`,
         JSON.stringify(payload),
         {
           headers: {
@@ -160,7 +160,7 @@ export default function Dashboard() {
       if (todayCharges.data.length > 0) {
         let amount = 0;
         todayCharges.data.forEach((item, index) => {
-          amount += item.amount;
+          amount += item.amount_received;
         });
         settodayAmount(dataamount(amount));
       } else {
@@ -183,7 +183,7 @@ export default function Dashboard() {
                   fontWeight="bold"
                   pb=".1rem"
                 >
-                  Today's Money
+                  This Month
                 </StatLabel>
                 <Flex>
                   <StatNumber fontSize="lg" color={textColor}>
@@ -294,8 +294,8 @@ export default function Dashboard() {
                 <Flex>
                   <StatNumber fontSize="lg" color={textColor} fontWeight="bold">
                     {totalAmount ? (
-                      dataamount(totalAmount.available[0].amount)
-                    ) : (
+                      dataamount(totalAmount.amount)+" - ("+totalAmount.payments_count+")"
+                    )  : (
                       <Spinner color="red.500" />
                     )}
                   </StatNumber>
