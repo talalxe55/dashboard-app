@@ -19,6 +19,7 @@ import {
 } from "@chakra-ui/react";
 // Assets
 import signInImage from "assets/img/no-limi-RED-logo-opt-2.png";
+import LogoW from "assets/img/logos/nls-logo-w.png";
 
 import { useAuth } from "../../auth-context/auth.context";
 import AuthApi from "../../api/auth";
@@ -90,10 +91,10 @@ function SignIn() {
     } catch (err) {
       setButtonText("Sign in");
       if (err.response) {
-        if(err.response.data.message.email){
+        if (err.response.data.message.email) {
           return setError(err.response.data.message.email);
         }
-        if(err.response.data.message.password){
+        if (err.response.data.message.password) {
           return setError(err.response.data.message.password);
         }
         return setError(err.response.data.message);
@@ -103,7 +104,7 @@ function SignIn() {
   };
 
   const verifyOtp = async (event) => {
-    let otpcode = otp1+otp2+otp3+otp4+otp5+otp6;
+    let otpcode = otp1 + otp2 + otp3 + otp4 + otp5 + otp6;
     if (event) {
       event.preventDefault();
     }
@@ -328,8 +329,6 @@ function SignIn() {
               >
                 {" "}
                 <Text
-                  mb="36px"
-                  ms="4px"
                   color={textColor}
                   fontWeight="bold"
                   fontSize="14px"
@@ -350,7 +349,16 @@ function SignIn() {
           right="0px"
         >
           <Box
-            bgImage={signInImage}
+            bgImage={
+              document
+                .getElementsByTagName("body")[0]
+                .classList.contains("chakra-ui-dark") === true
+                ? LogoW
+                : signInImage
+            }
+            // LogoW
+            // signInImage
+
             w="80%"
             h="40%"
             bgSize="contain"
@@ -359,7 +367,6 @@ function SignIn() {
             position="absolute"
             top="30%"
             borderBottomLeftRadius="0"
-            backgroundColor={"white"}
           ></Box>
         </Box>
       </Flex>
@@ -551,7 +558,7 @@ function SignIn() {
             position="absolute"
             top="30%"
             borderBottomLeftRadius="0"
-            backgroundColor={"white"}
+            className="bg_logo"
           ></Box>
         </Box>
       </Flex>

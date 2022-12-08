@@ -246,7 +246,7 @@ const RefundForm = (props) => {
         onClose={onClose}
       >
         <ModalOverlay />
-        <ModalContent minWidth={{ sm: "35%" }} height={"50%"}>
+        <ModalContent minWidth={{ sm: "auto" }} height={"auto"}>
           <ModalHeader>Create Refund</ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6} overflowY={{ sm: "auto" }}>

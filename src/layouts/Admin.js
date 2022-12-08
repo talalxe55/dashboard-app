@@ -26,7 +26,6 @@ export default function Dashboard(props) {
       // delete the iframe element
       iframe.parentNode.removeChild(iframe);
       // log success
-      
     }
   }, []);
   const { ...rest } = props;
@@ -167,7 +166,7 @@ export default function Dashboard(props) {
           onTransparent={() => setSidebarVariant("transparent")}
         />
       </MainPanel>
-      <RefreshingToken />
+      {/* <RefreshingToken /> */}
     </ChakraProvider>
   );
 }

@@ -584,7 +584,11 @@ function Tables() {
                 className={"customer-listing"}
               >
                 <Thead>
-                  <Tr my=".8rem" pl="0px" color="gray.400">
+                  <Tr
+                    my={{ sm: ".8rem", md: "2rem" }}
+                    pl="0px"
+                    color="gray.400"
+                  >
                     <Th pl="0px" color="gray.400">
                       Customer Names
                     </Th>

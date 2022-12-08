@@ -22,7 +22,7 @@ const AlertCustomerCreated = (props) => {
     <SweetAlert
       success
       title="Customer has been created successfully!"
-      confirmBtnText="OKK!"
+      confirmBtnText="OK!"
       onCancel={() => setisSuccess(false)}
       onConfirm={() => setisSuccess(false)}
       customClass="alert_pop"
@@ -37,7 +37,7 @@ const AlertCustomerUpdated = (props) => {
     <SweetAlert
       success
       title="Customer has been updated successfully!"
-      confirmBtnText="OKK!"
+      confirmBtnText="OK!"
       onCancel={() => setisSuccess(false)}
       onConfirm={() => setisSuccess(false)}
       customClass="alert_pop"
@@ -52,7 +52,7 @@ const AlertPaymentCreated = (props) => {
     <SweetAlert
       success
       title="Payment has been created successfully!"
-      confirmBtnText="OKK!"
+      confirmBtnText="OK!"
       onCancel={() => setisSuccess(false)}
       onConfirm={() => setisSuccess(false)}
       customClass="alert_pop"
@@ -67,7 +67,7 @@ const AlertRefundCreated = (props) => {
     <SweetAlert
       success
       title="Refund has been created successfully!"
-      confirmBtnText="OKK!"
+      confirmBtnText="OK!"
       onCancel={() => setisSuccess(false)}
       onConfirm={() => setisSuccess(false)}
       customClass="alert_pop"
@@ -82,7 +82,7 @@ const AlertChargeSucceeded = (props) => {
     <SweetAlert
       success
       title="Payment has been charged successfully!"
-      confirmBtnText="OKK!"
+      confirmBtnText="OK!"
       onCancel={() => setisSuccess(false)}
       onConfirm={() => setisSuccess(false)}
       customClass="alert_pop"
@@ -98,7 +98,7 @@ const AlertPasswordUpdated = (props) => {
     <SweetAlert
       success
       title="Password has been updated successfully. Please log in again!"
-      confirmBtnText="OKK!"
+      confirmBtnText="OK!"
       //onCancel={() => setisSuccess(false)}
       onConfirm={() => {
         setUser(null);
@@ -118,7 +118,7 @@ const AlertPasswordReset = (props) => {
     <SweetAlert
       success
       title="Password reset successfull!"
-      confirmBtnText="OKK!"
+      confirmBtnText="OK!"
       //onCancel={() => setisSuccess(false)}
       onConfirm={() => {
         history.push("/auth/signin");

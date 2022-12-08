@@ -32,6 +32,7 @@ body.chakra-ui-dark {
   }
 }
 .filter_customers {
+  margin-bottom: 20px;
   > button {
     margin-right: 10px;
   }
@@ -70,7 +71,7 @@ body.chakra-ui-dark {
   }
 }
 
-.alert_pop {
+.sweet-alert.alert_pop {
   font-family: system-ui, sans-serif;
   h2 {
     text-transform: capitalize !important;
@@ -87,6 +88,16 @@ body.chakra-ui-dark {
   }
   &:hover {
     transition: $transition;
+  }
+}
+
+.chakra-ui-dark {
+  .sweet-alert.alert_pop, .sweet-alert.alert_pop div:first-child, .sweet-alert.alert_pop div:last-child, .sweet-alert.alert_pop span+div+div {
+    background-color: var(--chakra-colors-gray-800) !important;
+    a.btn.btn-lg.btn-primary {
+      color: $color-primary;
+      background-color: #fff;
+    }
   }
 }
 
@@ -155,6 +166,8 @@ a.anchor_hover {
   /* turn stuff orange when we are dragging over the target */
   color: #fff;
 }
+
+// -------------- MEDIA QURIES
 
 @media only screen and (max-width: 767px) {
   .filter_customers {

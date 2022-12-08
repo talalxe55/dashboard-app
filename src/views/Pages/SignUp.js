@@ -132,10 +132,11 @@ function SignUp() {
       <Flex alignItems="center" justifyContent="center" mb="60px" mt="20px">
         <Flex
           direction="column"
-          w="445px"
+          w={{ base: "100%", lg: "445px" }}
+          minWidth={{ base: "100%", lg: "445px" }}
           background="transparent"
           borderRadius="15px"
-          p="40px"
+          p={{ base: 15, lg: "40px" }}
           mx={{ base: "100px" }}
           bg={bgColor}
           boxShadow="0 20px 27px 0 rgb(0 0 0 / 5%)"

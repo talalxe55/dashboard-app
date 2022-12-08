@@ -229,16 +229,14 @@ function Detail() {
 
   function showMeta() {
     const timesTwo = [];
-
   }
 
   const ProductList = () => {
     const productEntries = [SinglePaymentMeta];
     const keys = Object.keys(SinglePaymentMeta);
     return productEntries.map((item, index) => {
-
       return (
-        <Box p="0px" bg={bgColor} my="22px" borderRadius="12px">
+        <Box p="0px" bg={bgColor} my={22} borderRadius="12px">
           <Flex justify="space-between" w="100%">
             <Flex direction="column" maxWidth="100%">
               <ul>
@@ -299,6 +297,7 @@ function Detail() {
           fontWeight="bold"
           textTransform="capitalize"
           color={"green.300"}
+          my={3}
         >
           {status}
         </Text>
@@ -483,8 +482,10 @@ function Detail() {
           <Flex
             justify="space-between"
             align="center"
+            gap={3}
             minHeight="60px"
             w="100%"
+            mb={22}
           >
             {singlePayment ? (
               <Text fontSize="md" fontWeight="bold" textTransform="capitalize">
@@ -772,7 +773,7 @@ function Detail() {
                   <Flex
                     direction={{ sm: "column", md: "row" }}
                     align="center"
-                    w="50%"
+                    w={{ base: "100%", lg: "50%" }}
                     justify="center"
                     py="1rem"
                   >
