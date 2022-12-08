@@ -203,7 +203,7 @@ function SignIn() {
           alignItems="center"
           justifyContent="start"
           style={{ userSelect: "none" }}
-          w={{ base: "100%", md: "50%", lg: "42%" }}
+          w={{ base: "100%", md: "50%" }}
         >
           <Flex
             direction="column"
@@ -323,19 +323,17 @@ function SignIn() {
                 {buttonText}
               </Button>
               <Button
-                color="primaryColor"
-                _hover={{ color: "primaryColor" }}
                 onClick={emailOTPverification}
+                color={textColor}
+                _hover={{ color: "primaryColor" }}
+                fontWeight="bold"
+                fontSize={14}
+                // w={{ sm: 100, md: 200 }}
+                whiteSpace={"break-spaces"}
+                p={8}
+                textAlign="start"
               >
-                {" "}
-                <Text
-                  color={textColor}
-                  fontWeight="bold"
-                  fontSize="14px"
-                  _hover={{ color: "primaryColor" }}
-                >
-                  Not configured yet? Click to ask for configuration email!
-                </Text>
+                Not configured yet? Click to ask for configuration email!
               </Button>
             </FormControl>
           </Flex>
@@ -356,16 +354,14 @@ function SignIn() {
                 ? LogoW
                 : signInImage
             }
-            // LogoW
-            // signInImage
-
-            w="80%"
+            w="70%"
             h="40%"
             bgSize="contain"
             bgRepeat="no-repeat"
             bgPosition="50%"
             position="absolute"
-            top="30%"
+            top="35%"
+            left="15%"
             borderBottomLeftRadius="0"
           ></Box>
         </Box>
@@ -386,7 +382,7 @@ function SignIn() {
           alignItems="center"
           justifyContent="start"
           style={{ userSelect: "none" }}
-          w={{ base: "100%", md: "50%", lg: "42%" }}
+          w={{ base: "100%", md: "50%" }}
         >
           {user && user.token ? (
             <div>
@@ -549,16 +545,22 @@ function SignIn() {
           right="0px"
         >
           <Box
-            bgImage={signInImage}
-            w="80%"
+            bgImage={
+              document
+                .getElementsByTagName("body")[0]
+                .classList.contains("chakra-ui-dark") === true
+                ? LogoW
+                : signInImage
+            }
+            w="70%"
             h="40%"
             bgSize="contain"
             bgRepeat="no-repeat"
             bgPosition="50%"
             position="absolute"
-            top="30%"
+            top="35%"
+            left="15%"
             borderBottomLeftRadius="0"
-            className="bg_logo"
           ></Box>
         </Box>
       </Flex>
