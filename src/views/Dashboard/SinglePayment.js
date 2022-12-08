@@ -95,6 +95,8 @@ function Detail() {
   const [isUnauthorized, setisUnauthorized] = useState(null);
   const [datanotFound, setdatanotFound] = useState(null);
   const history = useHistory();
+  const bgColor = useColorModeValue("#F8F9FA", "gray.800");
+  const nameColor = useColorModeValue("gray.500", "white");
   const dataamount = (amount) => {
     let cents = amount;
     var formatedDollars = (cents / 100).toLocaleString("en-US", {
@@ -236,7 +238,7 @@ function Detail() {
     return productEntries.map((item, index) => {
 
       return (
-        <Box p="0px" bg={"#F8F9FA"} my="22px" borderRadius="12px">
+        <Box p="0px" bg={bgColor} my="22px" borderRadius="12px">
           <Flex justify="space-between" w="100%">
             <Flex direction="column" maxWidth="100%">
               <ul>
@@ -1003,7 +1005,7 @@ function Detail() {
               <CardBody>
                 <Flex direction="column" w="100%">
                   {singleCustomerSources ? (
-                    <Flex p={7} bg="whiteAlpha.500" borderRadius={10}>
+                    <Flex p={7} bg={bgColor} borderRadius={10}>
                       {/* <Heading as="h6" fontSize={18} color="gray.500">
                                 {singleCustomerSources.owner.name}
                               </Heading> */}
@@ -1034,7 +1036,7 @@ function Detail() {
               <CardBody>
                 <Flex direction="column" w="100%">
                   {singleCharge.data.length > 0 ? (
-                    <Flex p={7} bg="whiteAlpha.500" borderRadius={10}>
+                    <Flex p={7} bg={bgColor} borderRadius={10}>
                       {/* <Heading as="h6" fontSize={18} color="gray.500">
                                 {singleCustomerSources.owner.name}
                               </Heading> */}
@@ -1065,7 +1067,7 @@ function Detail() {
               <CardBody>
                 <Flex direction="column" w="100%">
                   {Object.keys(SinglePaymentMeta).length > 0 ? (
-                    <Flex p={7} bg="whiteAlpha.500" borderRadius={10}>
+                    <Flex p={7} bg={bgColor} borderRadius={10}>
                       <ProductList />
                     </Flex>
                   ) : (
