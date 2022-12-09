@@ -10,9 +10,11 @@ import {
 } from "@chakra-ui/react";
 import PropTypes from "prop-types";
 import React, { useState } from "react";
+import { useLocation } from "react-router-dom";
 import AdminNavbarLinks from "./AdminNavbarLinks";
 
 export default function AdminNavbar(props) {
+  const location = useLocation();
   const [scrolled, setScrolled] = useState(false);
   const {
     variant,
@@ -23,7 +25,6 @@ export default function AdminNavbar(props) {
     onOpen,
     ...rest
   } = props;
-
   // Here are all the props that may change depending on navbar's type or state.(secondary, variant, scrolled)
   let mainText = useColorModeValue("gray.700", "gray.200");
   let secondaryText = useColorModeValue("gray.400", "gray.200");

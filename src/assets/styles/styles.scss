@@ -92,13 +92,20 @@ body.chakra-ui-dark {
 }
 
 .chakra-ui-dark {
-  .sweet-alert.alert_pop, .sweet-alert.alert_pop div:first-child, .sweet-alert.alert_pop div:last-child, .sweet-alert.alert_pop span+div+div {
+  .sweet-alert.alert_pop,
+  .sweet-alert.alert_pop div:first-child,
+  .sweet-alert.alert_pop div:last-child,
+  .sweet-alert.alert_pop span + div + div {
     background-color: var(--chakra-colors-gray-800) !important;
     a.btn.btn-lg.btn-primary {
       color: $color-primary;
       background-color: #fff;
     }
   }
+}
+
+p > div {
+  background: pink !important;
 }
 
 a.anchor_hover {
@@ -108,6 +115,12 @@ a.anchor_hover {
   &:hover {
     background-color: #f4f3f3;
     transition: $transition;
+  }
+}
+
+body.chakra-ui-dark a.anchor_hover {
+  &:hover {
+    background-color: var(--chakra-colors-gray-800);
   }
 }
 
@@ -165,6 +178,10 @@ a.anchor_hover {
 .file-drop > .file-drop-target.file-drop-dragging-over-target {
   /* turn stuff orange when we are dragging over the target */
   color: #fff;
+}
+
+.customer_info_accord * {
+  padding: 0;
 }
 
 // -------------- MEDIA QURIES

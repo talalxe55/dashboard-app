@@ -139,7 +139,7 @@ function Billing() {
         },
       });
       let data = await res.data.data;
-      array.push(data);;
+      array.push(data);
       setSingleCustomer(data);
       setSingleCustomerSources(data.sources);
       extractSource(data.sources);
@@ -148,7 +148,6 @@ function Billing() {
     } catch (err) {
       if (err.response.status === 404) {
         setNoDataFound(true);
-        
       } else if (err.response.status === 401) {
         setUnauthorizedWarning(true);
       } else {
@@ -157,7 +156,6 @@ function Billing() {
   };
 
   useEffect(() => {
-
     if (isReload) {
       const response = getAllPaymentsByCustomerID(id);
       response
@@ -211,8 +209,6 @@ function Billing() {
   }, []);
 
   useEffect(() => {
-
-
     if (
       singleCustomerPayments !== null &&
       singleCustomerPayments.data.length > 0
@@ -296,15 +292,25 @@ function Billing() {
   return (
     <Flex direction="column" pt={{ base: "120px", md: "75px" }}>
       {unauthorizedWarning ? <AlertUnauthorized /> : null}
-      {noDataFound ? <AlertDataNotFound setNoDataFound={setNoDataFound} /> : null}
+      {noDataFound ? (
+        <AlertDataNotFound setNoDataFound={setNoDataFound} />
+      ) : null}
 
       <Grid templateColumns={{ sm: "1fr", lg: "2fr 1.2fr" }} templateRows="1fr">
         <Box>
           <Flex
-            justify="space-between"
+            justify={
+              singleCustomer
+                ? singleCustomer.name
+                  ? "space-between"
+                  : "start"
+                : "start"
+            }
             align="center"
             minHeight="60px"
             w="100%"
+            direction={{ base: "column", md: "row" }}
+            pb={{ base: 5, md: 0 }}
           >
             <Text fontSize="lg" color={textColor} fontWeight="bold">
               {singleCustomer ? singleCustomer.name : "Customer Name"}
@@ -508,7 +514,12 @@ function Billing() {
                     <Separator />
                   </Flex>
 
-                  <Text fontSize="sm" color={textColor} fontWeight="bold">
+                  <Text
+                    fontSize="sm"
+                    color={textColor}
+                    fontWeight="bold"
+                    wordBreak={"break-word"}
+                  >
                     {singleCustomer ? singleCustomer.email : "Email Address"}
                   </Text>
                 </Flex>
@@ -624,7 +635,7 @@ function Billing() {
             </Grid>
           </Card>
 
-          <Card my={{ lg: "24px" }} me={{ lg: "24px" }}>
+          <Card my={{ base: "24px" }} me={{ lg: "24px" }}>
             <CardHeader py="12px">
               <Flex
                 justify="space-between"
@@ -641,7 +652,7 @@ function Billing() {
             <Grid gap={5} templateColumns={{ sm: "1fr", lg: "repeat(2, 1fr)" }}>
               {singleCustomer !== null ? (
                 <Accordion allowToggle>
-                  <AccordionItem>
+                  <AccordionItem className="customer_info_accord">
                     <h2>
                       <AccordionButton>
                         <Box flex="1" textAlign="left">
@@ -665,22 +676,22 @@ function Billing() {
                                 : "No customer name"}
                             </Text>
                             <Spacer />
-                            <Button
+                            {/* <Button
                               p="0px"
                               bg="transparent"
                               w="16px"
                               h="16px"
                               variant="no-hover"
-                            ></Button>
+                            ></Button> */}
                           </Flex>
                         </Box>
                         <AccordionIcon />
                       </AccordionButton>
                     </h2>
-                    <AccordionPanel pb={4}>
+                    <AccordionPanel px={{ base: 0 }}>
                       <Box p="24px" bg={bgColor} my="" borderRadius="12px">
                         <Flex justify="space-between" w="100%">
-                          <Flex direction="column" maxWidth="70%">
+                          <Flex direction="column">
                             {/* <Text
               color={nameColor}
               fontSize="md"
@@ -805,7 +816,7 @@ function Billing() {
           </Card>
         </Box>
         {singleCustomerPayments ? (
-          <Card my="24px" ms={{ lg: "24px" }}>
+          <Card my={{ base: 0, md: "24px" }} ms={{ lg: "24px" }}>
             <CardHeader mb="12px">
               <Flex direction="column" w="100%">
                 <Flex
@@ -853,6 +864,7 @@ function Billing() {
                         <NavLink
                           to={`/admin/detail/${row.id}`}
                           className="anchor_hover"
+                          _hover={{ bg: "black" }}
                         >
                           <TransactionRowBilling
                             key={index}

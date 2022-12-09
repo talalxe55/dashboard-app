@@ -56,6 +56,11 @@ export default function Dashboard(props) {
           window.location.href.indexOf(routes[i].layout + routes[i].path) !== -1
         ) {
           return routes[i].name;
+        } else if (
+          routes[i].path.includes(":id") &&
+          window.location.href.indexOf(routes[i].path.split(":")[0]) !== -1
+        ) {
+          return routes[i].name;
         }
       }
     }

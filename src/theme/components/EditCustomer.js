@@ -219,7 +219,6 @@ const EditCustomer = (props) => {
   };
 
   const getCreditData = (data) => {
-    
     setVals({ ...vals, data });
   };
 
@@ -338,6 +337,7 @@ const EditCustomer = (props) => {
                   name="description"
                   onChange={handleValues}
                   value={vals.description}
+                  mt={2}
                 />
                 <Text color={"red.500"}>{errvals.description}</Text>
               </FormControl>
@@ -352,7 +352,7 @@ const EditCustomer = (props) => {
                     </AccordionButton>
 
                     <AccordionPanel pb={4}>
-                      <FormLabel m={0} pe={4} fontWeight={"bold"}>
+                      <FormLabel m={0} pe={4}>
                         Line 1
                       </FormLabel>
                       <Input
@@ -363,7 +363,7 @@ const EditCustomer = (props) => {
                         value={vals.address.line1}
                       />
                       <Text color={"red.500"}>{errvals.address.line_1}</Text>
-                      <FormLabel m={0} pe={4} fontWeight={"bold"}>
+                      <FormLabel mt={4} pe={4}>
                         Line 2
                       </FormLabel>
                       <Input
@@ -374,7 +374,7 @@ const EditCustomer = (props) => {
                         value={vals.address.line2}
                       />
                       <Text color={"red.500"}>{errvals.address.line_2}</Text>
-                      <FormLabel m={0} pe={4} fontWeight={"bold"}>
+                      <FormLabel mt={4} pe={4}>
                         City
                       </FormLabel>
                       <Input
@@ -385,7 +385,7 @@ const EditCustomer = (props) => {
                         value={vals.address.city}
                       />
                       <Text color={"red.500"}>{errvals.address.city}</Text>
-                      <FormLabel m={0} pe={4} fontWeight={"bold"}>
+                      <FormLabel mt={4} pe={4}>
                         State
                       </FormLabel>
                       <Input
@@ -396,7 +396,7 @@ const EditCustomer = (props) => {
                         value={vals.address.state}
                       />
                       <Text color={"red.500"}>{errvals.address.state}</Text>
-                      <FormLabel m={0} pe={4} fontWeight={"bold"}>
+                      <FormLabel mt={4} pe={4}>
                         Postal Code
                       </FormLabel>
                       <Input
@@ -409,7 +409,7 @@ const EditCustomer = (props) => {
                       <Text color={"red.500"}>
                         {errvals.address.postal_code}
                       </Text>
-                      <FormLabel m={0} pe={4} fontWeight={"bold"}>
+                      <FormLabel mt={4} pe={4}>
                         Country
                       </FormLabel>
                       <Input

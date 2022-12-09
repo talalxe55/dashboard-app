@@ -4,7 +4,7 @@ function PanelContainer(props) {
   const styles = useStyleConfig("PanelContainer", { variant });
   // Pass the computed styles into the `__css` prop
   return (
-    <Box __css={styles} {...rest}>
+    <Box __css={styles} pb={{ base: 5 }} p={{ base: 0, md: 10 }} {...rest}>
       {children}
     </Box>
   );

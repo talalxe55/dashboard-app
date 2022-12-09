@@ -419,11 +419,6 @@ function Detail() {
 
   const CardDetails = () => {
     if (singleCustomerSources) {
-      //   return (
-      //     <Text fontSize="xl" letterSpacing="2px" fontWeight="bold">
-      //       XXXX XXXX XXXX {singleCustomerSources.data[0].card.last4}
-      //     </Text>
-      //   );
       if (Object.keys(singleCustomerSources.card) !== 0) {
         if (singleCustomerSources.card.last4.length > 0) {
           return (
@@ -432,11 +427,7 @@ function Detail() {
             </Text>
           );
         } else {
-          return (
-            <Text fontSize="xl" letterSpacing="2px" fontWeight="bold">
-              <SkeletonText noOfLines={2} />
-            </Text>
-          );
+          return <SkeletonText noOfLines={2} />;
         }
       } else {
         return (
@@ -446,11 +437,7 @@ function Detail() {
         );
       }
     } else {
-      return (
-        <Text fontSize="xl" letterSpacing="2px" fontWeight="bold">
-          <SkeletonText noOfLines={2} />
-        </Text>
-      );
+      return <SkeletonText noOfLines={2} />;
     }
   };
 
@@ -488,7 +475,7 @@ function Detail() {
             mb={22}
           >
             {singlePayment ? (
-              <Text fontSize="md" fontWeight="bold" textTransform="capitalize">
+              <Box fontSize="md" fontWeight="bold" textTransform="capitalize">
                 {dataamount(singlePayment.amount) +
                   " " +
                   singlePayment.currency.toUpperCase() +
@@ -530,9 +517,9 @@ function Detail() {
                 ) : (
                   ""
                 )}
-              </Text>
+              </Box>
             ) : (
-              <SkeletonText mt="4" noOfLines={3} spacing="4" />
+              <Spinner color="red.500" />
             )}
           </Flex>
         </Box>
@@ -576,13 +563,13 @@ function Detail() {
                     </Text>
                     <Separator />
                   </Flex>
-                  <Text fontSize="lg" color={textColor} fontWeight="bold">
+                  <Box fontSize="lg" color={textColor} fontWeight="bold">
                     {singlePayment ? (
                       `${dataamount(singlePayment.amount)}`
                     ) : (
-                      <SkeletonText noOfLines={1}>Amount</SkeletonText>
+                      <Skeleton noOfLines={1} />
                     )}
-                  </Text>
+                  </Box>
                 </Flex>
               </CardBody>
             </Card>
@@ -628,7 +615,7 @@ function Detail() {
                     <Separator />
                   </Flex>
 
-                  <Text fontSize="sm" color={"blue.500"} fontWeight="bold">
+                  <Box fontSize="sm" color={"blue.500"} fontWeight="bold">
                     {SingleCustomerEmail ? (
                       <NavLink
                         color="blue.300"
@@ -639,7 +626,7 @@ function Detail() {
                     ) : (
                       <Spinner color="red.500" />
                     )}
-                  </Text>
+                  </Box>
                 </Flex>
               </CardBody>
             </Card>
@@ -683,7 +670,7 @@ function Detail() {
                     <Separator />
                   </Flex>
 
-                  <Text
+                  <Box
                     fontSize="sm"
                     color={textColor}
                     fontWeight="bold"
@@ -692,9 +679,9 @@ function Detail() {
                     {singlePayment ? (
                       singlePayment.description
                     ) : (
-                      <SkeletonText noOfLines={1}>Desc</SkeletonText>
+                      <Spinner color="red.500" />
                     )}
-                  </Text>
+                  </Box>
                 </Flex>
               </CardBody>
             </Card>
@@ -806,9 +793,6 @@ function Detail() {
                                 <Skeleton>OWNER NAME</Skeleton>
                               )}
                             </Text>
-                            {/* <Text fontSize="md" fontWeight="bold">
-                    {"Name"}
-                  </Text> */}
                             <Icon
                               as={RiMastercardFill}
                               w="48px"
@@ -819,7 +803,6 @@ function Detail() {
                           <Spacer />
                           <Flex direction="column">
                             <Box>
-                              {" "}
                               <Text
                                 fontSize="xl"
                                 letterSpacing="2px"
@@ -1015,7 +998,7 @@ function Detail() {
                         address={singleCustomerSources.owner.address}
                         email={singleCustomerSources.owner.email}
                         number={singleCustomerSources.owner.phone}
-                      />{" "}
+                      />
                     </Flex>
                   ) : (
                     <SkeletonText noOfLines={9}></SkeletonText>
