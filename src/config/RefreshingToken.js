@@ -50,7 +50,6 @@ const RefreshingToken = () => {
   const onActive = (event) => {
     // Close Modal Prompt
     // Do some active action
-    console.log('active')
     let currDate = new Date();
     let newCurrDate = new Date();
     newCurrDate.setMinutes(currDate.getMinutes() + 1);
