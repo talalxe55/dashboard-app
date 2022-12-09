@@ -14,7 +14,6 @@ const RefreshingToken = () => {
   const toast = useToast();
   const history = useHistory();
 
-
   const LogoutUser =  async () => {
     try{
       const response = await AuthApi.Logout();
@@ -51,7 +50,7 @@ const RefreshingToken = () => {
   const onActive = (event) => {
     // Close Modal Prompt
     // Do some active action
-
+    console.log('active')
     let currDate = new Date();
     let newCurrDate = new Date();
     newCurrDate.setMinutes(currDate.getMinutes() + 1);
@@ -140,15 +139,11 @@ const RefreshingToken = () => {
       'MSPointerMove',
       'visibilitychange'
     ],})
+    
   // const countHandler = (counter) => {
   //   setcount(counter);
   // }
   // var counter = 0;
-  // setInterval(() => {
-
-  //     countHandler(counter++);
-  
-  // },1000)
   
   // window.addEventListener('mousemove', setcount(0));
   // window.addEventListener('scroll', setcount(0));

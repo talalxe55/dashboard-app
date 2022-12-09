@@ -54,7 +54,7 @@ import { dashboardTableData, timelineData } from "variables/general";
 import { NavLink, useParams, useHistory } from "react-router-dom";
 import axios from "axios";
 import { API_SERVER, TOKEN_TYPE, TOKEN, ACCEPT_TYPE } from "config/constant";
-import { setConstantValue } from "typescript";
+// import { setConstantValue } from "typescript";
 
 export default function Dashboard() {
   const value = "$100.000";
