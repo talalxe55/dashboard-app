@@ -75,8 +75,11 @@ function Users() {
         })
         .catch((err) => {
           console.log(err);
-          if (err.response.includes("status") && err.response.status == 401) {
+          if(err.response.status == 401){
             setUnauthorizedWarning(true);
+          }
+          if (err.response.status == 404) {
+            setNoDataFound(true);
           }
           setLoading(false);
         });
@@ -101,7 +104,7 @@ function Users() {
       {noDataFound ? (
         <AlertDataNotFound setNoDataFound={setNoDataFound} />
       ) : null}
-      <Card overflowX={{ sm: "scroll", xl: "hidden" }}>
+      <Card overflowX={{ sm: "scroll", xl: "scroll" }}>
         <CardHeader p="0 0 30px 0">
           <Text
             fontSize="xl"
@@ -119,6 +122,7 @@ function Users() {
                 variant="simple"
                 color={textColor}
                 className="customer-listing"
+                overflowX={"auto"}
               >
                 <Thead>
                   <Tr my=".8rem" pl="0px" color="gray.400">
@@ -129,7 +133,7 @@ function Users() {
                     <Th color="gray.400">Change User Role</Th>
                     <Th color="gray.400">Status</Th>
                     <Th color="gray.400">Created at</Th>
-                    <Th color="gray.400">Delete Job</Th>
+                    <Th color="gray.400">Delete User</Th>
                   </Tr>
                 </Thead>
                 <Tbody textTransform="capitalize">
