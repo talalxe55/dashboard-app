@@ -298,7 +298,7 @@ const editUsersRole = async (userEmail, role) => {
 const deleteUsers = async (email, id) => {
   
   const payload = JSON.stringify({ email, id });
-  const res = await axios.post(`${API_SERVER}users/delete/`, payload, {
+  const res = await axios.post(`${API_SERVER}users/delete`, payload, {
     headers: {
       Authorization: `${TOKEN_TYPE} ${TOKEN}`,
       Accept: `${ACCEPT_TYPE}`,
