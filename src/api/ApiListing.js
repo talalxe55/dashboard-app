@@ -12,11 +12,8 @@ const getCustomersList = async () => {
     });
   } catch (err) {
     if (err.response.status === 404) {
-      
     } else if (err.response.status === 401) {
-      
     } else {
-      
     }
   }
 };
@@ -30,15 +27,12 @@ const getCustomerID = async (cusID) => {
         "Content-Type": `${ACCEPT_TYPE}`,
       },
     });
-    
+
     return res;
   } catch (err) {
     if (err.response.status === 404) {
-     
     } else if (err.response.status === 401) {
-      
     } else {
-      
     }
   }
 };
@@ -52,10 +46,7 @@ const getAllPayments = async () => {
         "Content-Type": `${ACCEPT_TYPE}`,
       },
     });
-
-  } catch (error) {
-    
-  }
+  } catch (error) {}
 };
 
 const getAllPaymentsByCustomerID = async (id) => {
@@ -80,10 +71,7 @@ const getAllRefunds = async () => {
         "Content-Type": `${ACCEPT_TYPE}`,
       },
     });
-
-  } catch (error) {
-    
-  }
+  } catch (error) {}
 };
 
 const createPayment = async (data) => {
@@ -103,7 +91,6 @@ const createPayment = async (data) => {
     }
   );
   return res;
-
 };
 
 const editCustomer = async (data, cusid) => {
@@ -123,7 +110,6 @@ const editCustomer = async (data, cusid) => {
     }
   );
   return res;
-
 };
 
 const refundCharge = async (data) => {
@@ -236,17 +222,15 @@ const verifyEmail = async (url) => {
 };
 
 const getBulkPayments = async () => {
-  
-    const res = await axios.get(`${API_SERVER}bulk-payments`, {
-      headers: {
-        Authorization: `${TOKEN_TYPE} ${TOKEN}`,
-        Accept: `${ACCEPT_TYPE}`,
-        "Content-Type": `${ACCEPT_TYPE}`,
-      },
-    });
-   
-    return res;
-   
+  const res = await axios.get(`${API_SERVER}bulk-payments`, {
+    headers: {
+      Authorization: `${TOKEN_TYPE} ${TOKEN}`,
+      Accept: `${ACCEPT_TYPE}`,
+      "Content-Type": `${ACCEPT_TYPE}`,
+    },
+  });
+
+  return res;
 };
 
 const runJobPaymentID = async (jobID) => {
@@ -283,7 +267,6 @@ const getUsers = async () => {
 };
 
 const editUsersRole = async (userEmail, role) => {
-  
   const jsonData = JSON.stringify({ email: userEmail, role });
   const res = await axios.post(`${API_SERVER}users/edit-role`, jsonData, {
     headers: {
@@ -296,7 +279,6 @@ const editUsersRole = async (userEmail, role) => {
 };
 
 const deleteUsers = async (email, id) => {
-  
   const payload = JSON.stringify({ email, id });
   const res = await axios.post(`${API_SERVER}users/delete`, payload, {
     headers: {
@@ -319,7 +301,7 @@ const getRefreshToken = async () => {
   return res;
 };
 
-const verifyOTP = async (otpcode,token) => {
+const verifyOTP = async (otpcode, token) => {
   const payload = JSON.stringify({ secret: otpcode });
   const res = await axios.post(`${API_SERVER}users/2fa/verify`, payload, {
     headers: {
@@ -341,6 +323,18 @@ const sendOTPConfig = async (token) => {
   });
   return res;
 };
+
+const getLogs = async () => {
+  const res = await axios.get(`${API_SERVER}logs`, {
+    headers: {
+      Authorization: `${TOKEN_TYPE} ${TOKEN}`,
+      Accept: `${ACCEPT_TYPE}`,
+      "Content-Type": `${ACCEPT_TYPE}`,
+    },
+  });
+  return res;
+};
+
 export {
   getCustomersList,
   getAllPayments,
@@ -364,5 +358,6 @@ export {
   deleteUsers,
   getRefreshToken,
   verifyOTP,
-  sendOTPConfig
+  sendOTPConfig,
+  getLogs,
 };

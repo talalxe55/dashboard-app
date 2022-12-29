@@ -12,24 +12,23 @@ import {
   Heading,
   Image,
 } from "@chakra-ui/react";
-import UsersTable from "components/Tables/UsersTable";
+import LogsTable from "components/Tables/LogsTable";
 import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
 import LoadingGif from "assets/svg/loading-infinite.svg";
-import LoadingDark from "assets/svg/loader-dark.svg";
 import { useLocation } from "react-router-dom";
 import {
   AlertUnauthorized,
   AlertDataNotFound,
 } from "theme/components/AlertDialog";
-import { getUsers } from "api/ApiListing";
+import { getLogs, getUsers } from "api/ApiListing";
 
 // PARENT COMPONENT
-function Users() {
+export default function Logs() {
   const { search } = useLocation();
   let query = React.useMemo(() => new URLSearchParams(search), [search]);
-  const [newUsers, setNewUsers] = useState(null);
+  const [newLogs, setNewLogs] = useState(null);
   const [isloading, setLoading] = useState(false);
   const [emailFilter, setEmailFilter] = useState("");
   const textColor = useColorModeValue("gray.700", "white");
@@ -38,10 +37,10 @@ function Users() {
   const setReloadHandler = (value) => {
     if (value === true) {
       setLoading(true);
-      getUsers()
+      getLogs()
         .then((res) => {
           if (res !== undefined && res.status === 200) {
-            setNewUsers(res.data.data);
+            setNewLogs(res.data.data.data);
             setLoading(false);
           } else {
           }
@@ -63,12 +62,12 @@ function Users() {
   };
 
   useEffect(() => {
-    if (newUsers === null) {
+    if (newLogs === null) {
       setLoading(true);
-      getUsers()
+      getLogs()
         .then((res) => {
           if (res !== undefined && res.status === 200) {
-            setNewUsers(res.data.data);
+            setNewLogs(res.data.data.data);
             setLoading(false);
           } else {
           }
@@ -87,16 +86,16 @@ function Users() {
   }, []);
 
   // Filtering Email
-  const customerListing =
-    newUsers !== null && newUsers !== undefined
-      ? newUsers.filter((customer) => {
-          if (emailFilter == "") {
-            return customer;
-          } else if (emailFilter != "") {
-            return customer.email == emailFilter ? customer : false;
-          }
-        })
-      : null;
+  // const customerListing =
+  //   newLogs !== null && newLogs !== undefined
+  //     ? newLogs.filter((customer) => {
+  //         if (emailFilter == "") {
+  //           return customer;
+  //         } else if (emailFilter != "") {
+  //           return customer.email == emailFilter ? customer : false;
+  //         }
+  //       })
+  //     : null;
 
   return (
     <Flex direction="column" pt={{ base: "120px", md: "75px" }}>
@@ -112,7 +111,7 @@ function Users() {
             fontWeight="bold"
             textAlign={"start"}
           >
-            All Users
+            All Logs
           </Text>
         </CardHeader>
         {!isloading ? (
@@ -127,32 +126,24 @@ function Users() {
                 <Thead>
                   <Tr my=".8rem" pl="0px" color="gray.400">
                     <Th color="gray.400">Sr. No.</Th>
-                    <Th color="gray.400">Name</Th>
-                    <Th color="gray.400">Email</Th>
-                    <Th color="gray.400">Role</Th>
-                    <Th color="gray.400">Change User Role</Th>
-                    <Th color="gray.400">Status</Th>
+                    <Th color="gray.400">Description</Th>
                     <Th color="gray.400">Created at</Th>
-                    <Th color="gray.400">Delete User</Th>
+                    <Th color="gray.400">Updated at</Th>
+                    <Th color="gray.400">View Details</Th>
                   </Tr>
                 </Thead>
                 <Tbody textTransform="capitalize">
-                  {newUsers !== null
-                    ? customerListing.map((val, index) => {
+                  {newLogs !== null
+                    ? newLogs.map((val, index) => {
                         return (
-                          <UsersTable
+                          <LogsTable
                             key={index}
                             srno={index + 1}
                             userid={val.id}
-                            name={val.name}
-                            email={val.email}
-                            status={
-                              val.email_verified_at === null
-                                ? "Not Verfied"
-                                : "Verified"
-                            }
-                            role={val.role}
-                            date={datadate(val.created_at)}
+                            desc={val.description}
+                            properties={val.properties}
+                            dateCreated={datadate(val.created_at)}
+                            dateUpdated={datadate(val.updated_at)}
                             setReloadHandler={setReloadHandler}
                           />
                         );
@@ -168,7 +159,7 @@ function Users() {
             alignItems="center"
             direction={"column"}
           >
-            <Heading className="title_listing">Listing Users...</Heading>
+            <Heading className="title_listing">Listing Logs...</Heading>
             <Image src={LoadingGif} w={100} />
           </Flex>
         )}
@@ -179,12 +170,10 @@ function Users() {
             alignItems="center"
             direction={"column"}
           >
-            <p>Showing{newUsers !== null ? newUsers.length : 0} of Users</p>
+            <p>Showing {newLogs !== null ? newLogs.length : 0} of Logs</p>
           </Flex>
         </Box>
       </Card>
     </Flex>
   );
 }
-
-export default Users;

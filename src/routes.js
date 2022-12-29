@@ -17,6 +17,7 @@ import VerifyEmail from "views/Pages/VerifyEmail";
 import BulkPayments from "views/Dashboard/BulkPayments";
 import Logs from "views/Dashboard/Logs";
 import { BsStack } from "react-icons/bs";
+import { FaChartArea } from "react-icons/fa";
 import {
   HomeIcon,
   StatsIcon,
@@ -116,19 +117,17 @@ var dashRoutes = [
     key: "users",
     role: ["superadmin", "admin"],
   },
-
   {
     path: "/logs",
     name: "Logs",
     rtlName: "لوحة القيادة",
-    icon: <PersonIcon color="inherit" />,
+    icon: <FaChartArea color="inherit" />,
     component: Logs,
     layout: "/admin",
     hide: false,
     key: "logs",
     role: ["superadmin", "admin"],
   },
-
   {
     path: "/register",
     name: "Register New User",
