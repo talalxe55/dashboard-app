@@ -15,6 +15,7 @@ import Users from "views/Dashboard/Users.js";
 import ResetPassword from "views/Pages/ResetPassword";
 import VerifyEmail from "views/Pages/VerifyEmail";
 import BulkPayments from "views/Dashboard/BulkPayments";
+import Logs from "views/Dashboard/Logs";
 import { BsStack } from "react-icons/bs";
 import {
   HomeIcon,
@@ -113,7 +114,19 @@ var dashRoutes = [
     layout: "/admin",
     hide: false,
     key: "users",
-    role: ["superadmin", "admin", "user"],
+    role: ["superadmin", "admin"],
+  },
+
+  {
+    path: "/logs",
+    name: "Logs",
+    rtlName: "لوحة القيادة",
+    icon: <PersonIcon color="inherit" />,
+    component: Logs,
+    layout: "/admin",
+    hide: false,
+    key: "logs",
+    role: ["superadmin", "admin"],
   },
 
   {
