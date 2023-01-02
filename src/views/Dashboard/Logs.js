@@ -30,6 +30,7 @@ import {
 } from "theme/components/AlertDialog";
 import { getLogs, getUsers } from "api/ApiListing";
 import { AddIcon, CloseIcon } from "@chakra-ui/icons";
+import { setConstantValue } from "typescript";
 
 // PARENT COMPONENT
 export default function Logs() {
@@ -46,29 +47,65 @@ export default function Logs() {
   const [filterName, setFilterName] = useState("");
   const [filterApplied, setfilterApplied] = useState(false);
   const [filterPage, setfilterPage] = useState();
+  const [logPayload, setlogPayload] = useState();
   const [filterDate, setfilterDate] = useState([null]);
+  const [filterEvent, setfilterEvent] = useState("");
 
+
+  function getFilterData() {
+    let options = {};
+    if(document.querySelector("input[name=payment-date]").value!== null &&  document.querySelector("input[name=payment-date]").value !==""){
+      options['date'] = document.querySelector("input[name=payment-date]").value;
+    }
+    if(document.querySelector("select[name=payment-events]").value!== null &&  document.querySelector("select[name=payment-events]").value !=="default"){
+      options['event'] = document.querySelector("select[name=payment-events]").value;
+    }
+    return options;
+  }
+  function searchLogsbyfilter() {
+    
+    let options = [];
+    options = getFilterData();
+    if (Object.keys(options).length == 0) {
+      setfilterApplied(false);
+      fetchLogs('1', null, null);
+      return;
+    } else {
+      setfilterApplied(true);
+      fetchLogs(1,options['event']?options['event']:null,options['date']?options['date']:null);
+    }
+  }
+
+  function fetchLogs(page,event,date){
+    setLoading(true);
+    getLogs(page,event,date)
+      .then((res) => {
+        if (res !== undefined && res.status === 200) {
+          if (page == 1) {
+            setNewLogs(res.data.data.data);
+          } else {
+            setNewLogs((logs) => [...logs, ...res.data.data.data]);
+          }
+          // setNewLogs(res.data.data.data);
+          setlogPayload(res.data.data);
+          setLoading(false);
+        } else {
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        if (err.response.status == 401) {
+          setUnauthorizedWarning(true);
+        }
+        if (err.response.status == 404) {
+          setNoDataFound(true);
+        }
+        setLoading(false);
+      });
+  }
   useEffect(() => {
     if (newLogs === null) {
-      setLoading(true);
-      getLogs()
-        .then((res) => {
-          if (res !== undefined && res.status === 200) {
-            setNewLogs(res.data.data.data);
-            setLoading(false);
-          } else {
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-          if (err.response.status == 401) {
-            setUnauthorizedWarning(true);
-          }
-          if (err.response.status == 404) {
-            setNoDataFound(true);
-          }
-          setLoading(false);
-        });
+      fetchLogs(1, null, null);
     }
   }, []);
 
@@ -153,22 +190,12 @@ export default function Logs() {
   function getMoreCustomers() {
     let options = [];
     if (filterApplied) {
+      let options = [];
       options = getFilterData();
-
-      // if(isMore){
-      //     options['page'] = filterPage;
-      // }
-      var moreCustomers = filterCustomers(
-        options,
-        null,
-        isMore ? filterPage : null
-      );
+      fetchLogs(logPayload.current_page<=logPayload.last_page?logPayload.current_page+1:logPayload.current_page,options['event']?options['event']:null,options['date']?options['date']:null);
+      
     } else {
-      var table = document.querySelector(".customer-listing");
-      var lastRow = table.rows[table.rows.length - 1];
-
-      options["starting_after"] = lastRow.getAttribute("customer-data");
-      var moreCustomers = getCustomersList(options);
+      fetchLogs(logPayload.current_page<=logPayload.last_page?logPayload.current_page+1:logPayload.current_page,null,null);
     }
   }
 
@@ -222,33 +249,42 @@ export default function Logs() {
                 bg={"none"}
                 fontSize={15}
               >
-                Select
+                Event
                 <span
                   style={{ color: "var(--chakra-colors-primaryColor-700)" }}
                 >
-                  {filterDate}
+                  {filterEvent}
                 </span>
               </MenuButton>
               <MenuList>
                 <Box p={3}>
                   <Flex justifyContent="space-between">
-                    <Text fontWeight={"bold"}>Filter By Select</Text>
+                    <Text fontWeight={"bold"}>Filter By Events</Text>
                     <Button
                       p={0}
                       fontSize={15}
                       borderRadius={50}
-                      onClick={null}
+                      onClick={ () => {
+                        document.querySelector(
+                        "select[name=payment-events]"
+                      ).selectedIndex = 0; searchLogsbyfilter(); setfilterEvent("");}}
                     >
                       <CloseIcon />
                     </Button>
                   </Flex>
-                  <Select my={3} name="payment-date-operator">
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
+                  <Select my={3} name="payment-events">
+                    <option value="default">Select Event</option>
+                    <option value="payment_created">Payment Created</option>
+                    <option value="refund_created">Refund Created</option>
                   </Select>
                   <Button
-                    onClick={null}
+                    onClick={() => {
+                      searchLogsbyfilter();
+                      setfilterEvent(' ='+
+                        document.querySelector(
+                        "select[name=payment-events]"
+                      ).value);
+                    }}
                     w={"100%"}
                     bg="primaryColor"
                     color="white"
@@ -291,29 +327,26 @@ export default function Logs() {
                         document.querySelector(
                           "input[name=payment-date]"
                         ).value = "";
-                        searchPaymentsbyfilter();
+                        searchLogsbyfilter();
                       }}
                     >
                       <CloseIcon />
                     </Button>
                   </Flex>
-                  <Select my={3} name="payment-date-operator">
+                  {/* <Select my={3} name="payment-date-operator">
                     <option value="=">is equal to</option>
                     <option value=">">is after</option>
                     <option value="<">is before</option>
-                  </Select>
+                  </Select> */}
                   <Input type="date" name="payment-date" />
                   <Button
                     onClick={() => {
                       setfilterDate(
                         " " +
-                          document.querySelector(
-                            "select[name=payment-date-operator]"
-                          ).value +
                           document.querySelector("input[name=payment-date]")
                             .value
                       );
-                      searchPaymentsbyfilter();
+                      searchLogsbyfilter();
                     }}
                     w={"100%"}
                     bg="primaryColor"
@@ -384,10 +417,10 @@ export default function Logs() {
             alignItems="center"
             direction={"column"}
           >
-            <p>Showing {newLogs !== null ? newLogs.length : 0} of Logs</p>
+            <p>Showing {newLogs !== null ? newLogs.length : 0} of {logPayload ? logPayload.total:0} Logs</p>
           </Flex>
         </Box>
-        {isMore ? (
+        {logPayload && logPayload.next_page_url!==null ? (
           <Button
             onClick={getMoreCustomers}
             bg="primaryColor"
@@ -402,7 +435,7 @@ export default function Logs() {
         ) : (
           ""
         )}
-        <Box>
+        {/* <Box>
           <Flex
             h="50vh"
             justifyContent="center"
@@ -411,7 +444,7 @@ export default function Logs() {
           >
             <p>Showing {"customers.length"} of Customers</p>
           </Flex>
-        </Box>
+        </Box> */}
       </Card>
     </Flex>
   );

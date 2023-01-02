@@ -324,8 +324,18 @@ const sendOTPConfig = async (token) => {
   return res;
 };
 
-const getLogs = async () => {
-  const res = await axios.get(`${API_SERVER}logs`, {
+const getLogs = async (page,event,date) => {
+  var params = null;
+  if(page){
+    !params ? (params = "?page=" + page) : (params += "&page=" + page);
+  }
+  if(event){
+    !params ? (params = "?event=" + event) : (params += "&event=" + event);
+  }
+  if(date){
+    !params ? (params = "?date=" + date) : (params += "&date=" + date);
+  }
+  const res = await axios.get(`${API_SERVER}logs`+params, {
     headers: {
       Authorization: `${TOKEN_TYPE} ${TOKEN}`,
       Accept: `${ACCEPT_TYPE}`,
