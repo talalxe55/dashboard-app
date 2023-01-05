@@ -70,7 +70,7 @@ function ResetPassword() {
 
   useEffect(() => {
     if (user && user.token) {
-      history.push("/admin/dashboard");
+      history.push("/admin/customers");
     }
   }, []);
   const login = async (event) => {

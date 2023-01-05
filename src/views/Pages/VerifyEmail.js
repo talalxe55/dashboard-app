@@ -60,7 +60,7 @@ function VerifyEmail() {
                   isClosable: true,
                 });
                 setverifiedMessage("");
-                history.push("/admin/dashboard");
+                history.push("/admin/customers");
               }, 5000);
             } else {
               setTimeout(function () {

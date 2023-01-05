@@ -41,6 +41,7 @@ var dashRoutes = [
     layout: "/admin",
     key: "dashboard",
     role: ["user", "admin", "superadmin"],
+    hide: true,
   },
   {
     path: "/customers",

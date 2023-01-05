@@ -66,7 +66,7 @@ function SignIn() {
       event.preventDefault();
     }
     if (user && user.token) {
-      return history.push("/dashboard");
+      return history.push("/admin/customers");
     }
     if (email === "") {
       return setError("You must enter your email.");
@@ -109,7 +109,7 @@ function SignIn() {
       event.preventDefault();
     }
     if (user && user.token) {
-      return history.push("/dashboard");
+      return history.push("/admin/customers");
     }
     if (otpcode === "" || otpcode === null) {
       return setError("You must enter your OTP!.");
@@ -184,7 +184,7 @@ function SignIn() {
     user = JSON.stringify(user);
     setUser(user);
     localStorage.setItem("user", user);
-    history.push("/dashboard");
+    history.push("/admin/customers");
     window.location.reload(false);
   };
 
