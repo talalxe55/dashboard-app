@@ -429,12 +429,12 @@ function Tables() {
                 bg={"none"}
                 fontSize={15}
               >
-                {filterEmail ? "Email | " + filterEmail : "Email"}
+                {filterEmail ? "Meta Email | " + filterEmail : "Meta Email"}
               </MenuButton>
               <MenuList>
                 <Box p={3}>
                   <Flex justifyContent="space-between" alignItems="center">
-                    <Text fontWeight={"bold"}>Filter By Email</Text>
+                    <Text fontWeight={"bold"}>Filter By Meta Email (NLS99)</Text>
                     <Button
                       p={0}
                       fontSize={15}

@@ -592,8 +592,8 @@ function Tables() {
                     <Th pl="0px" color="gray.400">
                       Customer Names
                     </Th>
-                    <Th color="gray.400">Roles</Th>
-                    <Th color="gray.400">Payment Method</Th>
+                    {/* <Th color="gray.400">Roles</Th> */}
+                    <Th color="gray.400">Default Payment Method</Th>
                     <Th color="gray.400">Created</Th>
                     <Th></Th>
                   </Tr>

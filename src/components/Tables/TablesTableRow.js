@@ -45,7 +45,7 @@ function TablesTableRow(props) {
             <Text
               fontSize="sm"
               textTransform={"lowercase"}
-              color="gray.400"
+              color="gray.500"
               fontWeight="normal"
             >
               {email}
@@ -54,7 +54,7 @@ function TablesTableRow(props) {
         </Flex>
       </Td>
 
-      <Td>
+      {/* <Td>
         <Flex direction="column">
           <Text fontSize="md" color={textColor} fontWeight="bold">
             {domain}
@@ -63,7 +63,7 @@ function TablesTableRow(props) {
             {desc}
           </Text>
         </Flex>
-      </Td>
+      </Td> */}
       <Td>
         <Badge
           bg={status === "VISA" ? "blue.400" : bgStatus}
