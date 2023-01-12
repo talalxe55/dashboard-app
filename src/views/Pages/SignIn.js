@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 // Chakra imports
 import {
   Box,
@@ -16,6 +16,7 @@ import {
   HStack,
   PinInput,
   PinInputField,
+  Spinner
 } from "@chakra-ui/react";
 // Assets
 import signInImage from "assets/img/no-limi-RED-logo-opt-2.png";
@@ -26,6 +27,7 @@ import AuthApi from "../../api/auth";
 
 import { NavLink, useHistory } from "react-router-dom";
 import { verifyOTP, sendOTPConfig } from "api/ApiListing";
+import { RiLoader2Fill } from "react-icons/ri";
 
 function SignIn() {
   // Chakra color mode
@@ -50,6 +52,7 @@ function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(undefined);
+  const [loader, setloader] = useState(false);
   const [buttonText, setButtonText] = useState("Sign in");
 
   const otpPinData = {
@@ -60,7 +63,24 @@ function SignIn() {
     otp5,
     otp6,
   };
+  
+  const resetotp = e => {
+    setOtp1(null);
+    setOtp2(null);
+    setOtp3(null);
+    setOtp4(null);
+    setOtp5(null);
+    setOtp6(null);
+  };
 
+  useEffect(() => {
+    if(!otp1 || !otp2 || !otp3 || !otp4 || !otp5 || !otp6){
+      return;
+    }
+    else{
+      verifyOtp();
+    }
+  }, [otp6]);
   const login = async (event) => {
     if (event) {
       event.preventDefault();
@@ -115,9 +135,12 @@ function SignIn() {
       return setError("You must enter your OTP!.");
     }
     setButtonText("Verifying OTP..");
+    setloader(true);
     try {
       let response = await verifyOTP(otpcode, otpToken);
       if (response.data && response.data.success === false) {
+        resetotp();
+        setloader(false);
         setButtonText("Invalid or Expired Code!");
         return setError(response.data.message);
       }
@@ -130,11 +153,15 @@ function SignIn() {
         if (err.response.data.message === "Too many attempts!") {
           setotpPrompt(false);
         }
+        resetotp();
+        setloader(false);
         return setError(err.response.data.message);
       }
 
       if (err.response.status == 401) {
         setotpPrompt(false);
+        resetotp();
+        setloader(false);
         setError("Please sign in again!");
         return setButtonText("Sign in");
       }
@@ -215,7 +242,7 @@ function SignIn() {
             <Heading color={titleColor} fontSize="32px" mt="10px" mb="10px">
               OTP Verification
             </Heading>
-            <Text
+           <Text
               mb="36px"
               ms="4px"
               color={textColor}
@@ -228,7 +255,7 @@ function SignIn() {
               <FormLabel ms="4px" fontSize="sm" fontWeight="normal">
                 Enter your one-time otp password
               </FormLabel>
-              <HStack
+              {!loader?<HStack
                 id="otp"
                 // value={otpCode}
                 // onChange={(event) => {
@@ -236,8 +263,9 @@ function SignIn() {
                 //   setError(undefined);
                 // }}
               >
-                <PinInput otp>
-                  {console.log(otpCode)}
+                <PinInput otp
+                // onChange={handleSubmit}
+                >
                   <PinInputField
                     maxLength={1}
                     value={otp1}
@@ -269,7 +297,13 @@ function SignIn() {
                     onChange={(e) => setOtp6(e.target.value)}
                   />
                 </PinInput>
-              </HStack>
+              </HStack>:        <Flex
+          alignItems="center"
+          justifyContent="start"
+          style={{ userSelect: "none" }}
+          w={{ base: "100%", md: "50%" }}
+          margin="0 auto"
+        ><Spinner color="red.500" /></Flex>} 
               {/* <Button
                 onClick={() => setotpCode(Object.values(otpPinData).join(""))}
               >
@@ -300,7 +334,7 @@ function SignIn() {
               >
                 {error}
               </h4>
-              <Button
+              {/* <Button
                 fontSize="18px"
                 type="submit"
                 bg="primaryColor"
@@ -321,7 +355,7 @@ function SignIn() {
                 }
               >
                 {buttonText}
-              </Button>
+              </Button> */}
               <Button
                 onClick={emailOTPverification}
                 color={textColor}

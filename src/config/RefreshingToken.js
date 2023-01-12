@@ -124,7 +124,7 @@ const RefreshingToken = () => {
     getLastIdleTime,
     getLastActiveTime,
     getTotalIdleTime,
-    getTotalActiveTime} = useIdleTimer({ onIdle, onActive, onAction, timeout: 1000 * 60 * 2,
+    getTotalActiveTime} = useIdleTimer({ onIdle, onActive, onAction, timeout: 1000 * 60 * 5,
     events: [
       'mousemove',
       'keydown',
