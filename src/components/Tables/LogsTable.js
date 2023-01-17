@@ -90,6 +90,15 @@ const LogsTable = (props) => {
 export default LogsTable;
 
 const ViewLog = (logProperties) => {
+  const dataamount = (amount) => {
+    let cents = amount;
+    var formatedDollars = (cents / 100).toLocaleString("en-US", {
+      style: "currency",
+      currency: "USD",
+    });
+    //formatedDateTime = formatedDateTime.toLocaleString();
+    return formatedDollars;
+  };
   let ObjEntries = Object.entries(logProperties.options);
 
   // ObjEntries.forEach(([key, value]) => {
@@ -135,7 +144,7 @@ const ViewLog = (logProperties) => {
                             {key.replaceAll("_", " ")}
                           </Td>
                           <Td p={2} textTransform={"capitalize"}>
-                            {value}
+                            {key==='amount'?dataamount(value):value}
                           </Td>
                         </Tr>
                       </div>
