@@ -205,7 +205,7 @@ function SignIn() {
     }
   };
 
-  const setProfile = async (response) => {
+  const setProfile = (response) => {
     let user = { ...response.data.user };
     user.token = response.data.user.token;
     user = JSON.stringify(user);
