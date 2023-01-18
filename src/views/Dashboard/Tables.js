@@ -200,7 +200,9 @@ function Tables() {
   };
 
   useEffect(() => {
-    getCustomersList(null);
+    if(TOKEN!==""){
+      getCustomersList(null);
+    }
   }, []);
 
   // useEffect(() => {
