@@ -85,6 +85,7 @@ const PaymentForm = (props) => {
   const [paymentbtnLoader, setpaymentbtnLoader] = useState(false);
   const [CreatepaymentBtnText, setCreatepaymentBtnText] = useState("Create Payment");
   const { customer, defaultsource, sources, email, setisReload, setReloadState } = props;
+  const [isbtnDisabled, setisbtnDisabled] = useState(false);
   const initialRef = React.useRef(null);
   const finalRef = React.useRef(null);
 
@@ -135,6 +136,7 @@ const PaymentForm = (props) => {
       if (value === null || value === "" || value < 1) {
         checked = false;
         setpaymentbtnLoader(false)
+        setisbtnDisabled(false);
         setCreatepaymentBtnText("Create Payment");
         errvals[key] = "Please provide " + key;
         seterrVals({ ...errvals });
@@ -158,11 +160,15 @@ const PaymentForm = (props) => {
         setReloadState(true)
         setisSuccess(true);
         setpaymentbtnLoader(false)
-        setCreatepaymentBtnText("Payment Created!");
+        setisbtnDisabled(false)
+        seterrorData(null)
+        onClose();
+        setCreatepaymentBtnText("Create Payment");
       })
       .catch((err) => {
         setpaymentbtnLoader(false)
-        setCreatepaymentBtnText("Payment Failed!");
+        setCreatepaymentBtnText("Create Payment");
+        setisbtnDisabled(false);
         if (err.response.status == 400) {
           if (err.response.data.success == false) {
             if (err.response.data.error.amount) {
@@ -470,7 +476,7 @@ const PaymentForm = (props) => {
             </form>
           </ModalBody>
           <ModalFooter>
-            <Button isLoading={paymentbtnLoader} loadingText='Creating Payment!' colorScheme="blue" mr={3} onClick={() => {setpaymentbtnLoader(true); setCreatepaymentBtnText('Creating Payment!'); getAllValues()}}>
+            <Button isDisabled={isbtnDisabled} isLoading={paymentbtnLoader} loadingText='Creating Payment!' colorScheme="blue" mr={3} onClick={() => {setpaymentbtnLoader(true); setisbtnDisabled(true); setCreatepaymentBtnText('Creating Payment!'); getAllValues()}}>
              {CreatepaymentBtnText}
             </Button>
             <Button onClick={onClose}>Cancel</Button>
