@@ -67,7 +67,7 @@ const JobRow = (props) => {
         if (res !== undefined && res.status === 200) {
           toast({
             title: "Compeleted",
-            description: "The Job has been run successfully!",
+            description: res.data.message,
             status: "success",
             duration: 9000,
             isClosable: true,
@@ -171,7 +171,7 @@ const JobRow = (props) => {
           <Box textAlign="center">
             <Tooltip
               hasArrow
-              label="Wait until compelte log is run"
+              label="Wait until job is completed."
               bg="#000"
               color="white"
             >
