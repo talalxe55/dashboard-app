@@ -345,6 +345,22 @@ const getLogs = async (page,event,date) => {
   return res;
 };
 
+const getPaymentEntries = async (id, page) => {
+  var params = null;
+  if(page){
+    !params ? (params = "?page=" + page) : (params += "&page=" + page);
+  }
+
+  const res = await axios.get(`${API_SERVER}bulk-payments/details/`+id+params, {
+    headers: {
+      Authorization: `${TOKEN_TYPE} ${TOKEN}`,
+      Accept: `${ACCEPT_TYPE}`,
+      "Content-Type": `${ACCEPT_TYPE}`,
+    },
+  });
+  return res;
+};
+
 export {
   getCustomersList,
   getAllPayments,
@@ -370,4 +386,5 @@ export {
   verifyOTP,
   sendOTPConfig,
   getLogs,
+  getPaymentEntries
 };

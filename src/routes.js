@@ -15,6 +15,7 @@ import Users from "views/Dashboard/Users.js";
 import ResetPassword from "views/Pages/ResetPassword";
 import VerifyEmail from "views/Pages/VerifyEmail";
 import BulkPayments from "views/Dashboard/BulkPayments";
+import PaymentEntries from "views/Dashboard/PaymentEntries";
 import Logs from "views/Dashboard/Logs";
 import { BsStack } from "react-icons/bs";
 import { FaChartArea } from "react-icons/fa";
@@ -108,6 +109,17 @@ var dashRoutes = [
   },
 
   {
+    path: "/payments-entries/:id",
+    name: "Bulk Payment Entries",
+    icon: <BsStack color="inherit" />,
+    component: PaymentEntries,
+    layout: "/admin",
+    hide: true,
+    key: "bulk-payment-entries",
+    role: ["admin", "superadmin", "user"],
+  },
+
+  {
     path: "/users",
     name: "Users",
     rtlName: "لوحة القيادة",
@@ -116,7 +128,7 @@ var dashRoutes = [
     layout: "/admin",
     hide: false,
     key: "users",
-    role: ["superadmin", "admin"],
+    role: ["superadmin"],
   },
   {
     path: "/logs",
@@ -127,7 +139,7 @@ var dashRoutes = [
     layout: "/admin",
     hide: false,
     key: "logs",
-    role: ["superadmin", "admin"],
+    role: ["superadmin"],
   },
   {
     path: "/register",
@@ -139,7 +151,7 @@ var dashRoutes = [
     layout: "/admin",
     hide: false,
     key: "users",
-    role: ["superadmin", "admin"],
+    role: ["superadmin"],
   },
 
   // {

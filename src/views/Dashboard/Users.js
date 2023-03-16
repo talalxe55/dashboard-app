@@ -74,7 +74,6 @@ function Users() {
           }
         })
         .catch((err) => {
-          console.log(err);
           if (err.response.status == 401) {
             setUnauthorizedWarning(true);
           }

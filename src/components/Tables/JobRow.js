@@ -45,8 +45,10 @@ import {
   ACCEPT_TYPE,
 } from "../../config/constant";
 import { runJobPaymentID, deleteJobPaymentID } from "api/ApiListing";
+import { useHistory } from 'react-router-dom';
 
 const JobRow = (props) => {
+  const history = useHistory();
   const { srno, status, email, desc, date, userid, setReloadHandler } = props;
   const toast = useToast();
   const textColor = useColorModeValue("gray.700", "white");
@@ -60,34 +62,35 @@ const JobRow = (props) => {
   useEffect(() => {
     
   }, []);
-  const handleRunLog = () => {
-    setLoading(true);
-    runJobPaymentID(userid)
-      .then((res) => {
-        if (res !== undefined && res.status === 200) {
-          toast({
-            title: "Compeleted",
-            description: res.data.message,
-            status: "success",
-            duration: 9000,
-            isClosable: true,
-          }) &&
-            setLoading(false)
-          return setReloadHandler(true);
-        } else {
-          setLoading(false)
-        }
-      })
-      .catch((err) => {
-        toast({
-        title: "Getting Error! Try again!",
-        description: "Error while running log",
-        status: "error",
-        duration: 9000,
-        isClosable: true,
-      })
-      setLoading(false);
-    })
+  const handleEntries = () => {
+    history.push('/admin/payments-entries/'+userid)
+    // setLoading(true);
+    // runJobPaymentID(userid)
+    //   .then((res) => {
+    //     if (res !== undefined && res.status === 200) {
+    //       toast({
+    //         title: "Completed",
+    //         description: res.data.message,
+    //         status: "success",
+    //         duration: 9000,
+    //         isClosable: true,
+    //       }) &&
+    //         setLoading(false)
+    //       return setReloadHandler(true);
+    //     } else {
+    //       setLoading(false)
+    //     }
+    //   })
+    //   .catch((err) => {
+    //     toast({
+    //     title: "Getting Error! Try again!",
+    //     description: "Error while running log",
+    //     status: "error",
+    //     duration: 9000,
+    //     isClosable: true,
+    //   })
+    //   setLoading(false);
+    // })
 
     
   };
@@ -162,16 +165,16 @@ const JobRow = (props) => {
             fontWeight="400"
             cursor="pointer"
             color={"white"}
-            onClick={handleRunLog}
+            onClick={handleEntries}
             isLoading={isLoading}
           >
-            Run Log
+            Review Entries
           </Button>
-        ) : status === "running" ? (
+        ) : status === "running" || status === "uploading" ? (
           <Box textAlign="center">
             <Tooltip
               hasArrow
-              label="Wait until job is completed."
+              label="Wait until job is being processed."
               bg="#000"
               color="white"
             >
@@ -184,7 +187,15 @@ const JobRow = (props) => {
       </Td>
 
       <Td textAlign="center">
-        <DeleteJob
+        {status === "running" || status === "uploading" || status === "completed" ?
+        <Tooltip
+              hasArrow
+              label="Only jobs with 'uploaded' status can be deleted."
+              bg="#000"
+              color="white"
+            >
+              <InfoIcon />
+            </Tooltip>:<DeleteJob
           userid={userid}
           status={status}
           bgStatus={bgStatus}
@@ -194,7 +205,7 @@ const JobRow = (props) => {
           colorStatus={colorStatus}
           toast={toast}
           setReloadHandler={setReloadHandler}
-        />
+        />}
       </Td>
     </Tr>
   );
@@ -205,22 +216,36 @@ export default JobRow;
 const LogModal = (jobObj) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [getJobData, setJobData] = useState(null);
+  const [getJobPayload, setJobPayload] = useState(null);
   const [sumVal, setSumVal] = useState(0);
   const [userID, setUserID] = useState(0);
+  const [getBtnLoad, setBtnLoad] = useState(false);
   
 
-  const logJobPayment = async () => {
+  const logJobPayment = async (page) => {
     try {
-      const res = await axios.get(`${API_SERVER}bulk-payments/log/${userID}`, {
+      setBtnLoad(true);
+      var params = null;
+      if(page){
+        !params ? (params = "?page=" + page) : (params += "&page=" + page);
+      }
+      const res = await axios.get(`${API_SERVER}bulk-payments/log/${userID}`+params, {
         headers: {
           Authorization: `${TOKEN_TYPE} ${TOKEN}`,
           Accept: `${ACCEPT_TYPE}`,
           "Content-Type": `${ACCEPT_TYPE}`,
         },
       });
-      let data = res.data.data;
-
-      setJobData(data);
+      let data = res.data.data.data;
+      setJobPayload(res.data.data);
+      if (page == 1) {
+        setJobData(data);
+      } else {
+        setJobData((logs) => [...logs, ...data]);
+      }
+      setBtnLoad(false);
+      //setJobData(data);
+      console.log(getJobData);
     } catch (err) {
       if (err.response.status === 404) {
         
@@ -234,7 +259,7 @@ const LogModal = (jobObj) => {
 
   const handleLog = () => {
     onOpen();
-    logJobPayment();
+    logJobPayment(1);
   };
 
   // Converting date
@@ -272,7 +297,7 @@ const LogModal = (jobObj) => {
         View Log
       </Button>
       <Modal
-        isCentered
+        // isCentered
         onClose={onClose}
         isOpen={isOpen}
         motionPreset="slideInBottom"
@@ -353,6 +378,33 @@ const LogModal = (jobObj) => {
                 <Skeleton height="35px" />
               </Stack>
             )}
+            {getJobPayload && getJobPayload.next_page_url!==null ? (
+                                        <Box
+                                        display='flex'
+                                        alignItems='center'
+                                        justifyContent='center'
+                                        width='100%'
+                                        py={12}
+                                        mb={2}
+                                      >
+                                        <Button
+                                        isLoading={getBtnLoad}
+                                        onClick={()=>{logJobPayment(getJobPayload.current_page<=getJobPayload.last_page?getJobPayload.current_page+1:getJobPayload.current_page)}}
+                                        bg="primaryColor"
+                                        w={200}
+                                        color="white"
+                                        m={"20px auto"}
+                                        _hover={{ bg: "#000" }}
+                                        p="25px 0"
+                                        textAlign={"center"}
+                                      >
+                                        Load More
+                                      </Button>
+                                        
+                                      </Box>
+                                    ) : (
+                                      ""
+                                    )}
           </ModalBody>
           <ModalFooter>
             <Button colorScheme="black" onClick={onClose}>

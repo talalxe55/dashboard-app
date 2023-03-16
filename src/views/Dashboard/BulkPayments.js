@@ -19,6 +19,7 @@ import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
 import LoadingGif from "assets/svg/loading-infinite.svg";
 import { useLocation } from "react-router-dom";
+import { useIdleTimer } from 'react-idle-timer'
 import {
   AlertUnauthorized,
   AlertDataNotFound,
@@ -32,6 +33,7 @@ function BulkPayments() {
   let query = React.useMemo(() => new URLSearchParams(search), [search]);
   const [customers, setCustomers] = useState(null);
   const [isloading, setLoading] = useState(false);
+  const [isReload, setisReload] = useState(false);
   const [emailFilter, setEmailFilter] = useState("");
   const textColor = useColorModeValue("gray.700", "white");
   const [unauthorizedWarning, setUnauthorizedWarning] = useState(false);
@@ -66,28 +68,66 @@ function BulkPayments() {
     return formatedDateTime;
   };
 
+//   const onActive = (event) => {
+//     // Close Modal Prompt
+//     // Do some active action
+    
+//   }
+
+//   const onIdle = () => {
+
+//     start()
+//     // Close Modal Prompt
+//     // Do some active action
+//     setReloadHandler(true);
+    
+    
+//   }
+
+
+//   const {
+//   start,
+//   reset,
+//   getElapsedTime,
+// } = useIdleTimer({ onIdle, onActive, timeout: 1000 * 10,
+//   events: [
+//     'mousemove',
+//     'keydown',
+//     'wheel',
+//     'DOMMouseScroll',
+//     'mousewheel',
+//     'mousedown',
+//     'touchstart',
+//     'touchmove',
+//     'MSPointerDown',
+//     'MSPointerMove',
+//     'visibilitychange'
+//   ],})
+
+  const loadEntries = () => {
+    setLoading(true);
+    getBulkPayments()
+      .then((res) => {
+        if (res !== undefined && res.status === 200) {
+          setCustomers(res.data.data);
+          setLoading(false);
+        } else {
+        }
+      })
+      .catch((err) => {
+        setLoading(false)
+        if(err.response.status==401){
+          setUnauthorizedWarning(true);
+        }
+        else if(err.response.status==401){
+          setNoDataFound(true)
+        }
+         });
+  }
   useEffect(() => {
-    if (customers === null) {
-      setLoading(true);
-      getBulkPayments()
-        .then((res) => {
-          if (res !== undefined && res.status === 200) {
-            setCustomers(res.data.data);
-            setLoading(false);
-          } else {
-          }
-        })
-        .catch((err) => {
-          setLoading(false)
-          if(err.response.status==401){
-            setUnauthorizedWarning(true);
-          }
-          else if(err.response.status==401){
-            setNoDataFound(true)
-          }
-           });
-    }
+    loadEntries();
   }, []);
+
 
   // Filtering Email
   const customerListing =
@@ -117,8 +157,21 @@ function BulkPayments() {
           </Text>
         </CardHeader>
         <Box>
+        <Flex >
+              <Button
+                bg="primaryColor"
+                color="white"
+                _hover={{ bg: "#000" }}
+                fontWeight={400}
+                textAlign={"left"}
+                onClick={() => {setReloadHandler(true)}}
+              >
+                Reload
+              </Button>
+          </Flex>
           <UploadCSVModal setReloadHandler={setReloadHandler} />
           <Flex mb={5} justifyContent="end">
+            
             <a
               href={sampleCSVFile}
               download="samplefile.csv"

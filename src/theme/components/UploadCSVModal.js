@@ -79,6 +79,8 @@ const UploadCSVModal = ({ setReloadHandler }) => {
         setReloadHandler(true);
       }
     } catch (err) {
+      setSelectedFile(null);
+      setFileName("");
       if (err.response.status === 404) {
         setLoading(false);
       } else if (err.response.status === 401) {
@@ -86,7 +88,7 @@ const UploadCSVModal = ({ setReloadHandler }) => {
       } else if (err.response.status === 400) {
         toast({
           title: "Bad file uploaded!",
-          description: "Please upload only CSV file. Download SAMPLE FILE",
+          description: "Please upload only CSV file of max 2MB size. Download SAMPLE FILE",
           status: "error",
           duration: 9000,
           isClosable: true,
@@ -201,7 +203,7 @@ const UploadCSVModal = ({ setReloadHandler }) => {
                       >
                         Select File
                       </Button>
-                      <Text fontSize="smaller">File limit 10mb</Text>
+                      <Text fontSize="smaller">Max File Size: 2MB</Text>
                     </Flex>
                   </Flex>
                 </FormControl>

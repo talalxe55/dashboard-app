@@ -165,6 +165,14 @@ function SignIn() {
         setError("Please sign in again!");
         return setButtonText("Sign in");
       }
+
+      if (err.response.status == 501) {
+        setotpPrompt(false);
+        resetotp();
+        setloader(false);
+        setError("Please sign in again!");
+        return setButtonText("Sign in");
+      }
       return setError("There has been an error.");
     }
   };
@@ -197,6 +205,12 @@ function SignIn() {
         return setError(err.response.data.message);
       }
       if (err.response.status == 401) {
+        setotpPrompt(false);
+        setError("Please sign in again!");
+        return setButtonText("Sign in");
+      }
+
+      if (err.response.status == 501) {
         setotpPrompt(false);
         setError("Please sign in again!");
         return setButtonText("Sign in");

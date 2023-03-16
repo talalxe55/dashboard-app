@@ -315,7 +315,6 @@ function Billing() {
           >
             <Text fontSize="lg" color={textColor} fontWeight="bold">
               {singleCustomer ? singleCustomer.name : "Customer Name"}
-              {console.log(singleCustomer)}
             </Text>
             {/* Edit Customer Modal */}
             {singleCustomer ? (
