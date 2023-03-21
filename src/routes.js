@@ -105,7 +105,7 @@ var dashRoutes = [
     layout: "/admin",
     hide: false,
     key: "bulk-payment-detail",
-    role: [],
+    role: ["admin", "superadmin", "user"],
   },
 
   {
