@@ -99,7 +99,6 @@ const PaymentForm = (props) => {
     metadata: {
       site_url: "https://nolimitsocial99.com",
     },
-    receipt_email: "",
     confirm: true,
   });
 
@@ -153,6 +152,7 @@ const PaymentForm = (props) => {
     if (email) {
       payload["metadata"] = { ...payload["metadata"], customer_email: email };
     }
+    
     const response = createPayment(payload);
     response
       .then((res) => {
