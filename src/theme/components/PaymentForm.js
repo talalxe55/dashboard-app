@@ -99,7 +99,7 @@ const PaymentForm = (props) => {
     metadata: {
       site_url: "https://nolimitsocial99.com",
     },
-    receipt_email: "josh@nolimitsocial99.com",
+    receipt_email: "",
     confirm: true,
   });
 
