@@ -324,7 +324,7 @@ const RefundForm = (props) => {
                   <Select
                     id="reason"
                     icon={<TriangleDownIcon />}
-                    name="source"
+                    name="reason"
                     onChange={(e) => handleValues(e)}
                   >
                     <option value="requested_by_customer">

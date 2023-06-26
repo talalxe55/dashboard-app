@@ -64,19 +64,17 @@ import {
   AlertPaymentCreated,
 } from "theme/components/AlertDialog";
 import { useHistory } from "react-router-dom";
+import ConfirmPaymentModal from 'theme/components/ConfirmPaymentModal';
 const PaymentForm = (props) => {
   useEffect(() => {
     // getCustomersList();
     // getAllPayments();
-    getAllRefunds();
+    //getAllRefunds();
   }, []);
 
-  const options = [
-    { value: "Josh 1", label: "Josh 1" },
-    { value: "Josh 2", label: "Josh 2" },
-    { value: "Josh 3", label: "Josh 3" },
-  ];
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [isConfirmClosed, setisConfirmClosed] = useState(false);
+  const { isOpen: isSecondModalOpen, onOpen: OnSecondModalOpen, onClose: onSecondModalClose } = useDisclosure();
   const [currency, setCurrency] = useState("USD$");
   const [std, setstd] = useState("No Limit Social 99");
   const [errorData, seterrorData] = useState(null);
@@ -88,16 +86,38 @@ const PaymentForm = (props) => {
   const [isbtnDisabled, setisbtnDisabled] = useState(false);
   const initialRef = React.useRef(null);
   const finalRef = React.useRef(null);
-
+  const initialSecondRef = React.useRef(null);
+  const finalSecondRef = React.useRef(null);
+  const [isConfirm, setisConfirm] = useState(false);
+  const cancelRef = React.useRef()
+  var source = null;
+  if(defaultsource.card.id === null || defaultsource.card.id === undefined ){
+    source = defaultsource.id;
+  }
+  else{
+    source = defaultsource.card.id;
+  }
+  const emptyObj = {
+    amount: 1,
+    customer: customer.id,
+    currency: "usd",
+    description: "",
+    statement_descriptor: "NO LIMIT SOCIAL 99",
+    source: source,
+    metadata: {
+      
+    },
+    confirm: true,
+  }
   const [vals, setVals] = useState({
     amount: 1,
     customer: customer.id,
     currency: "usd",
     description: "",
-    statement_descriptor: "No Limit Social 99",
-    source: defaultsource.card.id,
+    statement_descriptor: "NO LIMIT SOCIAL 99",
+    source: source,
     metadata: {
-      site_url: "https://nolimitsocial99.com",
+      
     },
     confirm: true,
   });
@@ -128,7 +148,9 @@ const PaymentForm = (props) => {
     });
   };
 
+
   const getAllValues = (e) => {
+    setpaymentbtnLoader(true);
     var checked = true;
     let payload = {};
     Object.entries(vals).forEach(([key, value]) => {
@@ -146,62 +168,66 @@ const PaymentForm = (props) => {
       }
     });
 
+   
+    
     if (!checked) {
-      return;
+      return false;
     }
     if (email) {
       payload["metadata"] = { ...payload["metadata"], customer_email: email };
     }
-    
-    const response = createPayment(payload);
-    response
-      .then((res) => {
-        setisReload(true)
-        setReloadState(true)
-        setisSuccess(true);
-        setpaymentbtnLoader(false)
-        setisbtnDisabled(false)
-        seterrorData(null)
-        onClose();
-        setCreatepaymentBtnText("Create Payment");
-      })
-      .catch((err) => {
-        setpaymentbtnLoader(false)
-        setCreatepaymentBtnText("Create Payment");
-        setisbtnDisabled(false);
-        if (err.response.status == 400) {
-          if (err.response.data.success == false) {
-            if (err.response.data.error.amount) {
-              errvals["amount"] = err.response.data.error.amount;
-              seterrVals({ ...errvals });
-            }
-            if (err.response.data.error.currency) {
-              errvals["currency"] = err.response.data.error.currency;
-              seterrVals({ ...errvals });
-            }
-          } else {
-            seterrorData({
-              message: err.response.data.error.message,
-              status: "error",
-              title: "Payment Unsuccessfull",
-            });
-            errvals[err.response.data.error.param] =
-              err.response.data.error.message;
-            seterrVals({ ...errvals });
-          }
-        }
-        if (err.response.status == 501) {
-          seterrorData({
-            message: err.response.data.error.message,
-            status: "error",
-            title: "Payment Unsuccessfull",
-          });
-        }
+   setVals(payload)
 
-        if (err.response.status == 401) {
-          setisUnauthorized(true);
-        }
-      });
+   const response = createPayment(vals);
+   response
+     .then((res) => {
+       setisReload(true)
+       setReloadState(true)
+       setisSuccess(true);
+       setpaymentbtnLoader(false)
+       setisbtnDisabled(false)
+       seterrorData(null)
+       setVals(emptyObj);
+       onClose();
+       setCreatepaymentBtnText("Create Payment");
+     })
+     .catch((err) => {
+       setpaymentbtnLoader(false)
+       setCreatepaymentBtnText("Create Payment");
+       setisbtnDisabled(false);
+       if (err.response.status == 400) {
+         if (err.response.data.success == false) {
+           if (err.response.data.error.amount) {
+             errvals["amount"] = err.response.data.error.amount;
+             seterrVals({ ...errvals });
+           }
+           if (err.response.data.error.currency) {
+             errvals["currency"] = err.response.data.error.currency;
+             seterrVals({ ...errvals });
+           }
+         } else {
+           seterrorData({
+             message: err.response.data.error.message,
+             status: "error",
+             title: "Payment Unsuccessfull",
+           });
+           errvals[err.response.data.error.param] =
+             err.response.data.error.message;
+           seterrVals({ ...errvals });
+         }
+       }
+       if (err.response.status == 501) {
+         seterrorData({
+           message: err.response.data.error.message,
+           status: "error",
+           title: "Payment Unsuccessfull",
+         });
+       }
+
+       if (err.response.status == 401) {
+         setisUnauthorized(true);
+       }
+     });
   };
 
   const getCreditData = (data) => {
@@ -261,6 +287,90 @@ const PaymentForm = (props) => {
     );
   };
 
+  function AlertDialogExample(props) {
+    const { isOpen, onOpen, onClose } = useDisclosure()
+    
+    return (
+      <>
+          <Button isDisabled={isbtnDisabled} isLoading={paymentbtnLoader} loadingText='Creating Payment!' colorScheme="blue" mr={3} onClick = {onOpen}>
+          {CreatepaymentBtnText}
+          </Button>
+  
+        <AlertDialog
+          isOpen={isOpen}
+          leastDestructiveRef={cancelRef}
+          onClose={onClose}
+          isCentered
+          closeOnOverlayClick
+          closeOnEsc
+        >
+          <AlertDialogOverlay>
+            <AlertDialogContent>
+              <AlertDialogHeader fontSize='lg' fontWeight='bold'>
+                Review Details
+              </AlertDialogHeader>
+  
+              <AlertDialogBody>
+            <Text>Amount: {vals.amount}</Text>
+            <Text>Customer: {vals.customer}</Text>
+            <Text>Currency: {vals.currency}</Text>
+            <Text>Description: {vals.description}</Text>
+            <Text>Statement Descriptor: {vals.statement_descriptor}</Text>
+            <Text>Source: {vals.source}</Text>
+              </AlertDialogBody>
+  
+              <AlertDialogFooter>
+                <Button ref={cancelRef} onClick={onClose}>
+                  Cancel
+                </Button>
+                <Button colorScheme='blue' onClick={getAllValues} ml={3}>
+                  Proceed
+                </Button>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialogOverlay>
+        </AlertDialog>
+      </>
+    )
+  }
+
+
+  // const ConfirmPaymentModal = (props) => {
+  //   return (
+  //     <>
+  //    <Modal
+  //   initialFocusRef={initialRef}
+  //   finalFocusRef={finalRef}
+  //   isOpen={isConfirm}
+  //   onClose={isConfirmClosed}
+  //   >
+  //   <ModalOverlay />
+  //   <ModalContent minWidth={{ sm: "35%" }} height={"20%"}>
+  //       <ModalHeader>Review Details</ModalHeader>
+  //       <ModalCloseButton />
+  //       <ModalBody pb={6} overflowY={{ sm: "auto" }}>
+  //           {
+  //           Object.entries(vals).forEach(([key, value]) => {
+  //             {console.log('hereee')}
+  //           <Text>{key}</Text>
+  //       })
+  //         }
+
+  //       </ModalBody>
+  //       <ModalFooter>
+  //       <Button isDisabled={isbtnDisabled} isLoading={paymentbtnLoader} loadingText='Creating Payment!' colorScheme="blue" mr={3} onClick={() => {setpaymentbtnLoader(true); setisbtnDisabled(true); setCreatepaymentBtnText('Creating Payment!');}}>
+  //           {CreatepaymentBtnText}
+  //       </Button>
+  //       <Button onClick={setisConfirmClosed(true)}>Cancel</Button>
+  //       </ModalFooter>
+  //   </ModalContent>
+  //   </Modal>
+  //     </>);
+  // }
+
+  const setisConfirmClosedHandler = (value) => {
+    setisConfirmClosed(value);
+  }
   const AlertBox = () => {
     const { isOpen: isVisible, onClose, onOpen } = useDisclosure({
       defaultIsOpen: true,
@@ -426,7 +536,23 @@ const PaymentForm = (props) => {
                     <InfoIcon />
                   </Tooltip>
                 </Flex>
-                <Descriptor />
+                {/* <Descriptor /> */}
+                    <Stack width={300}>
+                      <Select
+                        id="currencysym"
+                        icon={<TriangleDownIcon />}
+                        name="statement_descriptor"
+                        onChange = {
+                          (e) =>
+                          handleValues(e)
+                        }
+                      >
+                      <option value={"NO LIMIT SOCIAL 99"}>NO LIMIT SOCIAL 99</option>
+                      <option value={"Chat 24-7 LLC"}>Chat 24-7 LLC</option>
+                      <option value={"APPSTRU"}>APPSTRU</option>
+                      <option value={"REPSTRU"}>REPSTRU</option>
+                      </Select>
+                    </Stack>
                 <Text color={"red.500"}> {errvals.statement_descriptor}</Text>
               </FormControl>
               <FormControl mt={4}>
@@ -476,13 +602,15 @@ const PaymentForm = (props) => {
             </form>
           </ModalBody>
           <ModalFooter>
-            <Button isDisabled={isbtnDisabled} isLoading={paymentbtnLoader} loadingText='Creating Payment!' colorScheme="blue" mr={3} onClick={() => {setpaymentbtnLoader(true); setisbtnDisabled(true); setCreatepaymentBtnText('Creating Payment!'); getAllValues()}}>
-             {CreatepaymentBtnText}
-            </Button>
+
+      <AlertDialogExample/>
             <Button onClick={onClose}>Cancel</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
+
+      
+      
     </>
   );
 };
